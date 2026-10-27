@@ -106,6 +106,11 @@ def facts(tag):
         f["semantic_cost"] = f"{H['semantic']['index_embed_words'] / H['fixed']['index_embed_words']:.1f}×"
         f["semantic_mrr"] = ci(H["semantic"], "mrr@10")
     f["budget_best"] = ci(best, budget)
+    trunc = {LABEL[k]: (int(v["chunks_over_model_limit"]), int(v["n_chunks"])) for k, v in H.items()}
+    f["truncation"] = ", ".join(f"{k} {n}/{tot}" for k, (n, tot) in trunc.items())
+    worst_t = max(trunc.items(), key=lambda kv: kv[1][0] / max(kv[1][1], 1))
+    f["worst_trunc_name"] = worst_t[0]
+    f["worst_trunc_pct"] = f"{100 * worst_t[1][0] / worst_t[1][1]:.0f}%"
 
     if tax:
         tot = sum(int(r["misses_top5"]) for r in tax)

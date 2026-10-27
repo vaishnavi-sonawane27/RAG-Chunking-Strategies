@@ -99,8 +99,11 @@ where chunk sizes differ, which is the point. Settings chosen on dev: {selected}
   baseline on recall@3 and the budget metric. On MRR it moved {overlap_delta} ({overlap_ci}) — i.e.
   not detectably. It makes the answer more likely to be *present*, not better *ranked*.
 - **Semantic chunking cost {semantic_cost} the embedding work** of fixed-size chunking to build the
-  index, for {semantic_mrr}. On this corpus that is not a good trade — which matches the published
-  literature (below).
+  index, for {semantic_mrr} — the worst MRR in the set. On this corpus that is not a good trade,
+  which matches the published literature (below). **But see the caveat about truncation in
+  Limitations: semantic chunks were the longest, and {worst_trunc_pct} of them exceeded the model's
+  512-token window, so part of its deficit may be truncation rather than bad boundaries.** I did not
+  separate the two effects.
 
 ### The thing I did not expect
 
@@ -165,6 +168,11 @@ Specific enough to be falsifiable:
 - **Chunk size is measured in words, not model tokens.** Roughly 1.3 tokens per word for this text.
 - **One embedding model.** Chroma found the ranking changed between embedding models; so should you
   expect it to here.
+- **Long chunks get truncated, and this is a confound.** bge-small reads at most 512 word pieces.
+  Chunks exceeding that, by selected configuration: {truncation}. {worst_trunc_name} is the most
+  affected at {worst_trunc_pct}, so its lower score is partly a context-window artefact and not
+  purely a verdict on its boundaries. Capping chunk length below the model window, or using a
+  longer-context encoder, would separate those two effects. I did not do that here.
 - **The ONNX weights came from an npm redistribution**, not from the official model repository,
   because the machine I ran this on could not reach Hugging Face. The hashes are pinned in the repo.
   Re-run with `--embedder st:BAAI/bge-small-en-v1.5` against official weights if that matters to you —
