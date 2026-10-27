@@ -1,7 +1,7 @@
 # RAG chunking strategies, with confidence intervals
 
 A small, fully reproducible comparison of five document chunking strategies for retrieval in a RAG
-pipeline — run with a **held-out dev/test split** and **paired bootstrap confidence intervals**, so
+pipeline, run with a **held-out dev/test split** and **paired bootstrap confidence intervals**, so
 that differences can be assessed for significance instead of ranked on point estimates.
 
 | Strategy | What it does |
@@ -24,7 +24,7 @@ Cost?*](https://arxiv.org/abs/2410.13070) (Qu, Tu & Bao, Findings of ACL: NAACL 
 
 What this adds is narrow and methodological: a dev/test split so chunk sizes are not tuned on the
 reported numbers, paired bootstrap intervals on every comparison, a fixed-context-budget metric, and
-cost reported next to quality — gaps several of those authors name themselves.
+cost reported next to quality. These are gaps several of those authors name themselves.
 
 ## What makes the measurement trustworthy
 
@@ -37,7 +37,7 @@ cost reported next to quality — gaps several of those authors name themselves.
   saw. Without this, sweeping sizes and reporting the best is tuning on the test set.
 * **Comparisons are paired.** All configurations are scored on the same questions using one shared
   set of bootstrap resamples, so `paired_vs_reference.csv` gives the difference against the baseline
-  with an interval — the right way to ask "is this actually better?"
+  with an interval, which is the right way to ask "is this actually better?"
 * **Equal context budgets.** Comparing at the same `k` favours small chunks. `recall@450w` fills a
   fixed word budget instead and asks who got the answer in.
 * **Cost is reported.** `index_embed_words` counts the embedding work to build each index, including
@@ -62,7 +62,7 @@ python scripts/build_article.py --tag bge-small
 
 `results/bge-small/` then contains `summary.csv`, `paired_vs_reference.csv`, `per_question.csv`,
 `failure_taxonomy.csv`, `failures.md`, four charts and `results_section.md`.
-`article/FINAL.md` is the written article with every number injected from those files — the build
+`article/FINAL.md` is the written article with every number injected from those files. The build
 **fails** rather than emit a hand-typed number.
 
 ### Running official Hugging Face weights instead
@@ -104,7 +104,7 @@ results/<tag>/            CSVs, charts, failure analysis
 ## Licensing
 
 Code is MIT. **`data/questions.json` is CC BY-NC-SA 3.0**, because its evidence fields quote *Pro
-Git*. The book text itself is never committed — `scripts/fetch_corpus.py` downloads it. See
+Git*. The book text itself is never committed; `scripts/fetch_corpus.py` downloads it. See
 [`LICENSE`](LICENSE) and [`data/README.md`](data/README.md).
 
 ## Limitations
@@ -112,7 +112,7 @@ Git*. The book text itself is never committed — `scripts/fetch_corpus.py` down
 One corpus, one language, one embedding model, retrieval only (no generation), chunk size in words
 rather than model tokens, and a question set drafted with AI assistance that has been verified
 programmatically but not reviewed by a second person. The test split is deliberately small enough
-that many differences are *not* resolvable — that is the finding, not a defect, but it does mean
+that many differences are *not* resolvable. That is the finding, not a defect, but it does mean
 this cannot prove two strategies are equivalent.
 
 Corrections welcome as issues.

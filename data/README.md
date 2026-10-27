@@ -26,8 +26,8 @@ the repo small and avoids redistributing the book.
 `data/questions.json` holds **130 questions**. Each is tied to one evidence passage that occurs
 **exactly once** in its source document, given either as:
 
-* `evidence` — a verbatim string, or
-* `evidence_from` + `evidence_to` — the passage starting at the first string and ending after the
+* `evidence`: a verbatim string, or
+* `evidence_from` + `evidence_to`: the passage starting at the first string and ending after the
   next occurrence of the second (used for multi-sentence evidence).
 
 `scripts/validate_questions.py` checks that every passage resolves uniquely and warns when a question
@@ -44,7 +44,7 @@ short (≤25 words) and long (>25 words) evidence.
 ### Licensing of the questions
 
 The evidence fields contain short verbatim excerpts of Pro Git. `data/questions.json` is therefore a
-derivative work and is distributed under **CC BY-NC-SA 3.0**, the same license as the book — *not*
+derivative work and is distributed under **CC BY-NC-SA 3.0**, the same license as the book, *not*
 the MIT license that covers the code. The NonCommercial clause applies.
 
 ### Honest provenance

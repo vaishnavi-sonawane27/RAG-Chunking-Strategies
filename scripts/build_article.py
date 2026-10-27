@@ -71,7 +71,7 @@ def facts(tag):
     f["separated_names"] = ", ".join(LABEL.get(r["strategy"], r["strategy"]) for r in sep) or "none"
     f["widest_ci"] = f"{max((r['diff_hi'] - r['diff_lo']) for r in pm):.2f}" if pm else "n/a"
 
-    # separations across every metric, not just MRR — otherwise the article understates the result
+    # separations across every metric, not just MRR, otherwise the article understates the result
     allp = [r for r in paired if r["retriever"] == prim and r["headline"]]
     sep_all = [r for r in allp if not (r["diff_lo"] <= 0 <= r["diff_hi"])]
     f["n_all_comparisons"] = len(allp)
@@ -184,10 +184,10 @@ def main():
     needed = {x[1] for x in string.Formatter().parse(tpl) if x[1]}
     missing = sorted(needed - set(f))
     if missing:
-        sys.exit(f"BUILD FAILED — template needs facts that the results do not provide: {missing}")
+        sys.exit(f"BUILD FAILED: template needs facts that the results do not provide: {missing}")
     out = tpl.format(**f)
     if re.search(r"\{[a-z_]+\}", out):
-        sys.exit("BUILD FAILED — unfilled placeholder remains")
+        sys.exit("BUILD FAILED: unfilled placeholder remains")
     (ROOT / args.out).write_text(out, encoding="utf-8")
     print(f"wrote {args.out} ({len(out.split())} words) from results/{args.tag}")
     print(f"unused facts (fine): {sorted(set(f) - needed - {'results_section'})}")

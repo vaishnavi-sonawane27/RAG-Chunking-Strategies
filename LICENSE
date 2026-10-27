@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ---------------------------------------------------------------------------
-NOTE ON THE DATA — this MIT license covers the CODE ONLY.
+NOTE ON THE DATA: this MIT license covers the CODE ONLY.
 
 data/questions.json contains short verbatim passages from "Pro Git" (second
 edition) by Scott Chacon and Ben Straub, which is licensed

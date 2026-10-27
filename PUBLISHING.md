@@ -10,12 +10,12 @@ git remote add origin https://github.com/vaishnavi-sonawane27/rag-chunking-exper
 git push -u origin main
 ```
 
-Create the empty repo on GitHub first (no README, no .gitignore — this repo has both).
+Create the empty repo on GitHub first (no README, no .gitignore, since this repo has both).
 Then in the repo settings add a description and these topics: `rag`, `retrieval`, `benchmark`,
 `information-retrieval`, `reproducible-research`, `llm`.
 
 Check after pushing:
-- the CI badge goes green (Actions tab) — CI fetches the corpus, validates all 130 questions and
+- the CI badge goes green (Actions tab). CI fetches the corpus, validates all 130 questions and
   runs the tests on every push
 - `data/_models/` and `data/docs/` are **not** in the repo (they are gitignored; the repo is ~300 KB)
 - the README renders and the links resolve
@@ -26,7 +26,7 @@ Add the badge to the top of README.md once the repo exists:
 [![CI](https://github.com/vaishnavi-sonawane27/rag-chunking-experiment/actions/workflows/ci.yml/badge.svg)](https://github.com/vaishnavi-sonawane27/rag-chunking-experiment/actions)
 ```
 
-## 2. Before you publish the article — read these
+## 2. Before you publish the article, read these
 
 - **Read the questions.** Skim `data/questions.json`. They were drafted with AI help and verified
   programmatically, and the article says so, but you are putting your name on them. Fix any you
@@ -44,12 +44,12 @@ Add the badge to the top of README.md once the repo exists:
 
 Own the canonical URL. Publish first on the blog you control, then syndicate.
 
-1. **Day 0 — your own blog** (Hashnode on a custom domain, or your own site). This is the canonical.
-2. **Day 0–2 — Hacker News**, submitted with the canonical URL and the title unedited. HN guidelines:
+1. **Day 0, your own blog** (Hashnode on a custom domain, or your own site). This is the canonical.
+2. **Day 0 to 2, Hacker News**, submitted with the canonical URL and the title unedited. HN guidelines:
    no all-caps, no exclamation marks, no editorialising, don't add the site name.
-3. **Day 2–7 — dev.to**, with `canonical_url:` set in the front matter to your own URL, so your
+3. **Day 2 to 7, dev.to**, with `canonical_url:` set in the front matter to your own URL, so your
    domain keeps the ranking. The template already has an empty `canonical_url` field.
-4. **LinkedIn** — one post: the question, the one-line answer, the chart, the link.
+4. **LinkedIn**: one post with the question, the one-line answer, the chart, the link.
 
 On Hashnode the canonical field is under the editor's **Draft/Article Settings → "Are you
 republishing?" → Add Original URL**.
@@ -69,7 +69,7 @@ From how benchmark posts usually get torn apart:
 | "No cost accounting" | `index_embed_words` per strategy, including semantic's extra pass |
 | "You're claiming novelty that isn't there" | the article says outright this is a replication and cites the prior work |
 
-The one you cannot fully answer is sample size — 130 questions is small, and that is exactly why so
+The one you cannot fully answer is sample size. 130 questions is small, and that is exactly why so
 many intervals include zero. Say it first, before a commenter does.
 
 ## 5. After publishing
