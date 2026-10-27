@@ -1,0 +1,16 @@
+strategy,param,metric,dense_minus_bm25,diff_lo,diff_hi
+fixed,150,recall@3,0.102,-0.023,0.227
+fixed,150,mrr@10,0.121,0.014,0.228
+fixed,150,recall@450w,0.102,-0.023,0.227
+sentence,150,recall@3,0.227,0.125,0.33
+sentence,150,mrr@10,0.142,0.05,0.239
+sentence,150,recall@450w,0.227,0.125,0.33
+recursive,75,recall@3,0.239,0.136,0.341
+recursive,75,mrr@10,0.271,0.184,0.361
+recursive,75,recall@450w,0.205,0.091,0.318
+fixed_overlap,150,recall@3,0.227,0.114,0.341
+fixed_overlap,150,mrr@10,0.135,0.028,0.239
+fixed_overlap,150,recall@450w,0.227,0.114,0.341
+semantic,95,recall@3,0.125,-0.011,0.261
+semantic,95,mrr@10,0.056,-0.058,0.176
+semantic,95,recall@450w,0.148,0.011,0.295

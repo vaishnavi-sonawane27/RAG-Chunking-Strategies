@@ -133,6 +133,42 @@ def facts(tag):
             if rank == "" or int(rank) > 5:
                 cnt[r["top1_doc"]] += 1
     f["top_wrong_docs"] = ", ".join(f"`{doc}` ({n})" for doc, n in cnt.most_common(3)) or "n/a"
+    # overlap: where does its benefit actually land? (short vs long evidence)
+    if "fixed_overlap" in H and "fixed" in H:
+        o, b = H["fixed_overlap"], H["fixed"]
+        f["ov_short_r3"] = f"{b['recall@3_short']:.2f} to {o['recall@3_short']:.2f}"
+        f["ov_long_r3"] = f"{b['recall@3_long']:.2f} to {o['recall@3_long']:.2f}"
+        f["ov_long_mrr"] = f"{b['mrr@10_long']:.2f} to {o['mrr@10_long']:.2f}"
+        bm_ov = next((r for r in paired if r["retriever"] == "bm25" and r["strategy"] == "fixed_overlap"
+                      and r["metric"] == "recall@3"), None)
+        f["ov_bm25"] = (f"{bm_ov['diff_vs_reference']:+.3f} (CI [{bm_ov['diff_lo']:+.3f}, {bm_ov['diff_hi']:+.3f}])"
+                        if bm_ov else "n/a")
+        ov_mrr = next((r for r in pm if r["strategy"] == "fixed_overlap"), None)
+        if ov_mrr:
+            f["overlap_delta"] = f"{ov_mrr['diff_vs_reference']:+.3f}"   # from the paired file, not rounded means
+
+    # dense vs BM25, paired like everything else
+    dvb_rows = []
+    dvb = d / "paired_dense_vs_bm25.csv"
+    if dvb.exists():
+        import csv as _c
+        dvb_rows = [r for r in _c.DictReader(open(dvb, encoding="utf-8"))]
+    ref_dvb = next((r for r in dvb_rows if r["strategy"] == "fixed" and r["metric"] == "mrr@10"), None)
+    f["dense_vs_bm25_paired"] = (f"{float(ref_dvb['dense_minus_bm25']):+.3f} MRR "
+                                 f"(95% CI [{float(ref_dvb['diff_lo']):+.3f}, {float(ref_dvb['diff_hi']):+.3f}])"
+                                 ) if ref_dvb else "n/a"
+
+    # the "evidence split" bucket could not have been non-zero: say so
+    ans = {r["answerable"] for r in rows}
+    f["answerable_note"] = ("every configuration, at every size tried, left at least half of every "
+                            "evidence passage inside some chunk (`answerable` = 1.00 in all "
+                            f"{len(rows)} rows of summary.csv)") if ans == {1.0} else \
+                           f"answerable ranged {min(ans):.2f}–{max(ans):.2f} across configurations"
+    f["n_selected_configs"] = len(info["selected_on_dev"])
+    sweep_tr = [(LABEL.get(r["strategy"], r["strategy"]), int(r["chunks_over_model_limit"]), int(r["n_chunks"]))
+                for r in rows if r["retriever"] == prim]
+    worst_sweep = max(sweep_tr, key=lambda t: t[1] / max(t[2], 1))
+    f["worst_sweep_trunc"] = f"{worst_sweep[0]} at the largest size tried ({100 * worst_sweep[1] / worst_sweep[2]:.0f}% of its chunks)"
     f["results_section"] = (d / "results_section.md").read_text(encoding="utf-8")
     return d, f
 

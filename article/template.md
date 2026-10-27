@@ -52,7 +52,7 @@ vector database or embedding vendor, and I have no stake in which strategy wins.
 | **Split** | {n_dev} dev (chooses settings) / {n_test} test (reported). Stratified by document, seed 0 |
 | **Embedding model** | {embedder}, ONNX, cosine similarity, top-10 |
 | **Baselines** | BM25 over the identical chunks; {reference} as the reference configuration |
-| **Metrics** | Recall@1/3/5, MRR@10, and recall at a fixed {budget_words}-word context budget |
+| **Metrics** | Recall@1, Recall@3, MRR@10, and recall at a fixed {budget_words}-word context budget (Recall@5 is in `summary.csv` and defines the failure analysis) |
 | **Statistics** | {n_boot} paired bootstrap resamples over the test questions |
 | **Platform** | Python {python}, {cpu_count} CPU cores, {os}. Full run: ~{runtime_min} min |
 
@@ -78,7 +78,8 @@ where chunk sizes differ, which is the point. Settings chosen on dev: {selected}
 ## What I take from this
 
 - **Dense retrieval beat BM25 on the same chunks** ({ref_name}: {ref_mrr} dense vs {bm25_ref_mrr}
-  BM25, a difference of {dense_minus_bm25} MRR). Worth stating because an earlier version of this
+  BM25). Paired on the same test questions, that difference is {dense_vs_bm25_paired} — it clears
+  zero, though not by much, and it is the largest single effect measured here. Worth stating because an earlier version of this
   experiment used weak static word-vector embeddings, and BM25 beat *them* on every strategy. The
   embedding model changes the conclusion, so any chunking result is conditional on it.
 - **The point-estimate ranking puts {best_name} first** ({best_mrr}) and {worst_name} last
@@ -97,7 +98,9 @@ where chunk sizes differ, which is the point. Settings chosen on dev: {selected}
 - **Overlap buys coverage, not ranking.** Adding overlap to fixed-size chunking raised
   evidence-intact to {overlap_intact} and was one of the few changes that separated from the
   baseline on recall@3 and the budget metric. On MRR it moved {overlap_delta} ({overlap_ci}) — i.e.
-  not detectably. It makes the answer more likely to be *present*, not better *ranked*.
+  not detectably. It makes the answer more likely to be *present*, not better *ranked*. **This is a
+  dense-retrieval result only:** with the identical chunks under BM25, overlap changed recall@3 by
+  {ov_bm25} — exactly nothing.
 - **Semantic chunking cost {semantic_cost} the embedding work** of fixed-size chunking to build the
   index, for {semantic_mrr} — the worst MRR in the set. On this corpus that is not a good trade,
   which matches the published literature (below). **But see the caveat about truncation in
@@ -107,16 +110,26 @@ where chunk sizes differ, which is the point. Settings chosen on dev: {selected}
 
 ### The thing I did not expect
 
-Of {total_misses} misses at the selected settings, **{split_misses} were caused by the evidence being
-split across chunks.** {wrongdoc_misses} went to the wrong document entirely and
-{wrongpassage_misses} found the right document but the wrong passage.
+Pooling the {n_selected_configs} selected configurations over the same {n_test} test questions gives
+{total_misses} miss-events (so a question that defeats every strategy is counted {n_selected_configs}
+times). Of those, **{split_misses} were caused by the evidence being split across chunks.**
+{wrongdoc_misses} had their top hit in the wrong document entirely and {wrongpassage_misses} in the
+right document but the wrong passage.
 
 Once chunks are large enough to hold an answer, chunking stops being the bottleneck. What is left
 are retrieval failures — the embedding model confidently fetching a different section that is
 genuinely about a related thing. The sections it landed on most often were {top_wrong_docs}, which
-are exactly the near-neighbours of the questions being asked. That is the most useful
-thing in this experiment, and it explains the headline result: the strategies are hard to tell apart
-on ranking because, at sensible sizes, **they are no longer the thing that is failing.**
+are exactly the near-neighbours of the questions being asked. That is the best explanation I have
+for the headline result: the strategies are hard to tell apart on ranking because, at sensible sizes,
+**they are no longer the thing that is failing.**
+
+**One caveat on that zero, because it is partly definitional.** A miss is filed as "evidence split"
+only when *no* chunk anywhere in the index covers at least half the evidence passage — and in this
+corpus {answerable_note}. So that bucket could not have come out non-zero at any chunk size I tried,
+and the honest reading is narrower than it first looks: the ≥50% rule is lenient, and under it
+splitting never made an answer wholly unreachable. The stricter *evidence-intact* measure does move
+(it is {intact_fixed_small} at {small_size} words for fixed-size), which is the number to trust on
+whether splitting hurts.
 
 ## Prior work
 
@@ -171,8 +184,18 @@ Specific enough to be falsifiable:
 - **Long chunks get truncated, and this is a confound.** bge-small reads at most 512 word pieces.
   Chunks exceeding that, by selected configuration: {truncation}. {worst_trunc_name} is the most
   affected at {worst_trunc_pct}, so its lower score is partly a context-window artefact and not
-  purely a verdict on its boundaries. Capping chunk length below the model window, or using a
-  longer-context encoder, would separate those two effects. I did not do that here.
+  purely a verdict on its boundaries. It is worse in the size sweep — {worst_sweep_trunc} — so the
+  flat-to-declining large-chunk results there are partly a truncation artefact too. Capping chunk
+  length below the model window, or using a longer-context encoder, would separate those effects.
+  I did not do that here.
+- **No correction for multiple comparisons.** I report {n_all_comparisons} paired comparisons and
+  highlight the {n_all_separated} whose intervals clear zero. At a 5% threshold across that many
+  tests you would expect roughly one to clear by chance, and two of the three are the same underlying
+  result on two metrics that coincide at this chunk size. Treat them as suggestive, not as
+  {n_all_separated} independent findings.
+- **Evidence-intact, answerable and mean-words-in-budget are diagnostics of the chunking itself**,
+  not retrieval scores. They are computed on the test questions like everything else, but they do not
+  depend on the retriever, so they carry no tuning signal either way.
 - **The ONNX weights came from an npm redistribution**, not from the official model repository,
   because the machine I ran this on could not reach Hugging Face. The hashes are pinned in the repo.
   Re-run with `--embedder st:BAAI/bge-small-en-v1.5` against official weights if that matters to you —
@@ -185,8 +208,11 @@ For prose documents like this one, on this evidence:
 1. **Start with recursive or sentence-aware splitting at a moderate size** and move on. It respects
    boundaries that already exist, costs nothing extra, and nothing here beat it by a margin I can
    defend.
-2. **Add overlap** if your evidence passages are long relative to your chunks. It is the cheapest fix
-   for the dominant failure mode.
+2. **Add overlap if the answers you need are short.** This is the opposite of what I assumed before
+   looking. Overlap moved recall@3 from {ov_short_r3} on short evidence and from {ov_long_r3} on long
+   evidence — all of its measured benefit is on short passages, and on long ones MRR actually went
+   {ov_long_mrr}. It is cheap, but it is not a general fix, and it is not a fix for the dominant
+   failure mode here (see below).
 3. **Do not reach for semantic chunking first.** It cost {semantic_cost} the indexing work here for no
    defensible gain, and the published literature finds the same outside of artificially stitched corpora.
 4. **Spend the effort on your embedding model and on evaluation instead.** Switching from weak static

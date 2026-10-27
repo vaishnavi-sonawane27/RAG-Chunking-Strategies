@@ -52,7 +52,7 @@ vector database or embedding vendor, and I have no stake in which strategy wins.
 | **Split** | 42 dev (chooses settings) / 88 test (reported). Stratified by document, seed 0 |
 | **Embedding model** | bge-small, ONNX, cosine similarity, top-10 |
 | **Baselines** | BM25 over the identical chunks; fixed-150 as the reference configuration |
-| **Metrics** | Recall@1/3/5, MRR@10, and recall at a fixed 450-word context budget |
+| **Metrics** | Recall@1, Recall@3, MRR@10, and recall at a fixed 450-word context budget (Recall@5 is in `summary.csv` and defines the failure analysis) |
 | **Statistics** | 5,000 paired bootstrap resamples over the test questions |
 | **Platform** | Python 3.13.17, 2 CPU cores, Linux-6.18.44-fc-v165-x86_64-with-glibc2.39. Full run: ~15 min |
 
@@ -85,20 +85,20 @@ where chunk sizes differ, which is the point. Settings chosen on dev: `fixed` at
 
 | Strategy | Chunks | Mean words | Evidence intact | Recall@1 | Recall@3 | MRR@10 | Recall @450w budget |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Fixed-size | 748 | 144 | 0.92 | 0.40 (0.29–0.50) | 0.61 (0.51–0.72) | 0.55 (0.46–0.63) | 0.61 (0.51–0.72) |
+| Fixed-size | 748 | 144 | 0.91 | 0.40 (0.29–0.50) | 0.61 (0.51–0.72) | 0.55 (0.46–0.63) | 0.61 (0.51–0.72) |
 | Fixed + overlap | 915 | 146 | 0.98 | 0.48 (0.38–0.58) | 0.74 (0.65–0.83) | 0.60 (0.52–0.69) | 0.74 (0.65–0.83) |
-| Sentence-based | 795 | 135 | 0.96 | 0.48 (0.38–0.58) | 0.72 (0.62–0.81) | 0.61 (0.53–0.70) | 0.72 (0.62–0.81) |
-| Recursive | 2030 | 53 | 0.94 | 0.55 (0.44–0.65) | 0.69 (0.59–0.78) | 0.63 (0.54–0.72) | 0.76 (0.67–0.85) |
+| Sentence-based | 795 | 135 | 0.95 | 0.48 (0.38–0.58) | 0.72 (0.62–0.81) | 0.61 (0.53–0.70) | 0.72 (0.62–0.81) |
+| Recursive | 2030 | 53 | 0.92 | 0.55 (0.44–0.65) | 0.69 (0.59–0.78) | 0.63 (0.54–0.72) | 0.76 (0.67–0.85) |
 | Semantic | 605 | 178 | 0.98 | 0.40 (0.29–0.50) | 0.66 (0.56–0.76) | 0.53 (0.45–0.62) | 0.55 (0.44–0.66) |
 
 ### Same chunks, BM25 instead of embeddings
 
 | Strategy | Chunks | Mean words | Evidence intact | Recall@1 | Recall@3 | MRR@10 | Recall @450w budget |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Fixed-size | 748 | 144 | 0.92 | 0.29 (0.20–0.40) | 0.51 (0.40–0.61) | 0.42 (0.34–0.51) | 0.51 (0.40–0.61) |
+| Fixed-size | 748 | 144 | 0.91 | 0.29 (0.20–0.40) | 0.51 (0.40–0.61) | 0.42 (0.34–0.51) | 0.51 (0.40–0.61) |
 | Fixed + overlap | 915 | 146 | 0.98 | 0.39 (0.28–0.49) | 0.51 (0.41–0.61) | 0.47 (0.38–0.56) | 0.51 (0.41–0.61) |
-| Sentence-based | 795 | 135 | 0.96 | 0.39 (0.28–0.49) | 0.49 (0.39–0.59) | 0.47 (0.38–0.56) | 0.49 (0.39–0.59) |
-| Recursive | 2030 | 53 | 0.94 | 0.25 (0.16–0.34) | 0.46 (0.35–0.56) | 0.36 (0.28–0.45) | 0.56 (0.46–0.66) |
+| Sentence-based | 795 | 135 | 0.95 | 0.39 (0.28–0.49) | 0.49 (0.39–0.59) | 0.47 (0.38–0.56) | 0.49 (0.39–0.59) |
+| Recursive | 2030 | 53 | 0.92 | 0.25 (0.16–0.34) | 0.46 (0.35–0.56) | 0.36 (0.28–0.45) | 0.56 (0.46–0.66) |
 | Semantic | 605 | 178 | 0.98 | 0.36 (0.26–0.47) | 0.53 (0.43–0.64) | 0.48 (0.39–0.56) | 0.40 (0.29–0.50) |
 
 ### Is any strategy actually different from plain fixed-size chunking?
@@ -130,17 +130,17 @@ where chunk sizes differ, which is the point. Settings chosen on dev: `fixed` at
 
 | Strategy | Setting | Mean words | Evidence intact | Recall@3 | MRR@10 |
 |---|---|---:|---:|---:|---:|
-| Fixed-size | 75 words | 73 | 0.80 | 0.59 | 0.49 |
-| Fixed-size | 150 words | 144 | 0.92 | 0.61 | 0.55 |
-| Fixed-size | 300 words | 276 | 0.96 | 0.70 | 0.55 |
+| Fixed-size | 75 words | 73 | 0.78 | 0.59 | 0.49 |
+| Fixed-size | 150 words | 144 | 0.91 | 0.61 | 0.55 |
+| Fixed-size | 300 words | 276 | 0.95 | 0.70 | 0.55 |
 | Fixed + overlap | 150 words + 30 overlap | 146 | 0.98 | 0.74 | 0.60 |
-| Sentence-based | 75 words | 64 | 0.93 | 0.67 | 0.60 |
-| Sentence-based | 150 words | 135 | 0.96 | 0.72 | 0.61 |
+| Sentence-based | 75 words | 64 | 0.91 | 0.67 | 0.60 |
+| Sentence-based | 150 words | 135 | 0.95 | 0.72 | 0.61 |
 | Sentence-based | 300 words | 266 | 0.98 | 0.61 | 0.53 |
-| Recursive | 75 words | 53 | 0.94 | 0.69 | 0.63 |
-| Recursive | 150 words | 121 | 0.97 | 0.68 | 0.59 |
+| Recursive | 75 words | 53 | 0.92 | 0.69 | 0.63 |
+| Recursive | 150 words | 121 | 0.95 | 0.68 | 0.59 |
 | Recursive | 300 words | 257 | 0.99 | 0.66 | 0.56 |
-| Semantic | 75th percentile | 85 | 0.98 | 0.67 | 0.59 |
+| Semantic | 75th percentile | 85 | 0.97 | 0.67 | 0.59 |
 | Semantic | 85th percentile | 111 | 0.98 | 0.68 | 0.59 |
 | Semantic | 95th percentile | 178 | 0.98 | 0.66 | 0.53 |
 
@@ -178,7 +178,8 @@ where chunk sizes differ, which is the point. Settings chosen on dev: `fixed` at
 ## What I take from this
 
 - **Dense retrieval beat BM25 on the same chunks** (Fixed-size: 0.55 (95% CI 0.46–0.63) dense vs 0.42 (95% CI 0.34–0.51)
-  BM25, a difference of +0.12 MRR). Worth stating because an earlier version of this
+  BM25). Paired on the same test questions, that difference is +0.121 MRR (95% CI [+0.014, +0.228]) — it clears
+  zero, though not by much, and it is the largest single effect measured here. Worth stating because an earlier version of this
   experiment used weak static word-vector embeddings, and BM25 beat *them* on every strategy. The
   embedding model changes the conclusion, so any chunking result is conditional on it.
 - **The point-estimate ranking puts Recursive first** (0.63 (95% CI 0.54–0.72)) and Semantic last
@@ -188,16 +189,18 @@ where chunk sizes differ, which is the point. Settings chosen on dev: `fixed` at
   comparisons did. No paired MRR difference was larger than its own interval, so with 88 test
   questions a point-estimate ranking on MRR is not informative here.
 - **Splitting the answer is a real failure mode — at small chunk sizes.** At 75 words,
-  fixed-size chunking left the answer passage intact in only 80% of questions,
-  against 93% for sentence-based. If the answer is cut in half, no embedding
+  fixed-size chunking left the answer passage intact in only 78% of questions,
+  against 91% for sentence-based. If the answer is cut in half, no embedding
   model can retrieve it whole.
 - **But at the sizes the dev split actually chose, that problem is already solved** —
-  evidence-intact at the selected settings: Fixed-size 92%, Fixed + overlap 98%, Sentence-based 96%, Recursive 94%, Semantic 98%. This is the part I did not expect, and it
+  evidence-intact at the selected settings: Fixed-size 91%, Fixed + overlap 98%, Sentence-based 96%, Recursive 92%, Semantic 98%. This is the part I did not expect, and it
   reframes the whole comparison: see below.
 - **Overlap buys coverage, not ranking.** Adding overlap to fixed-size chunking raised
   evidence-intact to 98% and was one of the few changes that separated from the
-  baseline on recall@3 and the budget metric. On MRR it moved +0.060 ([-0.032, +0.155]) — i.e.
-  not detectably. It makes the answer more likely to be *present*, not better *ranked*.
+  baseline on recall@3 and the budget metric. On MRR it moved +0.061 ([-0.032, +0.155]) — i.e.
+  not detectably. It makes the answer more likely to be *present*, not better *ranked*. **This is a
+  dense-retrieval result only:** with the identical chunks under BM25, overlap changed recall@3 by
+  +0.000 (CI [-0.080, +0.091]) — exactly nothing.
 - **Semantic chunking cost 2.0× the embedding work** of fixed-size chunking to build the
   index, for 0.53 (95% CI 0.45–0.62) — the worst MRR in the set. On this corpus that is not a good trade,
   which matches the published literature (below). **But see the caveat about truncation in
@@ -207,16 +210,26 @@ where chunk sizes differ, which is the point. Settings chosen on dev: `fixed` at
 
 ### The thing I did not expect
 
-Of 110 misses at the selected settings, **0 were caused by the evidence being
-split across chunks.** 75 went to the wrong document entirely and
-35 found the right document but the wrong passage.
+Pooling the 5 selected configurations over the same 88 test questions gives
+110 miss-events (so a question that defeats every strategy is counted 5
+times). Of those, **0 were caused by the evidence being split across chunks.**
+75 had their top hit in the wrong document entirely and 35 in the
+right document but the wrong passage.
 
 Once chunks are large enough to hold an answer, chunking stops being the bottleneck. What is left
 are retrieval failures — the embedding model confidently fetching a different section that is
 genuinely about a related thing. The sections it landed on most often were `03_rebasing` (14), `02_recording-changes` (10), `07_rewriting-history` (8), which
-are exactly the near-neighbours of the questions being asked. That is the most useful
-thing in this experiment, and it explains the headline result: the strategies are hard to tell apart
-on ranking because, at sensible sizes, **they are no longer the thing that is failing.**
+are exactly the near-neighbours of the questions being asked. That is the best explanation I have
+for the headline result: the strategies are hard to tell apart on ranking because, at sensible sizes,
+**they are no longer the thing that is failing.**
+
+**One caveat on that zero, because it is partly definitional.** A miss is filed as "evidence split"
+only when *no* chunk anywhere in the index covers at least half the evidence passage — and in this
+corpus every configuration, at every size tried, left at least half of every evidence passage inside some chunk (`answerable` = 1.00 in all 26 rows of summary.csv). So that bucket could not have come out non-zero at any chunk size I tried,
+and the honest reading is narrower than it first looks: the ≥50% rule is lenient, and under it
+splitting never made an answer wholly unreachable. The stricter *evidence-intact* measure does move
+(it is 78% at 75 words for fixed-size), which is the number to trust on
+whether splitting hurts.
 
 ## Prior work
 
@@ -271,8 +284,18 @@ Specific enough to be falsifiable:
 - **Long chunks get truncated, and this is a confound.** bge-small reads at most 512 word pieces.
   Chunks exceeding that, by selected configuration: Recursive 0/2030, Fixed-size 8/748, Sentence-based 8/795, Fixed + overlap 12/915, Semantic 58/605. Semantic is the most
   affected at 10%, so its lower score is partly a context-window artefact and not
-  purely a verdict on its boundaries. Capping chunk length below the model window, or using a
-  longer-context encoder, would separate those two effects. I did not do that here.
+  purely a verdict on its boundaries. It is worse in the size sweep — Fixed-size at the largest size tried (26% of its chunks) — so the
+  flat-to-declining large-chunk results there are partly a truncation artefact too. Capping chunk
+  length below the model window, or using a longer-context encoder, would separate those effects.
+  I did not do that here.
+- **No correction for multiple comparisons.** I report 12 paired comparisons and
+  highlight the 3 whose intervals clear zero. At a 5% threshold across that many
+  tests you would expect roughly one to clear by chance, and two of the three are the same underlying
+  result on two metrics that coincide at this chunk size. Treat them as suggestive, not as
+  3 independent findings.
+- **Evidence-intact, answerable and mean-words-in-budget are diagnostics of the chunking itself**,
+  not retrieval scores. They are computed on the test questions like everything else, but they do not
+  depend on the retriever, so they carry no tuning signal either way.
 - **The ONNX weights came from an npm redistribution**, not from the official model repository,
   because the machine I ran this on could not reach Hugging Face. The hashes are pinned in the repo.
   Re-run with `--embedder st:BAAI/bge-small-en-v1.5` against official weights if that matters to you —
@@ -285,8 +308,11 @@ For prose documents like this one, on this evidence:
 1. **Start with recursive or sentence-aware splitting at a moderate size** and move on. It respects
    boundaries that already exist, costs nothing extra, and nothing here beat it by a margin I can
    defend.
-2. **Add overlap** if your evidence passages are long relative to your chunks. It is the cheapest fix
-   for the dominant failure mode.
+2. **Add overlap if the answers you need are short.** This is the opposite of what I assumed before
+   looking. Overlap moved recall@3 from 0.59 to 0.76 on short evidence and from 0.68 to 0.68 on long
+   evidence — all of its measured benefit is on short passages, and on long ones MRR actually went
+   0.58 to 0.53. It is cheap, but it is not a general fix, and it is not a fix for the dominant
+   failure mode here (see below).
 3. **Do not reach for semantic chunking first.** It cost 2.0× the indexing work here for no
    defensible gain, and the published literature finds the same outside of artificially stitched corpora.
 4. **Spend the effort on your embedding model and on evaluation instead.** Switching from weak static

@@ -179,6 +179,8 @@ def main():
             embed_words += sum(chunkers.n_words(t[s:e]) for t in docs.values() for s, e in chunkers.sentence_spans(t))
         integrity = np.array([any(intact(c, q) for c in chunks) for q in questions], dtype=float)
         answerable = np.array([any(relevant(c, q) for c in chunks) for q in questions], dtype=float)
+        integrity_test = float(integrity[test_pos].mean())
+        answerable_test = float(answerable[test_pos].mean())
 
         for kind in kinds:
             retr = DenseRetriever(embedder, chunks) if kind == "dense" else BM25Retriever(chunks)
@@ -201,8 +203,9 @@ def main():
                    "headline": is_headline(strategy, param), "n_chunks": len(chunks),
                    "mean_words": round(float(np.mean(words)), 1), "chunks_over_model_limit": over,
                    "index_embed_words": embed_words, "chunking_seconds": round(t_chunk, 2),
-                   "evidence_intact": round(float(integrity.mean()), 3), "answerable": round(float(answerable.mean()), 3),
-                   "mean_words_in_budget": round(float(np.mean(bused)), 1)}
+                   "evidence_intact": round(integrity_test, 3), "answerable": round(answerable_test, 3),
+                   "evidence_intact_all": round(float(integrity.mean()), 3),
+                   "mean_words_in_budget": round(float(np.mean(np.asarray(bused)[test_pos])), 1)}
             for name, vals in metric.items():
                 tv = vals[test_pos]                      # reported numbers come from test only
                 lo, hi = ci(boot_means(tv, idx))
@@ -272,6 +275,16 @@ def main():
 
     write_csv("summary.csv", summary)
     write_csv("paired_vs_reference.csv", paired)
+    if len(kinds) == 2:
+        dvb = []
+        for strategy, param in selected.items():
+            for mname in ("recall@3", "mrr@10", f"recall@{BUDGET_WORDS}w"):
+                d = (store[(strategy, param, "dense")][mname] - store[(strategy, param, "bm25")][mname])[test_pos]
+                lo, hi = ci(boot_means(d, idx))
+                dvb.append({"strategy": strategy, "param": param, "metric": mname,
+                            "dense_minus_bm25": round(float(d.mean()), 3),
+                            "diff_lo": round(lo, 3), "diff_hi": round(hi, 3)})
+        write_csv("paired_dense_vs_bm25.csv", dvb)
     write_csv("per_question.csv", per_q)
     write_csv("failure_taxonomy.csv", taxonomy)
     info = {"embedder": embedder.name if embedder else "none", "spec": args.embedder,
@@ -281,7 +294,7 @@ def main():
             "platform": {"python": platform.python_version(), "os": platform.platform(),
                          "cpu_count": os.cpu_count(), "numpy": np.__version__}, "n_docs": len(docs), "n_questions": n,
             "n_short_evidence": int(short.sum()), "n_long_evidence": int((~short).sum()),
-            "short_evidence_words": SHORT_EVIDENCE_WORDS, "headline": HEADLINE, "budget_words": BUDGET_WORDS,
+            "short_evidence_words": SHORT_EVIDENCE_WORDS, "budget_words": BUDGET_WORDS,
             "bootstrap_resamples": N_BOOT, "seconds": round(time.time() - t_start, 1)}
     if isinstance(embedder, OnnxEmbedder):
         info.update({"pooling": embedder.pooling, "max_len": embedder.max_len})

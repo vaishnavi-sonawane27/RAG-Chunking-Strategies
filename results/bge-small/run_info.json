@@ -24,16 +24,9 @@
   "n_short_evidence": 102,
   "n_long_evidence": 28,
   "short_evidence_words": 25,
-  "headline": {
-    "fixed": 150,
-    "sentence": 150,
-    "recursive": 150,
-    "semantic": 85,
-    "fixed_overlap": 150
-  },
   "budget_words": 450,
   "bootstrap_resamples": 5000,
-  "seconds": 883.2,
+  "seconds": 888.0,
   "pooling": "cls",
   "max_len": 512
 }
