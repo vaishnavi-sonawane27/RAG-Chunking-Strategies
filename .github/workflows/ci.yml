@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install numpy matplotlib pytest
+
+      - name: Build the corpus from upstream Pro Git
+        run: python scripts/fetch_corpus.py
+
+      - name: Validate the question set
+        # fails if any evidence passage is missing or ambiguous in the corpus
+        run: python scripts/validate_questions.py
+
+      - name: Unit tests
+        run: python -m pytest -q
+
+      - name: Pipeline smoke test (BM25 only, no model download)
+        run: python run_experiment.py --embedder none --tag ci-smoke --smoke

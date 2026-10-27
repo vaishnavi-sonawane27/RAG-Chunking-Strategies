@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "RAG chunking strategies, with confidence intervals"
+message: "If you use this benchmark or its question set, please cite it."
+type: software
+authors:
+  - given-names: Vaishnavi
+    family-names: Sonawane
+repository-code: "https://github.com/vaishnavi-sonawane27/rag-chunking-experiment"
+abstract: >-
+  A small, fully reproducible comparison of five document chunking strategies
+  (fixed-size, fixed-size with overlap, sentence-based, recursive and semantic)
+  for retrieval in RAG pipelines. Uses a 130-question evaluation set over ~107k
+  words of the openly licensed Pro Git book, a held-out dev/test split so chunk
+  sizes are not tuned on the reported data, and paired bootstrap confidence
+  intervals so that differences between strategies can be assessed for
+  significance rather than ranked on point estimates alone.
+keywords:
+  - retrieval-augmented generation
+  - chunking
+  - information retrieval
+  - benchmarking
+  - reproducibility
+license: MIT

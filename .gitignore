@@ -1,0 +1,17 @@
+# corpus and model weights are downloaded, never committed
+data/_progit2/
+data/docs/
+data/_models/
+data/_vectors/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# scratch
+results/ci-smoke/
+results/smoke/
+logs/

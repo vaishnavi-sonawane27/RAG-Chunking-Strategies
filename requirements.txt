@@ -1,0 +1,14 @@
+# core
+numpy>=1.26
+matplotlib>=3.8
+
+# ONNX embedding models (no PyTorch needed) — used by --embedder onnx:<name>
+onnxruntime>=1.17
+tokenizers>=0.15
+
+# tests
+pytest>=8.0
+
+# OPTIONAL: only needed to run official Hugging Face weights via --embedder st:<model>
+# Pulls in PyTorch, so it is left out by default.
+# sentence-transformers>=3.0
