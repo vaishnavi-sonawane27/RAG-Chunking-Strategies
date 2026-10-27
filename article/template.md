@@ -17,11 +17,22 @@ that matters — **every chunk size chosen on a held-out dev split and every num
 questions the tuning never saw**, with paired bootstrap confidence intervals over {n_boot}
 resamples.
 
-**The short answer:** of the {n_compared} strategies compared against the {reference} baseline on
-MRR@10, **{n_crossing_zero} had a confidence interval that still contained zero** — meaning the
-difference is not distinguishable from the baseline on this corpus at this sample size. The widest
-such interval spans {widest_ci} MRR. The ranking you would read off the point estimates is real;
-most of the gaps underneath it are not resolvable with {n_test} test questions.
+**The short answer: it depends which question you ask, and most of the gaps are smaller than the
+noise.** Against the {reference} baseline on MRR@10, all {n_compared} strategies had confidence
+intervals that still contained zero — none is distinguishable from plain fixed-size chunking on that
+metric, and the widest of those intervals spans {widest_ci} MRR.
+
+But MRR is not the only thing that matters, and across all {n_all_comparisons} paired comparisons
+(three metrics × four strategies), **{n_all_separated} did separate from the baseline**:
+{sep_detail}.
+
+Every one of those is a *coverage* win — getting the answer into the context you send the model at
+all — not a *ranking* win. (Fixed + overlap appears twice because at ~150-word chunks a 450-word
+budget holds about three chunks, so the two metrics coincide there; they come apart wherever chunk
+sizes differ.)
+
+So the honest summary is: **how you split the text changes how often the answer makes it into the
+context window, and barely changes how well it ranks once it is there.**
 
 **What this is not:** a new finding about chunking. That ground is well covered (see
 [Prior work](#prior-work)). What I think is worth your time is the method — a fully reproducible
@@ -56,7 +67,9 @@ inside a single chunk.
 **A fixed context budget.** Comparing strategies at the same `k` quietly favours small chunks: ten
 50-word chunks is a different amount of context than ten 300-word chunks. So alongside recall@k I
 report recall at a fixed {budget_words}-word budget — fill the context window and see who got the
-answer in. Settings chosen on dev: {selected}.
+answer in. Note that for chunks of roughly 150 words a {budget_words}-word budget fits about three
+of them, so for those configurations this metric nearly coincides with recall@3; it diverges exactly
+where chunk sizes differ, which is the point. Settings chosen on dev: {selected}.
 
 ## Results
 
@@ -70,23 +83,37 @@ answer in. Settings chosen on dev: {selected}.
   embedding model changes the conclusion, so any chunking result is conditional on it.
 - **The point-estimate ranking puts {best_name} first** ({best_mrr}) and {worst_name} last
   ({worst_mrr}) — a spread of {spread} MRR.
-- **But {n_crossing_zero} of {n_compared} paired comparisons cannot be separated from the baseline.**
-  {separated_names} separated; {crossing_names} did not. With {n_test} test questions, differences
-  below roughly {widest_ci} MRR are inside the noise.
-- **The mechanism is bluntly physical.** At {small_size} words, fixed-size chunking left the answer
-  passage intact in only {intact_fixed_small} of questions, against {intact_sentence_small} for
-  sentence-based. If the answer is cut in half, no embedding model can retrieve it whole. At the
-  selected settings: {intact_table}.
-- **Overlap looks like cheap insurance.** Adding overlap to fixed-size chunking moved MRR by
-  {overlap_delta} ({overlap_ci}) and raised evidence-intact to {overlap_intact}. The quality change
-  is small, but it is the one knob that directly attacks the split-evidence failure.
+- **On MRR@10, none of the {n_compared} strategies separated from the baseline** — every interval
+  contains zero. On coverage metrics ({sep_metrics}), {n_all_separated} of {n_all_comparisons}
+  comparisons did. No paired MRR difference was larger than its own interval, so with {n_test} test
+  questions a point-estimate ranking on MRR is not informative here.
+- **Splitting the answer is a real failure mode — at small chunk sizes.** At {small_size} words,
+  fixed-size chunking left the answer passage intact in only {intact_fixed_small} of questions,
+  against {intact_sentence_small} for sentence-based. If the answer is cut in half, no embedding
+  model can retrieve it whole.
+- **But at the sizes the dev split actually chose, that problem is already solved** —
+  evidence-intact at the selected settings: {intact_table}. This is the part I did not expect, and it
+  reframes the whole comparison: see below.
+- **Overlap buys coverage, not ranking.** Adding overlap to fixed-size chunking raised
+  evidence-intact to {overlap_intact} and was one of the few changes that separated from the
+  baseline on recall@3 and the budget metric. On MRR it moved {overlap_delta} ({overlap_ci}) — i.e.
+  not detectably. It makes the answer more likely to be *present*, not better *ranked*.
 - **Semantic chunking cost {semantic_cost} the embedding work** of fixed-size chunking to build the
   index, for {semantic_mrr}. On this corpus that is not a good trade — which matches the published
   literature (below).
 
-Of {total_misses} misses at the selected settings, {split_misses} were caused by the evidence being
-split across chunks, {wrongpassage_misses} retrieved the right document but the wrong passage, and
-{wrongdoc_misses} went to the wrong document entirely.
+### The thing I did not expect
+
+Of {total_misses} misses at the selected settings, **{split_misses} were caused by the evidence being
+split across chunks.** {wrongdoc_misses} went to the wrong document entirely and
+{wrongpassage_misses} found the right document but the wrong passage.
+
+Once chunks are large enough to hold an answer, chunking stops being the bottleneck. What is left
+are retrieval failures — the embedding model confidently fetching a different section that is
+genuinely about a related thing. The sections it landed on most often were {top_wrong_docs}, which
+are exactly the near-neighbours of the questions being asked. That is the most useful
+thing in this experiment, and it explains the headline result: the strategies are hard to tell apart
+on ranking because, at sensible sizes, **they are no longer the thing that is failing.**
 
 ## Prior work
 

@@ -1,0 +1,6 @@
+strategy,param,misses_top5,evidence split across chunks,"right document, wrong passage",wrong document
+fixed,150,20,0,7,13
+sentence,150,20,0,7,13
+recursive,75,23,0,9,14
+fixed_overlap,150,20,0,6,14
+semantic,95,27,0,6,21

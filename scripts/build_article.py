@@ -71,6 +71,18 @@ def facts(tag):
     f["separated_names"] = ", ".join(LABEL.get(r["strategy"], r["strategy"]) for r in sep) or "none"
     f["widest_ci"] = f"{max((r['diff_hi'] - r['diff_lo']) for r in pm):.2f}" if pm else "n/a"
 
+    # separations across every metric, not just MRR — otherwise the article understates the result
+    allp = [r for r in paired if r["retriever"] == prim and r["headline"]]
+    sep_all = [r for r in allp if not (r["diff_lo"] <= 0 <= r["diff_hi"])]
+    f["n_all_comparisons"] = len(allp)
+    f["n_all_separated"] = len(sep_all)
+    f["sep_detail"] = "; ".join(
+        f"**{LABEL.get(r['strategy'], r['strategy'])}** on {r['metric']} "
+        f"({r['diff_vs_reference']:+.3f}, CI [{r['diff_lo']:+.3f}, {r['diff_hi']:+.3f}])"
+        for r in sorted(sep_all, key=lambda r: (ORDER.index(r["strategy"]) if r["strategy"] in ORDER else 9, r["metric"]))
+    ) or "no comparison separated on any metric"
+    f["sep_metrics"] = ", ".join(sorted({r["metric"] for r in sep_all})) or "none"
+
     # mechanism: evidence survival at the smallest size tried
     small = {}
     for r in rows:
@@ -101,6 +113,21 @@ def facts(tag):
         f["split_misses"] = sum(int(r["evidence split across chunks"]) for r in tax)
         f["wrongdoc_misses"] = sum(int(r["wrong document"]) for r in tax)
         f["wrongpassage_misses"] = sum(int(r["right document, wrong passage"]) for r in tax)
+    # which wrong documents the retriever actually fell into, at the selected settings
+    import collections, csv as _csv
+    sel = {k: float(v) for k, v in info["selected_on_dev"].items()}
+    cnt: collections.Counter = collections.Counter()
+    pq = d / "per_question.csv"
+    if pq.exists():
+        for r in _csv.DictReader(open(pq, encoding="utf-8")):
+            if r["retriever"] != prim or r.get("split") != "test":
+                continue
+            if sel.get(r["strategy"]) != float(r["param"]):
+                continue
+            rank = r["rank_of_first_relevant"]
+            if rank == "" or int(rank) > 5:
+                cnt[r["top1_doc"]] += 1
+    f["top_wrong_docs"] = ", ".join(f"`{doc}` ({n})" for doc, n in cnt.most_common(3)) or "n/a"
     f["results_section"] = (d / "results_section.md").read_text(encoding="utf-8")
     return d, f
 

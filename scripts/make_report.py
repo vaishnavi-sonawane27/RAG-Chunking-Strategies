@@ -128,13 +128,13 @@ def chart_paired(d, paired, info):
     ax.axvline(0, color=INK, linewidth=1.2, zorder=1)
     ax.set_yticks(range(len(rows)))
     ax.set_yticklabels([LABEL[r["strategy"]] for r in rows], color=INK2)
-    ax.set_ylim(-0.6, len(rows) - 0.4)
+    ax.set_ylim(-0.95, len(rows) - 0.45)
     lim = max(abs(r["diff_lo"]) for r in rows), max(abs(r["diff_hi"]) for r in rows)
     ax.set_xlim(-max(lim) * 1.25, max(lim) * 2.5)
     ax.set_xlabel(f"change in MRR@10 vs {info['reference']} (same test questions, paired bootstrap)", color=INK2, fontsize=9)
     ax.set_title(f"Does any strategy beat the {info['reference']} baseline?", loc="left",
                  color=INK, fontsize=12, fontweight="bold")
-    ax.text(0, len(rows) - 0.25, "  intervals crossing this line are not distinguishable from the baseline",
+    ax.text(0, -0.52, "  an interval crossing this line is not distinguishable from the baseline",
             color=INK2, fontsize=8.5, va="center")
     fig.tight_layout()
     fig.savefig(d / "chart_paired.png", dpi=160, facecolor=SURFACE)
@@ -159,8 +159,10 @@ def chart_intact(d, rows, info):
     ax.set_xticklabels([LABEL[s] for s in names], color=INK2, fontsize=9)
     ax.set_ylim(0, 1.08)
     ax.set_ylabel("share of questions whose answer passage\nsurvives whole inside one chunk", color=INK2, fontsize=9)
-    ax.set_title("The mechanism: chunking that cuts the answer in half cannot retrieve it",
-                 loc="left", color=INK, fontsize=12, fontweight="bold")
+    ax.set_title("At the selected sizes the answer almost always survives — and that stops predicting quality",
+                 loc="left", color=INK, fontsize=11.5, fontweight="bold")
+    ax.text(0, 1.045, "Semantic keeps the most evidence intact and still ranks worst, so above ~90% intact the bottleneck is the retriever.",
+            color=INK2, fontsize=8.5)
     fig.tight_layout()
     fig.savefig(d / "chart_intact.png", dpi=160, facecolor=SURFACE)
     plt.close(fig)
@@ -296,7 +298,7 @@ def main():
     parts += [
              "\n### Is any strategy actually different from plain fixed-size chunking?\n",
              "![Paired differences](chart_paired.png)\n", table_paired(paired, budget_col),
-             "\n### Why: does the answer passage survive chunking?\n", "![Evidence intact](chart_intact.png)",
+             "\n### Does the answer passage survive chunking?\n", "![Evidence intact](chart_intact.png)",
              "\n### Chunk size sweep\n", "![Size sweep](chart_size_sweep.png)\n", table_sweep(rows),
              "\n### Short vs long evidence passages\n", table_short_long(rows, budget_col),
              "\n### Indexing cost\n", table_cost(rows),
