@@ -100,7 +100,7 @@ Settings chosen on dev: `fixed 200`, `fixed_overlap 200+80`, `recursive 200`, `s
 
 ### Headline comparison (dense retrieval)
 
-![Headline comparison](chart_headline.png)
+![Headline comparison](../results/bge-small/chart_headline.png)
 
 | Strategy | Setting | Chunks | Mean tokens | Evidence intact | Recall@1 | Recall@3 | MRR@10 | Recall @1000 tok | Token precision@5 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -137,7 +137,7 @@ Settings chosen on dev: `fixed 200`, `fixed_overlap 200+80`, `recursive 200`, `s
 
 ### Is any strategy actually different from the fixed 200 baseline?
 
-![Paired differences](chart_paired.png)
+![Paired differences](../results/bge-small/chart_paired.png)
 
 | Strategy | Metric | Change vs baseline | 95% CI | Distinguishable? |
 |---|---|---:|---|---|
@@ -168,7 +168,7 @@ Settings chosen on dev: `fixed 200`, `fixed_overlap 200+80`, `recursive 200`, `s
 
 ### The overlap sweep
 
-![Overlap sweep](chart_overlap.png)
+![Overlap sweep](../results/bge-small/chart_overlap.png)
 
 | Overlap | Chunks | Tokens indexed | Recall@3 | Recall @1000 tok | Token precision@5 (duplicates counted) | Token precision@5 (counted once) |
 |---|---:|---:|---:|---:|---:|---:|
@@ -179,7 +179,7 @@ Settings chosen on dev: `fixed 200`, `fixed_overlap 200+80`, `recursive 200`, `s
 
 ### Every configuration tried
 
-![Size sweep](chart_size_sweep.png)
+![Size sweep](../results/bge-small/chart_size_sweep.png)
 
 | Configuration | Chunks | Mean tokens | Evidence intact | Recall@3 | MRR@10 | Token precision@5 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -221,7 +221,7 @@ Settings chosen on dev: `fixed 200`, `fixed_overlap 200+80`, `recursive 200`, `s
 
 ### Same chunks, 2 embedding models
 
-![Model comparison](chart_models.png)
+![Model comparison](../results/bge-small/chart_models.png)
 
 | Strategy | Configuration | bge-small | rank | minilm | rank |
 |---|---|---:|---:|---:|---:|

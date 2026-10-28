@@ -467,7 +467,13 @@ def facts(tag, compare=()):
         f["qa_ambiguous"] = a.get("n_ambiguous", "n/a")
         f["qa_ambiguous_pct"] = f"{a['ambiguous_share']:.0%}" if "ambiguous_share" in a else "n/a"
         f["qa_sim"] = a.get("question_evidence_similarity", {}).get("mean", "n/a")
-    f["results_section"] = (d / "results_section.md").read_text(encoding="utf-8")
+    # The charts live in results/<tag>/, while the article is written to article/. Rewrite the
+    # bare filenames so the images resolve from where FINAL.md actually sits, on GitHub and in any
+    # markdown viewer. scripts/build_doc.py resolves these same paths when it renders the .docx.
+    section = (d / "results_section.md").read_text(encoding="utf-8")
+    section = re.sub(r"(!\[[^\]]*\]\()(chart_[a-z_]+\.png)(\))",
+                     lambda m: f"{m.group(1)}../results/{tag}/{m.group(2)}{m.group(3)}", section)
+    f["results_section"] = section
     return d, f
 
 
