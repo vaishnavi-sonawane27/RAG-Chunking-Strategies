@@ -78,6 +78,15 @@ def facts(tag, compare=()):
     f["best_mrr"], f["worst_mrr"] = ci(best, "mrr@10"), ci(worst, "mrr@10")
     f["best_label"], f["spread"] = best["label"], f"{best['mrr@10'] - worst['mrr@10']:.2f}"
     f["best_tprec"] = f"{100 * best[tp]:.2f}%"
+    # the most context-efficient strategy is not necessarily the one with the best MRR
+    eff = max(H.values(), key=lambda r: r[tp])
+    f["tprec_leader"] = LABEL[eff["strategy"]]
+    f["tprec_leader_val"] = f"{100 * eff[tp]:.2f}%"
+    f["tprec_note"] = (
+        f"and it is also the most context-efficient at {100 * eff[tp]:.2f}% token precision"
+        if eff["strategy"] == best["strategy"] else
+        f"though the most context-efficient is {LABEL[eff['strategy']]} at "
+        f"{100 * eff[tp]:.2f}% token precision against this one's {100 * best[tp]:.2f}%")
 
     ref = H.get("fixed", ranked[-1])
     f["ref_name"], f["ref_mrr"] = LABEL[ref["strategy"]], ci(ref, "mrr@10")
@@ -94,7 +103,10 @@ def facts(tag, compare=()):
                          f"MRR (95% CI [{b['diff_lo']:+.3f}, {b['diff_hi']:+.3f}])")
         f["dvb_best_name"] = LABEL[b["strategy"]]
         f["dvb_best_val"] = f"{b['dense_minus_bm25']:+.3f}"
-    f["dvb_exceptions"] = ", ".join(LABEL[r["strategy"]] for r in dvb_m if r["diff_lo"] <= 0) or "none"
+    _exc = [LABEL[r["strategy"]] for r in dvb_m if r["diff_lo"] <= 0]
+    f["dvb_exceptions"] = ", ".join(_exc) or "none"
+    f["dvb_exception_lead"] = ("The exceptions are" if len(_exc) > 1 else
+                               "The exception is" if _exc else "There is no exception")
 
     pm = [r for r in paired if r["retriever"] == prim and r["headline"] and r["metric"] == "mrr@10"]
     allp = [r for r in paired if r["retriever"] == prim and r["headline"]]
@@ -298,6 +310,31 @@ def facts(tag, compare=()):
                 if sig2 and any(r["strategy"] == st and r["diff_lo"] > 0 for r in pm):
                     robust.append(LABEL[st])
             f["replication_detail"] = "; ".join(rep)
+            # These comparisons are not in results/<model>/paired_vs_reference.csv, because that
+            # file uses each model's OWN dev-selected reference. Ship them so the cross-model
+            # section is checkable.
+            import csv as _csv
+            xm = ROOT / "results" / tag / "paired_cross_model.csv"
+            with xm.open("w", newline="", encoding="utf-8") as fh:
+                w = _csv.writer(fh)
+                w.writerow(["model", "strategy", "configuration", "metric", "vs_reference",
+                            "diff", "diff_lo", "diff_hi", "separates"])
+                for tag2 in compare:
+                    dX, _, _, _, _, infoX = load(tag2)
+                    for st, v in sorted(info["selected_on_dev"].items()):
+                        if st == "fixed":
+                            continue
+                        key = (st, int(v["size"]), int(v["overlap"]))
+                        g = paired_from_perq(dX, base_key, key)
+                        if g:
+                            w.writerow([infoX["embedder"], st, f"{st} {v['size']}+{v['overlap']}",
+                                        "mrr@10", f"{base_key[0]} {base_key[1]}",
+                                        f"{g[0]:.4f}", f"{g[1]:.4f}", f"{g[2]:.4f}",
+                                        "yes" if g[1] > 0 else "no"])
+            f["cross_model_csv"] = f"results/{tag}/paired_cross_model.csv"
+            f["model2_own_selection"] = ", ".join(
+                f"`{k} {v['size']}" + (f"+{v['overlap']}`" if int(v["overlap"]) else "`")
+                for k, v in sorted(info2["selected_on_dev"].items()))
             f["n_replicate"] = len(robust)
             _W = {0: "none", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
             f["n_replicate_word"] = _W.get(len(robust), str(len(robust)))
@@ -379,7 +416,20 @@ def facts(tag, compare=()):
             f["ov_tail_ci"] = f"{m:+.3f} MRR (95% CI [{lo:+.3f}, {hi:+.3f}])"
             f["ov_tail_resolvable"] = "not distinguishable from zero" if lo <= 0 <= hi else "a real difference"
         f["ov_recall_path"] = ", ".join(f"{r['recall@3']:.2f}" for r in ov)
-        f["ov_recall_peak"] = f"{int(max(ov, key=lambda r: r['recall@3'])['overlap'])} tokens"
+        _pk = max(ov, key=lambda r: r["recall@3"])
+        _largest = max(ov, key=lambda r: int(r["overlap"]))
+        f["ov_recall_peak"] = f"{int(_pk['overlap'])} tokens"
+        _dip = [r for r in ov if int(r["overlap"]) and r["recall@3"] < max(
+            x["recall@3"] for x in ov if int(x["overlap"]) < int(r["overlap"]))]
+        f["ov_recall_shape"] = (
+            ("it peaks at the largest overlap tried (%d tokens), but dips at %s on the way there, so "
+             "the series is not a clean trend" % (int(_largest["overlap"]),
+             ", ".join(f"{int(r['overlap'])} tokens" for r in _dip)))
+            if _pk is _largest and _dip else
+            "it rises monotonically across the sweep" if _pk is _largest else
+            "it peaks at %d tokens rather than at the largest overlap tried (%d), so this is a step "
+            "change at the first increment rather than a trend"
+            % (int(_pk["overlap"]), int(_largest["overlap"])))
         f["ov_cost_first"] = f"{ov[1]['index_embed_tokens'] / ov[0]['index_embed_tokens']:.2f}\u00d7"
 
     # ---- selection fragility: how close were the dev scores that picked the headline rows?

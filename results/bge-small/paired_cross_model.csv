@@ -1,0 +1,5 @@
+model,strategy,configuration,metric,vs_reference,diff,diff_lo,diff_hi,separates
+minilm,fixed_overlap,fixed_overlap 200+80,mrr@10,fixed 200,0.0374,-0.0162,0.0933,no
+minilm,recursive,recursive 200+0,mrr@10,fixed 200,0.0677,0.0190,0.1164,yes
+minilm,semantic,semantic 85+0,mrr@10,fixed 200,0.0103,-0.0499,0.0748,no
+minilm,sentence,sentence 200+0,mrr@10,fixed 200,0.0246,-0.0210,0.0709,no

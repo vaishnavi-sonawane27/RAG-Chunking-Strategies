@@ -97,12 +97,11 @@ Settings chosen on dev: {selected}.
 ## What I take from this
 
 - **Dense retrieval beat BM25 on {dvb_n_sig} of the {dvb_n_total} chunkings**, by as much as
-  {dvb_best_val} MRR on {dvb_best_name}. The exception is {dvb_exceptions}: on the plain fixed-size
+  {dvb_best_val} MRR on {dvb_best_name}. {dvb_exception_lead} {dvb_exceptions}: on the plain fixed-size
   baseline the dense-versus-BM25 interval still includes zero ({dense_vs_bm25}). A chunking bad
   enough that a better retriever cannot exploit it is itself worth noticing.
 - **{best_name} had the best point estimate** ({best_mrr}) and {worst_name} the worst
-  ({worst_mrr}), a spread of {spread} MRR, and {best_name} is also the most context-efficient at
-  {best_tprec} token precision. Both of those are point estimates on one model: {best_gap_note},
+  ({worst_mrr}), a spread of {spread} MRR, {tprec_note}. Both of those are point estimates on one model: {best_gap_note},
   and it is not necessarily the strategy that held up on {embedder2}.
 - **{n_beat_word} of the {n_compared} other strategies beat the baseline on MRR with intervals clear
   of zero on {embedder}.** Not every comparison separates: on recall@3 several intervals still
@@ -126,8 +125,7 @@ Overlap is the one setting the literature openly disagrees about, and I could no
 sweep of it. Here is one, at a {ov_size}-token chunk size.
 
 Adding any overlap helps. MRR across the sweep runs {ov_mrr_path} and recall@3 runs
-{ov_recall_path}. Note that recall@3 is **not monotonic**: it peaks at {ov_recall_peak}, not at the
-largest overlap, so this is a step change at the first increment rather than a trend.
+{ov_recall_path}. Note that recall@3 is **not monotonic**: {ov_recall_shape}.
 
 **The useful finding is that nothing beyond the first step is resolvable.** The first
 {ov_first_step} buys {ov_first_gain} MRR. Going from there to {ov_max} is {ov_tail_ci}, which is
@@ -143,8 +141,8 @@ two overlapping chunks is counted twice: it inflates the denominator while contr
 the numerator, so that denominator penalises overlap by arithmetic rather than by evidence.
 
 I computed precision both ways to see how much that matters. Counting duplicate text twice,
-precision {ov_dup_dir} across the sweep ({ov_tprec_dup}). Counting each piece of source text once,
-it {ov_uni_dir} ({ov_tprec_uni}). So on this corpus {ov_verdict}: the choice of denominator changes
+precision {ov_dup_dir} from no overlap to the largest tried ({ov_tprec_dup}), though not at
+every step. Counting each piece of source text once, it {ov_uni_dir} ({ov_tprec_uni}). So on this corpus {ov_verdict}: the choice of denominator changes
 the size of the effect, not its sign, and precision goes up with overlap either way because the
 recall gain outruns the extra context. I expected the two to disagree and they did not, which is
 worth saying plainly rather than quietly dropping.
@@ -252,6 +250,14 @@ Specific enough to be falsifiable:
   lookups, but part of it is real ambiguity: a passage I score as wrong may be a defensible answer.
   That depresses every strategy equally, so the comparisons stand, but the absolute recall and MRR
   numbers should be read as a floor rather than a ceiling.
+- **The cross-model numbers are at {embedder}'s dev-selected settings, not {embedder2}'s.** That is
+  deliberate: holding the configuration fixed is the only way to attribute a difference to the model
+  rather than to a different set of chunks. But it does mean the {embedder2} column is not that
+  model's own best showing. Run separately, {embedder2}'s dev split picks {model2_own_selection},
+  and against its own reference no strategy clears zero on MRR either. Both readings are in the
+  repo. The comparisons quoted above live in `{cross_model_csv}`, because
+  `paired_vs_reference.csv` holds each model's comparison against its own reference and so cannot
+  answer the cross-model question.
 - **{n_models} embedding models, all small.** Better models may behave differently again. The
   repo takes `--compare` any number of times, so adding more is one command per model.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et

@@ -237,12 +237,11 @@ Strategies holding the same rank across all 2 models: Fixed-size, Fixed + overla
 ## What I take from this
 
 - **Dense retrieval beat BM25 on 3 of the 5 chunkings**, by as much as
-  +0.122 MRR on Sentence-based. The exception is Fixed-size, Semantic: on the plain fixed-size
+  +0.122 MRR on Sentence-based. The exceptions are Fixed-size, Semantic: on the plain fixed-size
   baseline the dense-versus-BM25 interval still includes zero (+0.028 MRR (95% CI [-0.047, +0.102])). A chunking bad
   enough that a better retriever cannot exploit it is itself worth noticing.
 - **Sentence-based had the best point estimate** (0.52 (95% CI 0.45 to 0.59)) and Fixed-size the worst
-  (0.43 (95% CI 0.36 to 0.49)), a spread of 0.09 MRR, and Sentence-based is also the most context-efficient at
-  2.26% token precision. Both of those are point estimates on one model: its gaps to the one other strategy that beat the baseline do not clear zero,
+  (0.43 (95% CI 0.36 to 0.49)), a spread of 0.09 MRR, though the most context-efficient is Recursive at 2.79% token precision against this one's 2.26%. Both of those are point estimates on one model: its gaps to the one other strategy that beat the baseline do not clear zero,
   and it is not necessarily the strategy that held up on minilm.
 - **two of the 4 other strategies beat the baseline on MRR with intervals clear
   of zero on bge-small.** Not every comparison separates: on recall@3 several intervals still
@@ -266,8 +265,7 @@ Overlap is the one setting the literature openly disagrees about, and I could no
 sweep of it. Here is one, at a 200-token chunk size.
 
 Adding any overlap helps. MRR across the sweep runs 0.429 then 0.495 then 0.473 then 0.502 and recall@3 runs
-0.52, 0.57, 0.56, 0.63. Note that recall@3 is **not monotonic**: it peaks at 80 tokens, not at the
-largest overlap, so this is a step change at the first increment rather than a trend.
+0.52, 0.57, 0.56, 0.63. Note that recall@3 is **not monotonic**: it peaks at the largest overlap tried (80 tokens), but dips at 40 tokens on the way there, so the series is not a clean trend.
 
 **The useful finding is that nothing beyond the first step is resolvable.** The first
 20 tokens (10%) buys +0.066 MRR. Going from there to 80 tokens (40%) is +0.007 MRR (95% CI [-0.054, +0.066]), which is
@@ -283,8 +281,8 @@ two overlapping chunks is counted twice: it inflates the denominator while contr
 the numerator, so that denominator penalises overlap by arithmetic rather than by evidence.
 
 I computed precision both ways to see how much that matters. Counting duplicate text twice,
-precision rises across the sweep (2.06% to 2.32%). Counting each piece of source text once,
-it rises (2.06% to 2.57%). So on this corpus both denominators agree on the direction: the choice of denominator changes
+precision rises from no overlap to the largest tried (2.06% to 2.32%), though not at
+every step. Counting each piece of source text once, it rises (2.06% to 2.57%). So on this corpus both denominators agree on the direction: the choice of denominator changes
 the size of the effect, not its sign, and precision goes up with overlap either way because the
 recall gain outruns the extra context. I expected the two to disagree and they did not, which is
 worth saying plainly rather than quietly dropping.
@@ -392,6 +390,14 @@ Specific enough to be falsifiable:
   lookups, but part of it is real ambiguity: a passage I score as wrong may be a defensible answer.
   That depresses every strategy equally, so the comparisons stand, but the absolute recall and MRR
   numbers should be read as a floor rather than a ceiling.
+- **The cross-model numbers are at bge-small's dev-selected settings, not minilm's.** That is
+  deliberate: holding the configuration fixed is the only way to attribute a difference to the model
+  rather than to a different set of chunks. But it does mean the minilm column is not that
+  model's own best showing. Run separately, minilm's dev split picks `fixed 100`, `fixed_overlap 200+80`, `recursive 100`, `semantic 95`, `sentence 100`,
+  and against its own reference no strategy clears zero on MRR either. Both readings are in the
+  repo. The comparisons quoted above live in `results/bge-small/paired_cross_model.csv`, because
+  `paired_vs_reference.csv` holds each model's comparison against its own reference and so cannot
+  answer the cross-model question.
 - **2 embedding models, all small.** Better models may behave differently again. The
   repo takes `--compare` any number of times, so adding more is one command per model.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et
