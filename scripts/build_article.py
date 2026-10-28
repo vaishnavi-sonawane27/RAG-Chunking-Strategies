@@ -307,6 +307,10 @@ def facts(tag, compare=()):
                 sig2 = lo2 > 0
                 rep.append(f"**{LABEL[st]}** {m2:+.3f} [{lo2:+.3f}, {hi2:+.3f}]"
                            + ("" if sig2 else " (not distinguishable)"))
+                if st == "semantic":
+                    f["semantic2_ci"] = f"{m2:+.3f} [{lo2:+.3f}, {hi2:+.3f}]"
+                    f["semantic2_verdict"] = ("it does beat the baseline"
+                                              if sig2 else "it is not distinguishable from the baseline either")
                 if sig2 and any(r["strategy"] == st and r["diff_lo"] > 0 for r in pm):
                     robust.append(LABEL[st])
             f["replication_detail"] = "; ".join(rep)

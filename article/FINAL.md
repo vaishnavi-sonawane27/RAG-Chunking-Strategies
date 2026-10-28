@@ -253,11 +253,11 @@ Strategies holding the same rank across all 2 models: Fixed-size, Fixed + overla
 - **Splitting the answer is a real failure mode only at small sizes.** At 100 tokens,
   fixed-size chunking left the answer passage intact in 71.5% of questions. At the selected
   settings: Fixed-size 88.7%, Fixed + overlap 100.0%, Sentence-based 99.3%, Recursive 100.0%, Semantic 100.0%.
-- **Semantic chunking works, but it is the most expensive way to get there.** It reached
-  0.46 (95% CI 0.39 to 0.53) on bge-small, not distinguishable from the baseline (+0.035 [-0.033, +0.102]), for 2.0× the
-  embedding work to build the index. Cheaper strategies reached the same place for the same indexing
-  cost as plain fixed-size, and on minilm its advantage over the baseline is no longer
-  distinguishable. The published literature keeps reaching the same verdict.
+- **Semantic chunking cost the most and bought the least.** It reached 0.46 (95% CI 0.39 to 0.53) on
+  bge-small, not distinguishable from the baseline (+0.035 [-0.033, +0.102]), for 2.0× the embedding work to build
+  the index. Cheaper strategies landed in the same place for the same indexing cost as plain
+  fixed-size, and on minilm it is not distinguishable from the baseline either (+0.010 [-0.050, +0.075]). The published literature
+  keeps reaching the same verdict.
 
 ### The overlap sweep
 
@@ -427,9 +427,10 @@ Specific enough to be falsifiable:
 
 For prose documents like this one, on this evidence:
 
-1. **Stop using plain fixed-size chunking with no overlap.** That is the one recommendation here
-   that survived the change of embedding model: the worst strategy is the same on both models (Fixed-size) but the best is not. Everything else on this list is
-   weaker than it looks.
+1. **Stop using plain fixed-size chunking with no overlap.** It was the worst of the five on both
+   embedding models. 3 rank positions survived the model change (Fixed + overlap, Semantic, Fixed-size), but
+   this is the only one you can act on, because the others tell you where a strategy lands rather
+   than that you should switch to it. Everything else on this list is weaker than it looks.
 2. **Prefer recursive splitting as the default, but hold it loosely.** No strategy beats plain fixed-size with an interval clear of zero on both models. The
    highest scorer was Sentence-based on bge-small and Recursive on minilm, so the winner
    is model-dependent; recursive is the one I would start from because it was never the worst on

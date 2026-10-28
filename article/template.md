@@ -113,11 +113,11 @@ Settings chosen on dev: {selected}.
 - **Splitting the answer is a real failure mode only at small sizes.** At {small_size} tokens,
   fixed-size chunking left the answer passage intact in {intact_small} of questions. At the selected
   settings: {intact_table}.
-- **Semantic chunking works, but it is the most expensive way to get there.** It reached
-  {semantic_mrr} on {embedder}, {semantic_verdict} ({semantic_ci}), for {semantic_cost} the
-  embedding work to build the index. Cheaper strategies reached the same place for the same indexing
-  cost as plain fixed-size, and on {embedder2} its advantage over the baseline is no longer
-  distinguishable. The published literature keeps reaching the same verdict.
+- **Semantic chunking cost the most and bought the least.** It reached {semantic_mrr} on
+  {embedder}, {semantic_verdict} ({semantic_ci}), for {semantic_cost} the embedding work to build
+  the index. Cheaper strategies landed in the same place for the same indexing cost as plain
+  fixed-size, and on {embedder2} {semantic2_verdict} ({semantic2_ci}). The published literature
+  keeps reaching the same verdict.
 
 ### The overlap sweep
 
@@ -287,9 +287,10 @@ Specific enough to be falsifiable:
 
 For prose documents like this one, on this evidence:
 
-1. **Stop using plain fixed-size chunking with no overlap.** That is the one recommendation here
-   that survived the change of embedding model: {ends_stable}. Everything else on this list is
-   weaker than it looks.
+1. **Stop using plain fixed-size chunking with no overlap.** It was the worst of the five on both
+   embedding models. {n_rank_stable} rank positions survived the model change ({rank_stable}), but
+   this is the only one you can act on, because the others tell you where a strategy lands rather
+   than that you should switch to it. Everything else on this list is weaker than it looks.
 2. **Prefer recursive splitting as the default, but hold it loosely.** {robust_sentence} The
    highest scorer was {model1_best} on {embedder} and {model2_best} on {embedder2}, so the winner
    is model-dependent; recursive is the one I would start from because it was never the worst on
