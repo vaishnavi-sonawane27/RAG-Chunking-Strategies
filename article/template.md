@@ -34,8 +34,7 @@ embedding model mostly describes that model.** Three further things came out of 
 1. **Strategy may matter more than size, {strategy_size_scope}.** Switching strategy at a fixed size moves
    MRR by {strategy_spread} (mean {mean_strategy_spread}); changing size within a strategy moves it
    by {size_spread} (mean {mean_size_spread}). {replicates_conj} {replicates} on the second model
-   (strategy {model2_strategy_spread} vs size {model2_size_spread}), so treat it as a property of
-   this corpus and this retriever, not a rule.
+   (strategy {model2_strategy_spread} vs size {model2_size_spread}), {replicates_caveat}.
 2. **Overlap helps, and nothing beyond the smallest step is resolvable.** Going from no overlap to
    {ov_first_step} is worth {ov_first_gain} MRR. Going from there all the way to {ov_max} is
    {ov_tail_ci}, which is {ov_tail_resolvable}.
@@ -282,19 +281,22 @@ Specific enough to be falsifiable:
 
 For prose documents like this one, on this evidence:
 
-1. **Use recursive splitting at a moderate token size.** It is the only strategy that beat plain
-   fixed-size on both embedding models here, it costs nothing extra to build, and it is what
-   Chroma's much larger evaluation independently landed on. Sentence-based scored higher on
-   {embedder}, but it did not hold up on the second model.
-2. **Do not trust a strategy ranking, including the one above, that was measured on a single
-   embedding model.** Re-run it on yours. That is a day of work and it changed the answer here.
+1. **Stop using plain fixed-size chunking with no overlap.** That is the one recommendation here
+   that survived the change of embedding model: {ends_stable}. Everything else on this list is
+   weaker than it looks.
+2. **Prefer recursive splitting as the default, but hold it loosely.** {robust_sentence} The
+   highest scorer was {model1_best} on {embedder} and {model2_best} on {embedder2}, so the winner
+   is model-dependent; recursive is the one I would start from because it was never the worst on
+   either model, costs nothing extra to build, and is what Chroma's much larger evaluation
+   independently landed on. Re-run the comparison on your own encoder before trusting any ranking,
+   including this one. That is a day of work and it changed the answer here.
 3. **Add a little overlap, not a lot.** The first {ov_first_step} was worth {ov_first_gain} MRR;
    everything beyond it was inside the noise and cost real index size. Ignore precision-based
    arguments against overlap until you have checked how your harness counts duplicated text.
-4. **Do not reach for semantic chunking first.** It did beat the baseline on {embedder}, but it
-   cost {semantic_cost} the indexing work to do what cheaper strategies did for free, and that
-   advantage did not survive the second model. The published literature reaches the same verdict
-   outside artificially stitched corpora.
+4. **Do not reach for semantic chunking first.** On {embedder} it was {semantic_verdict}
+   ({semantic_ci}) while costing {semantic_cost} the indexing work of the cheaper strategies, and it
+   placed fourth of five on both models. The published literature reaches the same verdict outside
+   artificially stitched corpora.
 5. **Spend the effort on your retriever.** Dense versus BM25 had the largest point estimate of
    anything measured here ({dvb_best_val} MRR on {dvb_best_name}), though its interval overlaps the
    larger chunking effects, so I would not claim a strict ordering.

@@ -34,8 +34,7 @@ embedding model mostly describes that model.** Three further things came out of 
 1. **Strategy may matter more than size, on both models.** Switching strategy at a fixed size moves
    MRR by 0.029 to 0.121 (mean 0.081); changing size within a strategy moves it
    by 0.035 to 0.064 (mean 0.052). And this replicates on the second model
-   (strategy 0.050 vs size 0.036), so treat it as a property of
-   this corpus and this retriever, not a rule.
+   (strategy 0.050 vs size 0.036), which is mild evidence that it is not purely an artefact of one encoder, though two small models are not the world.
 2. **Overlap helps, and nothing beyond the smallest step is resolvable.** Going from no overlap to
    20 tokens (10%) is worth +0.066 MRR. Going from there all the way to 80 tokens (40%) is
    +0.007 MRR (95% CI [-0.054, +0.066]), which is not distinguishable from zero.
@@ -422,19 +421,22 @@ Specific enough to be falsifiable:
 
 For prose documents like this one, on this evidence:
 
-1. **Use recursive splitting at a moderate token size.** It is the only strategy that beat plain
-   fixed-size on both embedding models here, it costs nothing extra to build, and it is what
-   Chroma's much larger evaluation independently landed on. Sentence-based scored higher on
-   bge-small, but it did not hold up on the second model.
-2. **Do not trust a strategy ranking, including the one above, that was measured on a single
-   embedding model.** Re-run it on yours. That is a day of work and it changed the answer here.
+1. **Stop using plain fixed-size chunking with no overlap.** That is the one recommendation here
+   that survived the change of embedding model: the worst strategy is the same on both models (Fixed-size) but the best is not. Everything else on this list is
+   weaker than it looks.
+2. **Prefer recursive splitting as the default, but hold it loosely.** No strategy beats plain fixed-size with an interval clear of zero on both models. The
+   highest scorer was Sentence-based on bge-small and Recursive on minilm, so the winner
+   is model-dependent; recursive is the one I would start from because it was never the worst on
+   either model, costs nothing extra to build, and is what Chroma's much larger evaluation
+   independently landed on. Re-run the comparison on your own encoder before trusting any ranking,
+   including this one. That is a day of work and it changed the answer here.
 3. **Add a little overlap, not a lot.** The first 20 tokens (10%) was worth +0.066 MRR;
    everything beyond it was inside the noise and cost real index size. Ignore precision-based
    arguments against overlap until you have checked how your harness counts duplicated text.
-4. **Do not reach for semantic chunking first.** It did beat the baseline on bge-small, but it
-   cost 2.0× the indexing work to do what cheaper strategies did for free, and that
-   advantage did not survive the second model. The published literature reaches the same verdict
-   outside artificially stitched corpora.
+4. **Do not reach for semantic chunking first.** On bge-small it was not distinguishable from the baseline
+   (+0.035 [-0.033, +0.102]) while costing 2.0× the indexing work of the cheaper strategies, and it
+   placed fourth of five on both models. The published literature reaches the same verdict outside
+   artificially stitched corpora.
 5. **Spend the effort on your retriever.** Dense versus BM25 had the largest point estimate of
    anything measured here (+0.122 MRR on Sentence-based), though its interval overlaps the
    larger chunking effects, so I would not claim a strict ordering.

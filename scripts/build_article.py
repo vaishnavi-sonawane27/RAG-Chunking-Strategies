@@ -315,6 +315,11 @@ def facts(tag, compare=()):
             f["replicates"] = "replicates" if _rep else "does not replicate"
             f["replicates_conj"] = "And this" if _rep else "But this"
             f["strategy_size_scope"] = "on both models" if _rep else "on one model only"
+            f["replicates_caveat"] = (
+                "which is mild evidence that it is not purely an artefact of one encoder, though two "
+                "small models are not the world"
+                if _rep else
+                "so treat it as a property of this corpus and this retriever, not a rule")
 
     # ---- aggregate across every comparison model (works for 1 or 20 of them)
     if compare:
