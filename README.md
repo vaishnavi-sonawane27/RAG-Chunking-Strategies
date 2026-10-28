@@ -83,7 +83,7 @@ sizing always uses one canonical tokenizer, so a difference between two columns 
 between the models rather than between two different sets of chunks.
 
 `results/bge-small/` then contains `summary.csv`, `paired_vs_reference.csv`, `per_question.csv`,
-`failure_taxonomy.csv`, `failures.md`, four charts and `results_section.md`.
+`failure_taxonomy.csv`, `failures.md`, five charts and `results_section.md`.
 `article/FINAL.md` is the written article with every number injected from those files. The build
 **fails** rather than emit a hand-typed number.
 
