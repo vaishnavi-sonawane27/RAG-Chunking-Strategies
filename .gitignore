@@ -22,3 +22,6 @@ article/*.pdf
 
 # personal publishing checklist, not part of the project
 PUBLISHING.md
+
+# local-only: builds the .docx/.pdf reading copies, not part of the experiment
+scripts/build_doc.py
