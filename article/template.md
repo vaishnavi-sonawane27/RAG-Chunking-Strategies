@@ -1,18 +1,18 @@
 ---
-title: "Do RAG chunking strategies actually differ? Error bars, {n_models} embedding models and an overlap sweep"
+title: "Do RAG chunking strategies actually differ? Error bars, {n_models_word} embedding models and an overlap sweep"
 subtitle: "{n_docs} documents, {n_questions} questions, five strategies, sizes in tokens, a dev/test split and paired bootstrap confidence intervals. Code and raw results included."
 canonical_url: ""
 tags: rag, retrieval, llm, benchmarking
 ---
 
-# Do RAG chunking strategies actually differ? Error bars, {n_models} embedding models and an overlap sweep
+# Do RAG chunking strategies actually differ? Error bars, {n_models_word} embedding models and an overlap sweep
 
 Chunking is the step everyone has an opinion about and almost nobody measures with error bars.
 Blog posts rank the strategies confidently; the gaps they report are often two or three points,
 reported once, from a single run, with no interval around them.
 
 I went looking for how much of that advice survives a significance test. Five strategies, a corpus
-of {n_docs} documents, {n_questions} questions, {n_models} embedding models, chunk sizes in tokens, and the
+of {n_docs} documents, {n_questions} questions, {n_models_word} embedding models, chunk sizes in tokens, and the
 part that matters: **every setting chosen on a held-out dev split and every number reported on test
 questions the tuning never saw**, with paired bootstrap confidence intervals over {n_boot} resamples.
 
@@ -53,7 +53,7 @@ vector database or embedding vendor, and I have no stake in which strategy wins.
 
 ## The setup
 
-| | |
+| Setting | Value |
 |---|---|
 | **Corpus** | *Pro Git* (2nd ed.), Chacon & Straub, {n_docs} sections, ~107,000 words (~175,000 tokens), CC BY-NC-SA 3.0 |
 | **Questions** | {n_questions} questions, each tied to one evidence passage that occurs exactly once |
@@ -119,7 +119,7 @@ Settings chosen on dev: {selected}.
   fixed-size, and on {embedder2} {semantic2_verdict} ({semantic2_ci}). The published literature
   keeps reaching the same verdict.
 
-### The overlap sweep
+### Reading the overlap sweep
 
 Overlap is the one setting the literature openly disagrees about, and I could not find a published
 sweep of it. Here is one, at a {ov_size}-token chunk size.
@@ -166,7 +166,7 @@ Tested against the same baseline on the second model, {replication_detail}. So o
 {n_beat_baseline} strategies that beat plain fixed-size on {embedder}, **{n_replicate_word}** still does so
 on {embedder2}.
 
-Across all {n_models} models ({model_names}), {winners_differ}. Best strategy per model:
+Across {models_scope} ({model_names}), {winners_differ}. Best strategy per model:
 {model_best_each}. {n_rank_stable} of the five strategies hold the same rank on every model
 ({rank_stable}), and {robust_all_sentence}. The strategies that hold their rank are the ones worth
 taking from this article, because they are the only claims here that do not depend on which encoder
@@ -177,7 +177,7 @@ first half of my own article. A chunking comparison run on one embedding model i
 measurement of that model. If you are choosing a chunker from someone's table, check how many
 retrievers they tested. Usually the answer is one.
 
-### Where retrieval actually failed
+### What the failures were
 
 Pooling the {n_selected_configs} selected configurations over the same {n_test} test questions gives
 {total_misses} miss-events, so a question that defeats every strategy is counted
@@ -258,7 +258,7 @@ Specific enough to be falsifiable:
   repo. The comparisons quoted above live in `{cross_model_csv}`, because
   `paired_vs_reference.csv` holds each model's comparison against its own reference and so cannot
   answer the cross-model question.
-- **Only {n_models} embedding models, both small.** Better models may behave differently again. The
+- **Only {n_models_word} embedding models, both small.** Better models may behave differently again. The
   repo takes `--compare` any number of times, so adding more is one command per model.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et
   al. found retrieval differences largely washed out in generation.

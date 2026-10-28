@@ -8,23 +8,27 @@
 
 ![Headline comparison](chart_headline.png)
 
-| Strategy | Setting | Chunks | Mean tokens | Evidence intact | Recall@1 | Recall@3 | MRR@10 | Recall @1000 tok | Token precision@5 |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Fixed-size | `200` | 904 | 194 | 0.89 | 0.30 (0.23 to 0.37) | 0.52 (0.44 to 0.60) | 0.43 (0.36 to 0.49) | 0.62 (0.54 to 0.69) | 2.06% |
-| Fixed + overlap | `200+80` | 1451 | 197 | 1.00 | 0.36 (0.28 to 0.43) | 0.63 (0.55 to 0.71) | 0.50 (0.44 to 0.56) | 0.72 (0.65 to 0.80) | 2.32% |
-| Sentence-based | `200` | 963 | 182 | 0.99 | 0.42 (0.34 to 0.50) | 0.57 (0.49 to 0.65) | 0.52 (0.45 to 0.59) | 0.65 (0.57 to 0.72) | 2.26% |
-| Recursive | `200` | 1114 | 157 | 1.00 | 0.36 (0.28 to 0.44) | 0.57 (0.49 to 0.65) | 0.49 (0.42 to 0.55) | 0.69 (0.61 to 0.76) | 2.79% |
-| Semantic | `p85` | 1002 | 175 | 1.00 | 0.36 (0.28 to 0.44) | 0.54 (0.46 to 0.62) | 0.46 (0.39 to 0.53) | 0.56 (0.48 to 0.64) | 2.02% |
+| Strategy | Setting | Chunks | Intact | R@3 | MRR | R@1000t | tPrec |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Fixed-size | `200` | 904 | 0.89 | 0.52 [0.44, 0.60] | 0.43 [0.36, 0.49] | 0.62 [0.54, 0.69] | 2.06% |
+| Fixed + overlap | `200+80` | 1451 | 1.00 | 0.63 [0.55, 0.71] | 0.50 [0.44, 0.56] | 0.72 [0.65, 0.80] | 2.32% |
+| Sentence-based | `200` | 963 | 0.99 | 0.57 [0.49, 0.65] | 0.52 [0.45, 0.59] | 0.65 [0.57, 0.72] | 2.26% |
+| Recursive | `200` | 1114 | 1.00 | 0.57 [0.49, 0.65] | 0.49 [0.42, 0.55] | 0.69 [0.61, 0.76] | 2.79% |
+| Semantic | `p85` | 1002 | 1.00 | 0.54 [0.46, 0.62] | 0.46 [0.39, 0.53] | 0.56 [0.48, 0.64] | 2.02% |
+
+Intact: share of questions whose evidence survives whole inside one chunk. R@3: recall at 3. MRR: mean reciprocal rank at 10. R@1000t: recall at a fixed 1000-token budget. tPrec: token precision at 5. Brackets are 95% confidence intervals. Recall@1 and mean chunk length are in `summary.csv`.
 
 ### Same chunks, BM25 instead of embeddings
 
-| Strategy | Setting | Chunks | Mean tokens | Evidence intact | Recall@1 | Recall@3 | MRR@10 | Recall @1000 tok | Token precision@5 |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Fixed-size | `200` | 904 | 194 | 0.89 | 0.29 (0.22 to 0.36) | 0.48 (0.40 to 0.56) | 0.40 (0.33 to 0.47) | 0.54 (0.46 to 0.62) | 1.79% |
-| Fixed + overlap | `200+80` | 1451 | 197 | 1.00 | 0.30 (0.23 to 0.37) | 0.48 (0.40 to 0.56) | 0.40 (0.34 to 0.47) | 0.53 (0.45 to 0.61) | 1.78% |
-| Sentence-based | `200` | 963 | 182 | 0.99 | 0.30 (0.23 to 0.37) | 0.47 (0.39 to 0.55) | 0.40 (0.33 to 0.47) | 0.53 (0.45 to 0.61) | 1.89% |
-| Recursive | `200` | 1114 | 157 | 1.00 | 0.29 (0.22 to 0.36) | 0.44 (0.36 to 0.52) | 0.39 (0.32 to 0.46) | 0.52 (0.44 to 0.60) | 2.06% |
-| Semantic | `p85` | 1002 | 175 | 1.00 | 0.35 (0.28 to 0.43) | 0.44 (0.36 to 0.52) | 0.43 (0.36 to 0.50) | 0.46 (0.38 to 0.54) | 1.53% |
+| Strategy | Setting | Chunks | Intact | R@3 | MRR | R@1000t | tPrec |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Fixed-size | `200` | 904 | 0.89 | 0.48 [0.40, 0.56] | 0.40 [0.33, 0.47] | 0.54 [0.46, 0.62] | 1.79% |
+| Fixed + overlap | `200+80` | 1451 | 1.00 | 0.48 [0.40, 0.56] | 0.40 [0.34, 0.47] | 0.53 [0.45, 0.61] | 1.78% |
+| Sentence-based | `200` | 963 | 0.99 | 0.47 [0.39, 0.55] | 0.40 [0.33, 0.47] | 0.53 [0.45, 0.61] | 1.89% |
+| Recursive | `200` | 1114 | 1.00 | 0.44 [0.36, 0.52] | 0.39 [0.32, 0.46] | 0.52 [0.44, 0.60] | 2.06% |
+| Semantic | `p85` | 1002 | 1.00 | 0.44 [0.36, 0.52] | 0.43 [0.36, 0.50] | 0.46 [0.38, 0.54] | 1.53% |
+
+Intact: share of questions whose evidence survives whole inside one chunk. R@3: recall at 3. MRR: mean reciprocal rank at 10. R@1000t: recall at a fixed 1000-token budget. tPrec: token precision at 5. Brackets are 95% confidence intervals. Recall@1 and mean chunk length are in `summary.csv`.
 
 ### Dense versus BM25, paired on the same questions
 
@@ -76,18 +80,20 @@
 
 ![Overlap sweep](chart_overlap.png)
 
-| Overlap | Chunks | Tokens indexed | Recall@3 | Recall @1000 tok | Token precision@5 (duplicates counted) | Token precision@5 (counted once) |
+| Overlap | Chunks | Tokens | R@3 | R@1000t | tPrec, dup | tPrec, once |
 |---|---:|---:|---:|---:|---:|---:|
-| 0 tok (0%) | 904 | 174,963 | 0.52 (0.44 to 0.60) | 0.62 (0.54 to 0.69) | 2.06% | 2.06% |
-| 20 tok (10%) | 1000 | 193,690 | 0.57 (0.49 to 0.65) | 0.64 (0.56 to 0.71) | 2.13% | 2.17% |
-| 40 tok (20%) | 1111 | 216,852 | 0.56 (0.48 to 0.64) | 0.66 (0.58 to 0.73) | 2.12% | 2.22% |
-| 80 tok (40%) | 1451 | 285,914 | 0.63 (0.55 to 0.71) | 0.72 (0.65 to 0.80) | 2.32% | 2.57% |
+| 0 tok (0%) | 904 | 174,963 | 0.52 [0.44, 0.60] | 0.62 [0.54, 0.69] | 2.06% | 2.06% |
+| 20 tok (10%) | 1000 | 193,690 | 0.57 [0.49, 0.65] | 0.64 [0.56, 0.71] | 2.13% | 2.17% |
+| 40 tok (20%) | 1111 | 216,852 | 0.56 [0.48, 0.64] | 0.66 [0.58, 0.73] | 2.12% | 2.22% |
+| 80 tok (40%) | 1451 | 285,914 | 0.63 [0.55, 0.71] | 0.72 [0.65, 0.80] | 2.32% | 2.57% |
+
+Tokens: tokens embedded to build the index. tPrec, dup counts text appearing in two overlapping chunks twice, which is what the published implementation does; tPrec, once counts each piece of source text one time.
 
 ### Every configuration tried
 
 ![Size sweep](chart_size_sweep.png)
 
-| Configuration | Chunks | Mean tokens | Evidence intact | Recall@3 | MRR@10 | Token precision@5 |
+| Configuration | Chunks | Tok | Intact | R@3 | MRR | tPrec |
 |---|---:|---:|---:|---:|---:|---:|
 | `fixed 100` | 1782 | 98 | 0.71 | 0.49 | 0.42 | 3.58% |
 | `fixed 200` | 904 | 194 | 0.89 | 0.52 | 0.43 | 2.06% |
@@ -117,7 +123,7 @@
 
 ### Where retrieval failed
 
-| Configuration | Misses (not in top 5) | Evidence split across chunks | Right document, wrong passage | Wrong document |
+| Configuration | Misses | Evidence split across chunks | Right document, wrong passage | Wrong document |
 |---|---:|---:|---:|---:|
 | `fixed 200` | 59 | 0 | 23 | 36 |
 | `fixed_overlap 200+80` | 42 | 0 | 14 | 28 |
@@ -125,7 +131,7 @@
 | `recursive 200` | 51 | 0 | 18 | 33 |
 | `semantic p85` | 61 | 0 | 16 | 45 |
 
-### Same chunks, 2 embedding models
+### Same chunks, two embedding models
 
 ![Model comparison](chart_models.png)
 
@@ -137,4 +143,4 @@
 | Recursive | `recursive 200` | 0.49 | 3 | 0.45 | 1 |
 | Semantic | `semantic p85` | 0.46 | 4 | 0.39 | 4 |
 
-Strategies holding the same rank across all 2 models: Fixed-size, Fixed + overlap, Semantic.
+Strategies holding the same rank across both models: Fixed-size, Fixed + overlap, Semantic.

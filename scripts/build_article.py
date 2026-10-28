@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import textwrap
 import string
 import sys
 from pathlib import Path
@@ -389,6 +390,10 @@ def facts(tag, compare=()):
         own = sorted(H, key=lambda x: -H[x]["mrr@10"])
         allo = [own] + orders
         f["n_models"] = len(allo)
+        f["n_models_word"] = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five",
+                              6: "six", 7: "seven", 8: "eight"}.get(len(allo), str(len(allo)))
+        # "across all two models" is not English; "across both models" is
+        f["models_scope"] = "both models" if len(allo) == 2 else f"all {f['n_models_word']} models"
         f["model_names"] = ", ".join(m[0] for m in models)
         f["model_best_each"] = ", ".join(f"{m[0]}: {LABEL[o[0]]}"
                                          for m, o in zip(models, allo) if o)
@@ -477,6 +482,68 @@ def facts(tag, compare=()):
     return d, f
 
 
+WRAP_WIDTH = 95
+
+
+def rewrap(text: str, width: int = WRAP_WIDTH) -> str:
+    """Wrap prose to a uniform width.
+
+    The template is hand-wrapped at roughly this width, but the injected figures are single long
+    strings, so a generated paragraph could run to 367 characters next to neighbours of 90. Markdown
+    joins wrapped lines back into one paragraph, so this changes how the file reads and nothing
+    about how it renders. Tables, fenced code, headings, images and front matter are left alone:
+    wrapping those would break them.
+    """
+    out, in_code, in_front = [], False, False
+    item = re.compile(r"^(\s*)([-*+]|\d+\.)(\s+)(.*)$")
+    for i, block in enumerate(text.split("\n\n")):
+        lines = block.split("\n")
+        if i == 0 and lines and lines[0].strip() == "---":
+            in_front = True
+        if in_front:
+            out.append(block)
+            if len(lines) > 1 and lines[-1].strip() == "---":
+                in_front = False
+            continue
+        if any(l.lstrip().startswith("```") for l in lines):
+            in_code = not in_code if sum(l.lstrip().startswith("```") for l in lines) % 2 else in_code
+            out.append(block)
+            continue
+        if in_code or any(l.startswith(("|", "#", "![", "    ", "\t", ">")) for l in lines):
+            out.append(block)
+            continue
+
+        # split the block into logical units: each list item, or the whole paragraph
+        units, cur = [], []
+        for line in lines:
+            if item.match(line) and cur:
+                units.append(cur)
+                cur = [line]
+            else:
+                cur.append(line)
+        if cur:
+            units.append(cur)
+
+        rendered = []
+        for unit in units:
+            joined = " ".join(l.strip() for l in unit if l.strip())
+            m = item.match(unit[0])
+            if m:
+                lead = m.group(1) + m.group(2) + m.group(3)
+                body = joined[len(unit[0]) - len(unit[0].lstrip()):]
+                body = item.match(body).group(4) if item.match(body) else joined
+                rendered.append(textwrap.fill(body, width=width, initial_indent=lead,
+                                              subsequent_indent=" " * len(lead),
+                                              break_long_words=False, break_on_hyphens=False))
+            else:
+                indent = unit[0][:len(unit[0]) - len(unit[0].lstrip())]
+                rendered.append(textwrap.fill(joined, width=width, initial_indent=indent,
+                                              subsequent_indent=indent,
+                                              break_long_words=False, break_on_hyphens=False))
+        out.append("\n".join(rendered))
+    return "\n\n".join(out)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", required=True)
@@ -493,6 +560,7 @@ def main():
     out = tpl.format(**f)
     if re.search(r"\{[a-z_0-9]+\}", out):
         sys.exit("BUILD FAILED: unfilled placeholder remains")
+    out = rewrap(out)
     (ROOT / args.out).write_text(out, encoding="utf-8")
     print(f"wrote {args.out} ({len(out.split())} words) from results/{args.tag}")
     print(f"unused facts (fine): {sorted(set(f) - needed - {'results_section'})}")

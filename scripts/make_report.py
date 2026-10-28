@@ -204,6 +204,15 @@ def chart_sweep(d, rows, info):
     plt.close(fig)
 
 
+NUMWORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven",
+           8: "eight", 9: "nine", 10: "ten"}
+
+
+def numword(n):
+    """A bare digit in prose reads like an unfilled placeholder."""
+    return NUMWORD.get(n, str(n))
+
+
 def _same_configs(rows_other, info_ref):
     """Look up, in another model's results, the rows for the reference model's selected configs."""
     by = {(r["strategy"], int(r["param"]), int(r["overlap"])): r
@@ -246,28 +255,34 @@ def chart_models(d, rows_a, info_a, others):
 
 # ------------------------------------------------------------------- tables
 def ci(r, m, nd=2):
-    return f"{r[m]:.{nd}f} ({r[m + '_lo']:.{nd}f} to {r[m + '_hi']:.{nd}f})"
+    return f"{r[m]:.{nd}f} [{r[m + '_lo']:.{nd}f}, {r[m + '_hi']:.{nd}f}]"
 
 
 def table_headline(rows, retriever, info):
     H = head(rows, retriever)
     names = [s for s in present(rows) if s in H]
     bt, k = int(info["budget_tokens"]), int(info["token_metric_k"])
-    out = [f"| Strategy | Setting | Chunks | Mean tokens | Evidence intact | Recall@1 | Recall@3 | MRR@10 | Recall @{bt} tok | Token precision@{k} |",
-           "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    # Ten columns do not fit a blog's content width: the cells wrap and the table looks broken.
+    # Mean tokens and Recall@1 are not referenced anywhere in the prose and remain in summary.csv.
+    out = [f"| Strategy | Setting | Chunks | Intact | R@3 | MRR | R@{bt}t | tPrec |",
+           "|---|---|---:|---:|---:|---:|---:|---:|"]
     for s in names:
         r = H[s]
         setting = r["label"].split(" ", 1)[1] if " " in r["label"] else r["label"]
-        out.append(f"| {LABEL[s]} | `{setting}` | {int(r['n_chunks'])} | {r['mean_tokens']:.0f} | "
-                   f"{r['evidence_intact']:.2f} | {ci(r, 'recall@1')} | {ci(r, 'recall@3')} | "
+        out.append(f"| {LABEL[s]} | `{setting}` | {int(r['n_chunks'])} | "
+                   f"{r['evidence_intact']:.2f} | {ci(r, 'recall@3')} | "
                    f"{ci(r, 'mrr@10')} | {ci(r, f'recall@{bt}tok')} | {100 * r[f'token_precision@{k}']:.2f}% |")
+    out += ["", f"Intact: share of questions whose evidence survives whole inside one chunk. "
+                f"R@3: recall at 3. MRR: mean reciprocal rank at 10. R@{bt}t: recall at a fixed "
+                f"{bt}-token budget. tPrec: token precision at {k}. Brackets are 95% confidence "
+                f"intervals. Recall@1 and mean chunk length are in `summary.csv`."]
     return "\n".join(out)
 
 
 def table_sweep(rows, info):
     prim = primary_of(rows)
     k = int(info["token_metric_k"])
-    out = ["| Configuration | Chunks | Mean tokens | Evidence intact | Recall@3 | MRR@10 | Token precision@%d |" % k,
+    out = ["| Configuration | Chunks | Tok | Intact | R@3 | MRR | tPrec |",
            "|---|---:|---:|---:|---:|---:|---:|"]
     for s in ORDER:
         for r in sorted((x for x in rows if x["strategy"] == s and x["retriever"] == prim),
@@ -285,13 +300,16 @@ def table_overlap(rows, info):
                   and r["param"] == info.get("overlap_size", 200)), key=lambda r: r["overlap"])
     if len(pts) < 2:
         return ""
-    out = [f"| Overlap | Chunks | Tokens indexed | Recall@3 | Recall @{bt} tok | Token precision@{k} (duplicates counted) | Token precision@{k} (counted once) |",
+    out = [f"| Overlap | Chunks | Tokens | R@3 | R@{bt}t | tPrec, dup | tPrec, once |",
            "|---|---:|---:|---:|---:|---:|---:|"]
     for r in pts:
         pc = 100 * r["overlap"] / r["param"]
         out.append(f"| {int(r['overlap'])} tok ({pc:.0f}%) | {int(r['n_chunks'])} | {int(r['index_embed_tokens']):,} | "
                    f"{ci(r, 'recall@3')} | {ci(r, f'recall@{bt}tok')} | "
                    f"{100 * r[f'token_precision@{k}']:.2f}% | {100 * r[f'token_precision_union@{k}']:.2f}% |")
+    out += ["", "Tokens: tokens embedded to build the index. tPrec, dup counts text appearing in "
+                "two overlapping chunks twice, which is what the published implementation does; "
+                "tPrec, once counts each piece of source text one time."]
     return "\n".join(out)
 
 
@@ -325,7 +343,7 @@ def table_taxonomy(tax):
     if not tax:
         return ""
     cols = ["evidence split across chunks", "right document, wrong passage", "wrong document"]
-    out = ["| Configuration | Misses (not in top 5) | " + " | ".join(c.capitalize() for c in cols) + " |",
+    out = ["| Configuration | Misses | " + " | ".join(c.capitalize() for c in cols) + " |",
            "|---|---:|---:|---:|---:|"]
     for r in sorted(tax, key=lambda r: ORDER.index(r["strategy"]) if r["strategy"] in ORDER else 9):
         out.append(f"| `{r['label']}` | {int(r['misses_top5'])} | " + " | ".join(str(int(r[c])) for c in cols) + " |")
@@ -348,7 +366,8 @@ def table_models(rows_a, info_a, others):
         out.append(f"| {LABEL[s]} | `{cols[0][1][s]['label']}` | {cells} |")
     stable = [s for s in names if len({r.index(s) for r in ranks}) == 1]
     out.append("")
-    out.append(f"Strategies holding the same rank across all {len(cols)} models: "
+    scope = "both models" if len(cols) == 2 else f"all {numword(len(cols))} models"
+    out.append(f"Strategies holding the same rank across {scope}: "
                + (", ".join(LABEL[s] for s in stable) if stable else "**none**") + ".")
     return "\n".join(out)
 
@@ -407,7 +426,7 @@ def main():
             _, rows2, _, _, _, info2 = load(tag2)
             others.append((rows2, info2))
         chart_models(d, rows, info, others)
-        parts += [f"\n### Same chunks, {len(others) + 1} embedding models\n",
+        parts += [f"\n### Same chunks, {numword(len(others) + 1)} embedding models\n",
                   "![Model comparison](chart_models.png)\n", table_models(rows, info, others)]
 
     (d / "results_section.md").write_text("\n".join(p for p in parts if p) + "\n", encoding="utf-8")
