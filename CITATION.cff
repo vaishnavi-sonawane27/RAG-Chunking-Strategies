@@ -5,7 +5,7 @@ type: software
 authors:
   - given-names: Vaishnavi
     family-names: Sonawane
-repository-code: "https://github.com/vaishnavi-sonawane27/rag-chunking-experiment"
+repository-code: "https://github.com/vaishnavi-sonawane27/RAG-Chunking-Strategies"
 abstract: >-
   A small, fully reproducible comparison of five document chunking strategies
   (fixed-size, fixed-size with overlap, sentence-based, recursive and semantic)

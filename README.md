@@ -1,5 +1,7 @@
 # RAG chunking strategies, with confidence intervals
 
+[![CI](https://github.com/vaishnavi-sonawane27/RAG-Chunking-Strategies/actions/workflows/ci.yml/badge.svg)](https://github.com/vaishnavi-sonawane27/RAG-Chunking-Strategies/actions)
+
 A small, fully reproducible comparison of five document chunking strategies for retrieval in a RAG
 pipeline, run with a **held-out dev/test split** and **paired bootstrap confidence intervals**, so
 that differences can be assessed for significance instead of ranked on point estimates.

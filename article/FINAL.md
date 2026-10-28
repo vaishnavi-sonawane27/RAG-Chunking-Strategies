@@ -49,7 +49,7 @@ this adds, is narrow: **confidence intervals and paired significance tests betwe
 
 **Disclosure:** I am a final-year CS student. Nobody paid for this, I am not affiliated with any
 vector database or embedding vendor, and I have no stake in which strategy wins. Repo:
-**[REPO LINK]**.
+**https://github.com/vaishnavi-sonawane27/RAG-Chunking-Strategies**.
 
 ## The setup
 
@@ -453,8 +453,8 @@ For prose documents like this one, on this evidence:
 ## Reproduce it
 
 ```bash
-git clone [REPO LINK]
-cd rag-chunking-experiment
+git clone https://github.com/vaishnavi-sonawane27/RAG-Chunking-Strategies
+cd RAG-Chunking-Strategies
 pip install -r requirements.txt
 python scripts/fetch_corpus.py        # downloads Pro Git, converts to text
 python scripts/validate_questions.py  # checks every evidence passage resolves uniquely
