@@ -205,8 +205,14 @@ def chart_sweep(d, rows, info):
 
 
 def chart_models(d, rows_a, info_a, rows_b, info_b):
-    """Does the ranking survive a change of embedding model?"""
-    A, B = head(rows_a, "dense"), head(rows_b, "dense")
+    """Does the ranking survive a change of embedding model, on the SAME chunks?"""
+    A = head(rows_a, "dense")
+    by_b = {(r["strategy"], int(r["param"]), int(r["overlap"])): r for r in rows_b if r["retriever"] == "dense"}
+    B = {}
+    for st, v in info_a["selected_on_dev"].items():
+        key = (st, int(v["size"]), int(v["overlap"]))
+        if key in by_b:
+            B[st] = by_b[key]
     names = [s for s in ORDER if s in A and s in B]
     if len(names) < 2:
         return
@@ -222,7 +228,7 @@ def chart_models(d, rows_a, info_a, rows_b, info_b):
     ax.set_xticklabels([info_a["embedder"], info_b["embedder"]], color=INK, fontsize=10, fontweight="bold")
     ax.set_xlim(-0.42, 1.3)
     ax.set_ylabel("MRR@10", color=INK2, fontsize=9)
-    ax.set_title("Does the ranking survive a change of embedding model?", loc="left",
+    ax.set_title("Same chunks, different embedding model: does the ranking survive?", loc="left",
                  color=INK, fontsize=12, fontweight="bold")
     fig.tight_layout()
     fig.savefig(d / "chart_models.png", dpi=160, facecolor=SURFACE)
@@ -318,16 +324,20 @@ def table_taxonomy(tax):
 
 
 def table_models(rows_a, info_a, rows_b, info_b):
-    A, B = head(rows_a, "dense"), head(rows_b, "dense")
+    A = head(rows_a, "dense")
+    by_b = {(r["strategy"], int(r["param"]), int(r["overlap"])): r for r in rows_b if r["retriever"] == "dense"}
+    B = {st: by_b[(st, int(v["size"]), int(v["overlap"]))] for st, v in info_a["selected_on_dev"].items()
+         if (st, int(v["size"]), int(v["overlap"])) in by_b}
     names = [s for s in ORDER if s in A and s in B]
     if len(names) < 2:
         return ""
     ra = sorted(names, key=lambda s: -A[s]["mrr@10"])
     rb = sorted(names, key=lambda s: -B[s]["mrr@10"])
-    out = [f"| Strategy | MRR@10 ({info_a['embedder']}) | rank | MRR@10 ({info_b['embedder']}) | rank |",
-           "|---|---:|---:|---:|---:|"]
+    out = [f"| Strategy | Configuration | MRR@10 ({info_a['embedder']}) | rank | MRR@10 ({info_b['embedder']}) | rank |",
+           "|---|---|---:|---:|---:|---:|"]
     for s in names:
-        out.append(f"| {LABEL[s]} | {A[s]['mrr@10']:.2f} | {ra.index(s) + 1} | {B[s]['mrr@10']:.2f} | {rb.index(s) + 1} |")
+        out.append(f"| {LABEL[s]} | `{A[s]['label']}` | {A[s]['mrr@10']:.2f} | {ra.index(s) + 1} | "
+                   f"{B[s]['mrr@10']:.2f} | {rb.index(s) + 1} |")
     return "\n".join(out)
 
 
@@ -382,7 +392,7 @@ def main():
     if args.compare:
         d2, rows2, _, _, _, info2 = load(args.compare)
         chart_models(d, rows, info, rows2, info2)
-        parts += ["\n### Does the ranking survive a change of embedding model?\n",
+        parts += ["\n### Same chunks, a different embedding model\n",
                   "![Model comparison](chart_models.png)\n", table_models(rows, info, rows2, info2)]
 
     (d / "results_section.md").write_text("\n".join(p for p in parts if p) + "\n", encoding="utf-8")

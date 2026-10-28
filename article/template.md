@@ -16,21 +16,26 @@ of {n_docs} documents, {n_questions} questions, two embedding models, chunk size
 part that matters: **every setting chosen on a held-out dev split and every number reported on test
 questions the tuning never saw**, with paired bootstrap confidence intervals over {n_boot} resamples.
 
-**The short answer: the differences are real, and plain fixed-size chunking is the worst option
-tested.** Against the {reference} baseline on MRR@10, {all_beat_baseline} of the other four
-strategies beat it with a confidence interval clear of zero: {beat_baseline_detail}. Fixed-size came last at
-every chunk size I tried.
+**The short answer: on one embedding model every alternative beats plain fixed-size chunking, and
+on a second model almost none of them do.** Against the {reference} baseline on MRR@10 with
+{embedder}, {all_beat_baseline} of the other four strategies beat it with an interval clear of zero:
+{beat_baseline_detail}.
 
-That is a stronger result than I expected, and it only showed up once sizes were measured in tokens
-rather than words. Three further things came out of it:
+Then I ran the **identical chunks** through {embedder2} and the result largely evaporated:
+{replication_detail}. Only **{robust_strategies}** beats plain fixed-size on both models.
 
-1. **Strategy matters more than size.** Switching strategy at a fixed size moves MRR by
-   {strategy_spread} (mean {mean_strategy_spread}); changing size within a strategy moves it by
-   {size_spread} (mean {mean_size_spread}). So {matters_more} is the thing to get right first, and
-   that is the opposite of the advice usually given.
-2. **Overlap helps, and its benefit saturates almost immediately.** Going from no overlap to
-   {ov_first_step} is worth {ov_first_gain} MRR. Going all the way up to {ov_max} adds
-   {ov_rest_gain} on top of that.
+That is the finding I would actually stand behind, and it is a warning about every chunking
+comparison you have read, including the first half of this one: **a chunking result measured on one
+embedding model mostly describes that model.** Three further things came out of it:
+
+1. **Strategy may matter more than size, on one model.** Switching strategy at a fixed size moves
+   MRR by {strategy_spread} (mean {mean_strategy_spread}); changing size within a strategy moves it
+   by {size_spread} (mean {mean_size_spread}). But this {replicates} on the second model
+   (strategy {model2_strategy_spread} vs size {model2_size_spread}), so treat it as a property of
+   this corpus and this retriever, not a rule.
+2. **Overlap helps, and nothing beyond the smallest step is resolvable.** Going from no overlap to
+   {ov_first_step} is worth {ov_first_gain} MRR. Going from there all the way to {ov_max} is
+   {ov_tail_ci}, which is {ov_tail_resolvable}.
 3. **The published way of measuring overlap's cost is partly an artefact.** The standard
    implementation counts text appearing in two overlapping chunks twice, which penalises overlap by
    construction rather than by evidence. Details below.
@@ -77,9 +82,9 @@ recall at a fixed {budget_tokens}-token budget: fill the context window and see 
 
 **Context efficiency, not just recall.** Recall@k cannot tell a tight chunk that is mostly answer
 from a long one with the answer buried in padding, and in production you pay per token. Token-level
-precision is the share of everything you retrieved that was actually the answer. At the selected
-settings it ranges from {tprec_small} to {tprec_large} for fixed-size chunking, which is a larger
-relative swing than anything in the recall numbers.
+precision is the share of everything you retrieved that was actually the answer. Across the sizes
+tried it ranges from {tprec_small} to {tprec_large} for fixed-size chunking, a larger relative swing
+than anything in the recall numbers.
 
 Settings chosen on dev: {selected}.
 
@@ -93,36 +98,42 @@ Settings chosen on dev: {selected}.
   {dvb_best_val} MRR on {dvb_best_name}. The exception is {dvb_exceptions}: on the plain fixed-size
   baseline the dense-versus-BM25 interval still includes zero ({dense_vs_bm25}). A chunking bad
   enough that a better retriever cannot exploit it is itself worth noticing.
-- **{best_name} came first** ({best_mrr}) and {worst_name} last ({worst_mrr}), a spread of {spread}
-  MRR. {best_name} is also the most context-efficient at {best_tprec} token precision, so on this
-  corpus it wins on both axes at once.
-- **All {n_compared} other strategies beat the baseline on MRR with intervals clear of zero.** Not every comparison separates: on recall@3 several intervals still include zero, and the
-  widest paired interval spans {widest_ci} MRR. Across all {n_all_comparisons} paired comparisons,
-  {n_all_separated} separated. So the headline is solid and the fine-grained ordering below the top
-  is not.
+- **{best_name} had the best point estimate** ({best_mrr}) and {worst_name} the worst
+  ({worst_mrr}), a spread of {spread} MRR, and {best_name} is also the most context-efficient at
+  {best_tprec} token precision. Both of those are point estimates on one model: its gaps to the
+  other three winners do not clear zero, and it is not the strategy that held up on {embedder2}.
+- **All {n_compared} other strategies beat the baseline on MRR with intervals clear of zero on
+  {embedder}.** Not every comparison separates: on recall@3 several intervals still include zero,
+  and the widest paired interval spans {widest_ci} MRR. Across all {n_all_comparisons} paired
+  comparisons, {n_all_separated} separated.
+- **The ordering among the winners is not resolvable.** {best_name} has the highest point estimate,
+  but its gaps to the other three do not clear zero, so read the table as "these four beat
+  fixed-size" and not as a ranking.
 - **Splitting the answer is a real failure mode only at small sizes.** At {small_size} tokens,
   fixed-size chunking left the answer passage intact in {intact_small} of questions. At the selected
   settings: {intact_table}.
-- **Semantic chunking works, but it is not worth what it costs.** It reached {semantic_mrr}, a real
-  improvement on the baseline, for {semantic_cost} the embedding work to build the index. Sentence
-  chunking beat it at {best_mrr} for the same indexing cost as plain fixed-size. Paying double to
-  come second is the trade the published literature keeps finding, and this run agrees.
+- **Semantic chunking works, but it is the most expensive way to get there.** It reached
+  {semantic_mrr} on {embedder}, a real improvement on the baseline, for {semantic_cost} the
+  embedding work to build the index. Cheaper strategies reached the same place for the same indexing
+  cost as plain fixed-size, and on {embedder2} its advantage over the baseline is no longer
+  distinguishable. The published literature keeps reaching the same verdict.
 
 ### The overlap sweep
 
 Overlap is the one setting the literature openly disagrees about, and I could not find a published
 sweep of it. Here is one, at a {ov_size}-token chunk size.
 
-Coverage rises with overlap: recall@3 goes from {ov_recall_0} at no overlap to {ov_recall_max} at
-{ov_max}, and recall at the {budget_tokens}-token budget from {ov_budget_0} to {ov_budget_max}. That
-is the expected result and it is what overlap is for. It also costs {ov_index_growth} the tokens to
-index, which is the part people forget.
+Adding any overlap helps. MRR across the sweep runs {ov_mrr_path} and recall@3 runs
+{ov_recall_path}. Note that recall@3 is **not monotonic**: it peaks at {ov_recall_peak}, not at the
+largest overlap, so this is a step change at the first increment rather than a trend.
 
-**The useful finding is where the benefit stops.** MRR across the sweep runs {ov_mrr_path}. The
-first {ov_first_step} buys {ov_first_gain}; going all the way to {ov_max} adds {ov_rest_gain} on top
-of that. Almost the entire benefit arrives with the smallest overlap tested, and the rest is index
-size you are paying for and not getting back. The common default of 50% overlap looks like a poor
-trade on this evidence.
+**The useful finding is that nothing beyond the first step is resolvable.** The first
+{ov_first_step} buys {ov_first_gain} MRR. Going from there to {ov_max} is {ov_tail_ci}, which is
+{ov_tail_resolvable}. So the honest statement is not "more overlap keeps helping", and not even
+"the benefit saturates", but "I cannot resolve any difference above {ov_first_step}, and it costs
+more to index": {ov_first_step} costs {ov_cost_first} the tokens of no overlap, while {ov_max}
+costs {ov_index_growth}. The common default of 50% overlap buys nothing I can measure here and
+charges for it.
 
 **One caution about the cost side.** The widely used implementation of token-level precision sums
 the length of every retrieved chunk in the denominator *without de-duplicating*. Text appearing in
@@ -143,15 +154,23 @@ which denominator your harness implements before reading much into a precision o
 
 This is the question that decides whether a chunking result means anything, and most evaluations
 cannot answer it because they test one model. Running the identical chunks through {embedder2}
-instead of {embedder}, the strategy ranking is **{ranking_same}** ({rank_moves}).
+instead of {embedder}, the strategy ranking is **{ranking_same}**.
 
-The part that holds is the part worth acting on: {ends_stable}. {best_name} is first on both and
-{worst_both} is last on both, so "use something structure-aware, not plain fixed-size" survives the
-model change. What does not hold is the ordering in the middle ({middle_moves}), where the spread
-between strategies is {model2_spread} MRR on the second model against {spread} on the first.
+On {embedder}: {model1_order}.
+On {embedder2}, same chunks: {model2_order}.
 
-So: trust the top and the bottom of a chunking table, and treat the middle as noise unless the
-author tested more than one retriever. Most do not.
+Every position moved ({rank_moves}), and {ends_stable}. The strategy that came first on one model
+comes {model2_best} first on the other. The spread between best and worst collapses from {spread}
+MRR to {model2_spread}.
+
+Tested against the same baseline on the second model, {replication_detail}. So of the four
+strategies that beat plain fixed-size on {embedder}, **{n_replicate}** still does on {embedder2}:
+{robust_strategies}.
+
+This is the single most useful thing I found, and it is uncomfortable, because it undercuts the
+first half of my own article. A chunking comparison run on one embedding model is largely a
+measurement of that model. If you are choosing a chunker from someone's table, check how many
+retrievers they tested. Usually the answer is one.
 
 ### Where retrieval actually failed
 
@@ -216,9 +235,20 @@ Specific enough to be falsifiable:
 - **Two embedding models, both small.** Better models may behave differently again.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et
   al. found retrieval differences largely washed out in generation.
-- **Long chunks get truncated, and this is a confound.** The models read at most 512 tokens. Chunks
-  over that limit, by selected configuration: {truncation}. {worst_trunc} is the most affected, so
-  part of its deficit is a context-window artefact rather than a verdict on its boundaries.
+- **Context windows differ between the two models, and this is a confound.** {embedder} reads at
+  most {max_len} tokens; {embedder2} reads at most {model2_maxlen}. On {embedder} the selected
+  configurations are affected as follows: {truncation}, so {worst_trunc}. On {embedder2} the shorter
+  window bites harder: {truncation2}. Any {embedder2} number for an affected configuration is partly
+  a context-window artefact and not purely a verdict on its boundaries. I did not separate the two
+  effects, and it is one reason the cross-model section should be read as "these results are
+  fragile" rather than as a clean ranking of models.
+- **Some settings were chosen on a near-tie.** The dev split picks one configuration per strategy,
+  and {n_fragile} of them were decided by a hair: {fragile_selections}. A different split seed could
+  select a different row and move that strategy several places. The protocol is honest but the
+  resulting ordering is not robust.
+- **Chunk boundaries are identical across models for every strategy except semantic**, which places
+  its boundaries using the embedding model itself, so its chunks genuinely differ between the two
+  runs. The cross-model comparison is like-for-like for the other four.
 - **No correction for multiple comparisons.** I report {n_all_comparisons} paired comparisons and
   highlight the {n_all_separated} whose intervals clear zero. At a 5% threshold across that many
   tests you would expect roughly one to clear by chance. Treat them as suggestive.
@@ -230,17 +260,22 @@ Specific enough to be falsifiable:
 
 For prose documents like this one, on this evidence:
 
-1. **Start with recursive or sentence-aware splitting at a small-to-moderate token size.** It
-   respects boundaries that already exist, costs nothing extra, and was the most context-efficient
-   option here.
-2. **Fix the strategy before you tune the size.** Strategy moved the numbers more than size did
-   here, and plain fixed-size was worst at every size tested.
-3. **Add a little overlap, not a lot.** The first {ov_first_step} captured almost all of the
-   benefit here; going further mostly bought index size. Ignore precision-based arguments against
-   overlap until you have checked how your harness counts duplicated text.
-4. **Do not reach for semantic chunking first.** It cost {semantic_cost} the indexing work here for
-   no defensible gain, and the published literature finds the same outside artificially stitched corpora.
-5. **Spend the effort on your retriever.** Dense versus BM25 was a bigger effect than any chunking choice.
+1. **Use recursive splitting at a moderate token size.** It is the only strategy that beat plain
+   fixed-size on both embedding models here, it costs nothing extra to build, and it is what
+   Chroma's much larger evaluation independently landed on. Sentence-based scored higher on
+   {embedder}, but it did not hold up on the second model.
+2. **Do not trust a strategy ranking, including the one above, that was measured on a single
+   embedding model.** Re-run it on yours. That is a day of work and it changed the answer here.
+3. **Add a little overlap, not a lot.** The first {ov_first_step} was worth {ov_first_gain} MRR;
+   everything beyond it was inside the noise and cost real index size. Ignore precision-based
+   arguments against overlap until you have checked how your harness counts duplicated text.
+4. **Do not reach for semantic chunking first.** It did beat the baseline on {embedder}, but it
+   cost {semantic_cost} the indexing work to do what cheaper strategies did for free, and that
+   advantage did not survive the second model. The published literature reaches the same verdict
+   outside artificially stitched corpora.
+5. **Spend the effort on your retriever.** Dense versus BM25 had the largest point estimate of
+   anything measured here ({dvb_best_val} MRR on {dvb_best_name}), though its interval overlaps the
+   larger chunking effects, so I would not claim a strict ordering.
 6. **Measure on your own documents.** Every source above, including this one, finds the winner depends
    on the corpus.
 

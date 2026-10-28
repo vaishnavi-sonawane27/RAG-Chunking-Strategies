@@ -125,14 +125,14 @@
 | `recursive 200` | 23 | 0 | 10 | 13 |
 | `semantic p85` | 19 | 0 | 7 | 12 |
 
-### Does the ranking survive a change of embedding model?
+### Same chunks, a different embedding model
 
 ![Model comparison](chart_models.png)
 
-| Strategy | MRR@10 (bge-small) | rank | MRR@10 (minilm) | rank |
-|---|---:|---:|---:|---:|
-| Fixed-size | 0.46 | 5 | 0.49 | 5 |
-| Fixed + overlap | 0.59 | 3 | 0.51 | 4 |
-| Sentence-based | 0.64 | 1 | 0.59 | 1 |
-| Recursive | 0.55 | 4 | 0.58 | 2 |
-| Semantic | 0.60 | 2 | 0.54 | 3 |
+| Strategy | Configuration | MRR@10 (bge-small) | rank | MRR@10 (minilm) | rank |
+|---|---|---:|---:|---:|---:|
+| Fixed-size | `fixed 200` | 0.46 | 5 | 0.49 | 4 |
+| Fixed + overlap | `fixed_overlap 200+80` | 0.59 | 3 | 0.49 | 5 |
+| Sentence-based | `sentence 100` | 0.64 | 1 | 0.57 | 2 |
+| Recursive | `recursive 200` | 0.55 | 4 | 0.58 | 1 |
+| Semantic | `semantic p85` | 0.60 | 2 | 0.54 | 3 |

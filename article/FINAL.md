@@ -16,21 +16,26 @@ of 64 documents, 130 questions, two embedding models, chunk sizes in tokens, and
 part that matters: **every setting chosen on a held-out dev split and every number reported on test
 questions the tuning never saw**, with paired bootstrap confidence intervals over 5,000 resamples.
 
-**The short answer: the differences are real, and plain fixed-size chunking is the worst option
-tested.** Against the fixed 200 baseline on MRR@10, every single one of the other four
-strategies beat it with a confidence interval clear of zero: **Sentence-based** +0.181 [+0.078, +0.285]; **Semantic** +0.138 [+0.037, +0.242]; **Fixed + overlap** +0.126 [+0.051, +0.204]; **Recursive** +0.090 [+0.007, +0.171]. Fixed-size came last at
-every chunk size I tried.
+**The short answer: on one embedding model every alternative beats plain fixed-size chunking, and
+on a second model almost none of them do.** Against the fixed 200 baseline on MRR@10 with
+bge-small, every single one of the other four strategies beat it with an interval clear of zero:
+**Sentence-based** +0.181 [+0.078, +0.285]; **Semantic** +0.138 [+0.037, +0.242]; **Fixed + overlap** +0.126 [+0.051, +0.204]; **Recursive** +0.090 [+0.007, +0.171].
 
-That is a stronger result than I expected, and it only showed up once sizes were measured in tokens
-rather than words. Three further things came out of it:
+Then I ran the **identical chunks** through minilm and the result largely evaporated:
+**Fixed + overlap** -0.002 [-0.074, +0.071] (not distinguishable); **Recursive** +0.087 [+0.006, +0.168]; **Semantic** +0.049 [-0.039, +0.140] (not distinguishable); **Sentence-based** +0.079 [-0.023, +0.182] (not distinguishable). Only **Recursive** beats plain fixed-size on both models.
 
-1. **Strategy matters more than size.** Switching strategy at a fixed size moves MRR by
-   0.081 to 0.157 (mean 0.116); changing size within a strategy moves it by
-   0.042 to 0.119 (mean 0.080). So strategy is the thing to get right first, and
-   that is the opposite of the advice usually given.
-2. **Overlap helps, and its benefit saturates almost immediately.** Going from no overlap to
-   20 tokens (10%) is worth +0.125 MRR. Going all the way up to 80 tokens (40%) adds
-   +0.001 on top of that.
+That is the finding I would actually stand behind, and it is a warning about every chunking
+comparison you have read, including the first half of this one: **a chunking result measured on one
+embedding model mostly describes that model.** Three further things came out of it:
+
+1. **Strategy may matter more than size, on one model.** Switching strategy at a fixed size moves
+   MRR by 0.081 to 0.157 (mean 0.116); changing size within a strategy moves it
+   by 0.042 to 0.119 (mean 0.080). But this does not replicate on the second model
+   (strategy 0.082 vs size 0.075), so treat it as a property of
+   this corpus and this retriever, not a rule.
+2. **Overlap helps, and nothing beyond the smallest step is resolvable.** Going from no overlap to
+   20 tokens (10%) is worth +0.125 MRR. Going from there all the way to 80 tokens (40%) is
+   +0.001 MRR (95% CI [-0.059, +0.062]), which is not distinguishable from zero.
 3. **The published way of measuring overlap's cost is partly an artefact.** The standard
    implementation counts text appearing in two overlapping chunks twice, which penalises overlap by
    construction rather than by evidence. Details below.
@@ -77,9 +82,9 @@ recall at a fixed 1000-token budget: fill the context window and see who got the
 
 **Context efficiency, not just recall.** Recall@k cannot tell a tight chunk that is mostly answer
 from a long one with the answer buried in padding, and in production you pay per token. Token-level
-precision is the share of everything you retrieved that was actually the answer. At the selected
-settings it ranges from 3.98% at 100 tokens to 1.12% at 400 tokens for fixed-size chunking, which is a larger
-relative swing than anything in the recall numbers.
+precision is the share of everything you retrieved that was actually the answer. Across the sizes
+tried it ranges from 3.98% at 100 tokens to 1.12% at 400 tokens for fixed-size chunking, a larger relative swing
+than anything in the recall numbers.
 
 Settings chosen on dev: `fixed 200`, `fixed_overlap 200+80`, `recursive 200`, `semantic 85`, `sentence 100`.
 
@@ -212,17 +217,17 @@ Settings chosen on dev: `fixed 200`, `fixed_overlap 200+80`, `recursive 200`, `s
 | `recursive 200` | 23 | 0 | 10 | 13 |
 | `semantic p85` | 19 | 0 | 7 | 12 |
 
-### Does the ranking survive a change of embedding model?
+### Same chunks, a different embedding model
 
 ![Model comparison](chart_models.png)
 
-| Strategy | MRR@10 (bge-small) | rank | MRR@10 (minilm) | rank |
-|---|---:|---:|---:|---:|
-| Fixed-size | 0.46 | 5 | 0.49 | 5 |
-| Fixed + overlap | 0.59 | 3 | 0.51 | 4 |
-| Sentence-based | 0.64 | 1 | 0.59 | 1 |
-| Recursive | 0.55 | 4 | 0.58 | 2 |
-| Semantic | 0.60 | 2 | 0.54 | 3 |
+| Strategy | Configuration | MRR@10 (bge-small) | rank | MRR@10 (minilm) | rank |
+|---|---|---:|---:|---:|---:|
+| Fixed-size | `fixed 200` | 0.46 | 5 | 0.49 | 4 |
+| Fixed + overlap | `fixed_overlap 200+80` | 0.59 | 3 | 0.49 | 5 |
+| Sentence-based | `sentence 100` | 0.64 | 1 | 0.57 | 2 |
+| Recursive | `recursive 200` | 0.55 | 4 | 0.58 | 1 |
+| Semantic | `semantic p85` | 0.60 | 2 | 0.54 | 3 |
 
 
 ## What I take from this
@@ -231,36 +236,42 @@ Settings chosen on dev: `fixed 200`, `fixed_overlap 200+80`, `recursive 200`, `s
   +0.272 MRR on Sentence-based. The exception is Fixed-size: on the plain fixed-size
   baseline the dense-versus-BM25 interval still includes zero (+0.052 MRR (95% CI [-0.049, +0.151])). A chunking bad
   enough that a better retriever cannot exploit it is itself worth noticing.
-- **Sentence-based came first** (0.64 (95% CI 0.56–0.73)) and Fixed-size last (0.46 (95% CI 0.38–0.54)), a spread of 0.18
-  MRR. Sentence-based is also the most context-efficient at 5.14% token precision, so on this
-  corpus it wins on both axes at once.
-- **All 4 other strategies beat the baseline on MRR with intervals clear of zero.** Not every comparison separates: on recall@3 several intervals still include zero, and the
-  widest paired interval spans 0.21 MRR. Across all 24 paired comparisons,
-  14 separated. So the headline is solid and the fine-grained ordering below the top
-  is not.
+- **Sentence-based had the best point estimate** (0.64 (95% CI 0.56–0.73)) and Fixed-size the worst
+  (0.46 (95% CI 0.38–0.54)), a spread of 0.18 MRR, and Sentence-based is also the most context-efficient at
+  5.14% token precision. Both of those are point estimates on one model: its gaps to the
+  other three winners do not clear zero, and it is not the strategy that held up on minilm.
+- **All 4 other strategies beat the baseline on MRR with intervals clear of zero on
+  bge-small.** Not every comparison separates: on recall@3 several intervals still include zero,
+  and the widest paired interval spans 0.21 MRR. Across all 24 paired
+  comparisons, 14 separated.
+- **The ordering among the winners is not resolvable.** Sentence-based has the highest point estimate,
+  but its gaps to the other three do not clear zero, so read the table as "these four beat
+  fixed-size" and not as a ranking.
 - **Splitting the answer is a real failure mode only at small sizes.** At 100 tokens,
-  fixed-size chunking left the answer passage intact in 74% of questions. At the selected
-  settings: Fixed-size 88%, Fixed + overlap 100%, Sentence-based 92%, Recursive 96%, Semantic 99%.
-- **Semantic chunking works, but it is not worth what it costs.** It reached 0.60 (95% CI 0.52–0.68), a real
-  improvement on the baseline, for 2.0× the embedding work to build the index. Sentence
-  chunking beat it at 0.64 (95% CI 0.56–0.73) for the same indexing cost as plain fixed-size. Paying double to
-  come second is the trade the published literature keeps finding, and this run agrees.
+  fixed-size chunking left the answer passage intact in 73.9% of questions. At the selected
+  settings: Fixed-size 87.5%, Fixed + overlap 100.0%, Sentence-based 92.0%, Recursive 95.5%, Semantic 98.9%.
+- **Semantic chunking works, but it is the most expensive way to get there.** It reached
+  0.60 (95% CI 0.52–0.68) on bge-small, a real improvement on the baseline, for 2.0× the
+  embedding work to build the index. Cheaper strategies reached the same place for the same indexing
+  cost as plain fixed-size, and on minilm its advantage over the baseline is no longer
+  distinguishable. The published literature keeps reaching the same verdict.
 
 ### The overlap sweep
 
 Overlap is the one setting the literature openly disagrees about, and I could not find a published
 sweep of it. Here is one, at a 200-token chunk size.
 
-Coverage rises with overlap: recall@3 goes from 0.57 at no overlap to 0.70 at
-80 tokens (40%), and recall at the 1000-token budget from 0.68 to 0.76. That
-is the expected result and it is what overlap is for. It also costs 1.63× the tokens to
-index, which is the part people forget.
+Adding any overlap helps. MRR across the sweep runs 0.462 then 0.587 then 0.585 then 0.588 and recall@3 runs
+0.57, 0.73, 0.66, 0.70. Note that recall@3 is **not monotonic**: it peaks at 20 tokens, not at the
+largest overlap, so this is a step change at the first increment rather than a trend.
 
-**The useful finding is where the benefit stops.** MRR across the sweep runs 0.462 then 0.587 then 0.585 then 0.588. The
-first 20 tokens (10%) buys +0.125; going all the way to 80 tokens (40%) adds +0.001 on top
-of that. Almost the entire benefit arrives with the smallest overlap tested, and the rest is index
-size you are paying for and not getting back. The common default of 50% overlap looks like a poor
-trade on this evidence.
+**The useful finding is that nothing beyond the first step is resolvable.** The first
+20 tokens (10%) buys +0.125 MRR. Going from there to 80 tokens (40%) is +0.001 MRR (95% CI [-0.059, +0.062]), which is
+not distinguishable from zero. So the honest statement is not "more overlap keeps helping", and not even
+"the benefit saturates", but "I cannot resolve any difference above 20 tokens (10%), and it costs
+more to index": 20 tokens (10%) costs 1.11× the tokens of no overlap, while 80 tokens (40%)
+costs 1.63×. The common default of 50% overlap buys nothing I can measure here and
+charges for it.
 
 **One caution about the cost side.** The widely used implementation of token-level precision sums
 the length of every retrieved chunk in the denominator *without de-duplicating*. Text appearing in
@@ -281,15 +292,23 @@ which denominator your harness implements before reading much into a precision o
 
 This is the question that decides whether a chunking result means anything, and most evaluations
 cannot answer it because they test one model. Running the identical chunks through minilm
-instead of bge-small, the strategy ranking is **different** (Fixed + overlap 3→4, Recursive 4→2, Semantic 2→3).
+instead of bge-small, the strategy ranking is **different**.
 
-The part that holds is the part worth acting on: the best and worst strategies are the same on both models. Sentence-based is first on both and
-Fixed-size is last on both, so "use something structure-aware, not plain fixed-size" survives the
-model change. What does not hold is the ordering in the middle (Fixed + overlap, Recursive, Semantic), where the spread
-between strategies is 0.10 MRR on the second model against 0.18 on the first.
+On bge-small: Sentence-based > Semantic > Fixed + overlap > Recursive > Fixed-size.
+On minilm, same chunks: Recursive > Sentence-based > Semantic > Fixed-size > Fixed + overlap.
 
-So: trust the top and the bottom of a chunking table, and treat the middle as noise unless the
-author tested more than one retriever. Most do not.
+Every position moved (Sentence-based 1 to 2, Semantic 2 to 3, Fixed + overlap 3 to 5, Recursive 4 to 1, Fixed-size 5 to 4), and not even the best and worst strategies hold. The strategy that came first on one model
+comes Recursive first on the other. The spread between best and worst collapses from 0.18
+MRR to 0.09.
+
+Tested against the same baseline on the second model, **Fixed + overlap** -0.002 [-0.074, +0.071] (not distinguishable); **Recursive** +0.087 [+0.006, +0.168]; **Semantic** +0.049 [-0.039, +0.140] (not distinguishable); **Sentence-based** +0.079 [-0.023, +0.182] (not distinguishable). So of the four
+strategies that beat plain fixed-size on bge-small, **1** still does on minilm:
+Recursive.
+
+This is the single most useful thing I found, and it is uncomfortable, because it undercuts the
+first half of my own article. A chunking comparison run on one embedding model is largely a
+measurement of that model. If you are choosing a chunker from someone's table, check how many
+retrievers they tested. Usually the answer is one.
 
 ### Where retrieval actually failed
 
@@ -354,9 +373,20 @@ Specific enough to be falsifiable:
 - **Two embedding models, both small.** Better models may behave differently again.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et
   al. found retrieval differences largely washed out in generation.
-- **Long chunks get truncated, and this is a confound.** The models read at most 512 tokens. Chunks
-  over that limit, by selected configuration: Sentence-based 0/2051, Fixed-size 0/904, Recursive 0/1114, Fixed + overlap 0/1451, Semantic 0/1002. Sentence-based (0% of its chunks) is the most affected, so
-  part of its deficit is a context-window artefact rather than a verdict on its boundaries.
+- **Context windows differ between the two models, and this is a confound.** bge-small reads at
+  most 512 tokens; minilm reads at most 256. On bge-small the selected
+  configurations are affected as follows: Sentence-based 0/2051, Fixed-size 0/904, Recursive 0/1114, Fixed + overlap 0/1451, Semantic 0/1002, so no selected configuration on this model is affected. On minilm the shorter
+  window bites harder: Semantic 218/985 (22%). Any minilm number for an affected configuration is partly
+  a context-window artefact and not purely a verdict on its boundaries. I did not separate the two
+  effects, and it is one reason the cross-model section should be read as "these results are
+  fragile" rather than as a clean ranking of models.
+- **Some settings were chosen on a near-tie.** The dev split picks one configuration per strategy,
+  and 2 of them were decided by a hair: Sentence-based (sentence 100 over sentence 200 by 0.001 dev MRR); Recursive (recursive 200 over recursive 100 by 0.001 dev MRR). A different split seed could
+  select a different row and move that strategy several places. The protocol is honest but the
+  resulting ordering is not robust.
+- **Chunk boundaries are identical across models for every strategy except semantic**, which places
+  its boundaries using the embedding model itself, so its chunks genuinely differ between the two
+  runs. The cross-model comparison is like-for-like for the other four.
 - **No correction for multiple comparisons.** I report 24 paired comparisons and
   highlight the 14 whose intervals clear zero. At a 5% threshold across that many
   tests you would expect roughly one to clear by chance. Treat them as suggestive.
@@ -368,17 +398,22 @@ Specific enough to be falsifiable:
 
 For prose documents like this one, on this evidence:
 
-1. **Start with recursive or sentence-aware splitting at a small-to-moderate token size.** It
-   respects boundaries that already exist, costs nothing extra, and was the most context-efficient
-   option here.
-2. **Fix the strategy before you tune the size.** Strategy moved the numbers more than size did
-   here, and plain fixed-size was worst at every size tested.
-3. **Add a little overlap, not a lot.** The first 20 tokens (10%) captured almost all of the
-   benefit here; going further mostly bought index size. Ignore precision-based arguments against
-   overlap until you have checked how your harness counts duplicated text.
-4. **Do not reach for semantic chunking first.** It cost 2.0× the indexing work here for
-   no defensible gain, and the published literature finds the same outside artificially stitched corpora.
-5. **Spend the effort on your retriever.** Dense versus BM25 was a bigger effect than any chunking choice.
+1. **Use recursive splitting at a moderate token size.** It is the only strategy that beat plain
+   fixed-size on both embedding models here, it costs nothing extra to build, and it is what
+   Chroma's much larger evaluation independently landed on. Sentence-based scored higher on
+   bge-small, but it did not hold up on the second model.
+2. **Do not trust a strategy ranking, including the one above, that was measured on a single
+   embedding model.** Re-run it on yours. That is a day of work and it changed the answer here.
+3. **Add a little overlap, not a lot.** The first 20 tokens (10%) was worth +0.125 MRR;
+   everything beyond it was inside the noise and cost real index size. Ignore precision-based
+   arguments against overlap until you have checked how your harness counts duplicated text.
+4. **Do not reach for semantic chunking first.** It did beat the baseline on bge-small, but it
+   cost 2.0× the indexing work to do what cheaper strategies did for free, and that
+   advantage did not survive the second model. The published literature reaches the same verdict
+   outside artificially stitched corpora.
+5. **Spend the effort on your retriever.** Dense versus BM25 had the largest point estimate of
+   anything measured here (+0.272 MRR on Sentence-based), though its interval overlaps the
+   larger chunking effects, so I would not claim a strict ordering.
 6. **Measure on your own documents.** Every source above, including this one, finds the winner depends
    on the corpus.
 
