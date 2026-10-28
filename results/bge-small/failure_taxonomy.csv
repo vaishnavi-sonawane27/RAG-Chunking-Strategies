@@ -1,6 +1,6 @@
 strategy,label,misses_top5,evidence split across chunks,"right document, wrong passage",wrong document
-fixed,fixed 200,27,0,8,19
-sentence,sentence 100,22,0,12,10
-recursive,recursive 200,23,0,10,13
-fixed_overlap,fixed_overlap 200+80,21,0,5,16
-semantic,semantic p85,19,0,7,12
+fixed,fixed 200,59,0,23,36
+sentence,sentence 200,53,0,19,34
+recursive,recursive 200,51,0,18,33
+fixed_overlap,fixed_overlap 200+80,42,0,14,28
+semantic,semantic p85,61,0,16,45

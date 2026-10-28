@@ -9,7 +9,7 @@
       "overlap": 0
     },
     "sentence": {
-      "size": 100,
+      "size": 200,
       "overlap": 0
     },
     "recursive": {
@@ -29,11 +29,11 @@
   "split_seed": 0,
   "dev_frac": 0.3,
   "n_docs": 64,
-  "n_questions": 130,
-  "n_dev": 42,
-  "n_test": 88,
-  "n_short_evidence": 107,
-  "n_long_evidence": 23,
+  "n_questions": 215,
+  "n_dev": 64,
+  "n_test": 151,
+  "n_short_evidence": 171,
+  "n_long_evidence": 44,
   "short_evidence_tokens": 40,
   "budget_tokens": 1000,
   "token_metric_k": 5,
@@ -48,7 +48,7 @@
     80
   ],
   "bootstrap_resamples": 5000,
-  "seconds": 944.1,
+  "seconds": 939.5,
   "platform": {
     "python": "3.13.17",
     "os": "Linux-6.18.44-fc-v180-x86_64-with-glibc2.39",

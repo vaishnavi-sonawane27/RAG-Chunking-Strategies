@@ -1,807 +1,1292 @@
 [
  {
   "id": "q001",
-  "doc": "01_first-time-setup",
-  "question": "If the same Git setting is defined in more than one config file, which file's value takes precedence?",
-  "evidence": "Each level overrides values in the previous level, so values in .git/config trump those in [path]/etc/gitconfig."
+  "doc": "01_about-version-control",
+  "question": "In a distributed setup, how much of the project does each client hold locally?",
+  "evidence": "In a DVCS (such as Git, Mercurial or Darcs), clients don't just check out the latest snapshot of the files; rather, they fully mirror the repository, including its full history."
  },
  {
   "id": "q002",
-  "doc": "01_first-time-setup",
-  "question": "Which flag makes git config store a value for my user account across all my repositories?",
-  "evidence": "You can make Git read and write to this file specifically by passing the --global option"
+  "doc": "01_about-version-control",
+  "question": "What is the basic purpose of keeping a project under version control?",
+  "evidence": "Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later."
  },
  {
   "id": "q003",
-  "doc": "01_first-time-setup",
-  "question": "From which Git release can the name of the initial branch be customised?",
-  "evidence": "From Git version 2.28 onwards, you can set a different name for the initial branch."
- },
- {
-  "id": "q004",
-  "doc": "01_help",
-  "question": "How do I get just a short reminder of a command's flags rather than the whole manual page?",
-  "evidence": "you can ask for the more concise \"help\" output with the -h option"
- },
- {
-  "id": "q005",
-  "doc": "01_help",
-  "question": "Where can I chat with Git experts if the manuals are not enough?",
-  "evidence": "#git, #github, or #gitlab channels on the Libera Chat IRC server"
- },
- {
-  "id": "q006",
-  "doc": "01_history",
-  "question": "What event pushed the Linux community to build their own version control tool?",
-  "evidence": "In 2005, the relationship between the community that developed the Linux kernel and the commercial company that developed BitKeeper broke down, and the tool's free-of-charge status was revoked."
- },
- {
-  "id": "q007",
-  "doc": "01_what-is-git",
-  "question": "How does Git's way of recording data differ from systems that keep lists of per-file changes?",
-  "evidence": "Git thinks of its data more like a series of snapshots of a miniature filesystem."
- },
- {
-  "id": "q008",
-  "doc": "01_what-is-git",
-  "question": "What does Git save for a file that is identical to its previous version when you commit?",
-  "evidence": "if files have not changed, Git doesn't store the file again, just a link to the previous identical file it has already stored."
- },
- {
-  "id": "q009",
-  "doc": "01_what-is-git",
-  "question": "Why can I keep committing while on a train with no internet?",
-  "evidence": "you can commit happily (to your local copy, remember?) until you get to a network connection to upload."
- },
- {
-  "id": "q010",
-  "doc": "01_what-is-git",
-  "question": "What format and length does the checksum Git uses for integrity have?",
-  "evidence": "This is a 40-character string composed of hexadecimal characters (0–9 and a–f)"
- },
- {
-  "id": "q011",
-  "doc": "01_what-is-git",
-  "question": "What is the formal name for the area that holds what will go into the next commit?",
-  "evidence": "Its technical name in Git parlance is the \"index\", but the phrase \"staging area\" works just as well."
- },
- {
-  "id": "q012",
-  "doc": "01_what-is-git",
-  "question": "Which states can a file be in according to Git's basic model?",
-  "evidence": "Git has three main states that your files can reside in: modified, staged, and committed:"
- },
- {
-  "id": "q013",
-  "doc": "01_what-is-git",
-  "question": "Which part of a Git project holds the metadata and the object database?",
-  "evidence": "The Git directory is where Git stores the metadata and object database for your project."
- },
- {
-  "id": "q014",
   "doc": "01_about-version-control",
-  "question": "What goes wrong with the habit of duplicating project folders by hand as a backup scheme?",
-  "evidence": "It is easy to forget which directory you're in and accidentally write to the wrong file or copy over files you don't mean to."
- },
- {
-  "id": "q015",
-  "doc": "01_about-version-control",
-  "question": "Which early local version control tool kept patch sets on disk and still ships on many machines?",
+  "question": "Which early local revision-tracking program is still shipped with many computers?",
   "evidence": "One of the most popular VCS tools was a system called RCS, which is still distributed with many computers today."
  },
  {
+  "id": "q004",
+  "doc": "01_command-line",
+  "question": "Does skill with a graphical Git tool transfer to the terminal as readily as the reverse?",
+  "evidence": "If you know how to run the command-line version, you can probably also figure out how to run the GUI version, while the opposite is not necessarily true."
+ },
+ {
+  "id": "q005",
+  "doc": "01_command-line",
+  "question": "Which kind of Git interface can I count on every user already having?",
+  "evidence": "all users will have the command-line tools installed and available."
+ },
+ {
+  "id": "q006",
+  "doc": "01_command-line",
+  "question": "Why do the examples favour typing commands over clicking in a graphical Git client?",
+  "evidence": "For one, the command line is the only place you can run all Git commands -- most of the GUIs implement only a partial subset of Git functionality for simplicity."
+ },
+ {
+  "id": "q007",
+  "doc": "01_first-time-setup",
+  "question": "If the same setting is defined at more than one scope, which one wins?",
+  "evidence": "Each level overrides values in the previous level, so values in .git/config trump those in [path]/etc/gitconfig."
+ },
+ {
+  "id": "q008",
+  "doc": "01_first-time-setup",
+  "question": "What is a brand new repository's first branch named if I never configure it?",
+  "evidence": "By default Git will create a branch called master when you create a new repository with git init."
+ },
+ {
+  "id": "q009",
+  "doc": "01_first-time-setup",
+  "question": "Which configuration file holds settings that apply to everybody on the machine?",
+  "evidence": "[path]/etc/gitconfig file: Contains values applied to every user on the system and all their repositories."
+ },
+ {
+  "id": "q010",
+  "doc": "01_help",
+  "question": "How many interchangeable ways are there to bring up the full manual for a Git subcommand?",
+  "evidence": "If you ever need help while using Git, there are three equivalent ways to get the comprehensive manual page (manpage) help for any of the Git commands:"
+ },
+ {
+  "id": "q011",
+  "doc": "01_help",
+  "question": "Where can I talk to knowledgeable Git users live when the documentation is not enough?",
+  "evidence": "If the manpages and this book aren't enough and you need in-person help, you can try the #git, #github, or #gitlab channels on the Libera Chat IRC server, which can be found at ^ (https://libera.chat/)."
+ },
+ {
+  "id": "q012",
+  "doc": "01_help",
+  "question": "Which flag prints a brief list of a command's options instead of the whole manual?",
+  "evidence": "In addition, if you don't need the full-blown manpage help, but just need a quick refresher on the available options for a Git command, you can ask for the more concise \"help\" output with the -h option, as in:"
+ },
+ {
+  "id": "q013",
+  "doc": "01_history",
+  "question": "How were kernel modifications circulated during the project's first decade?",
+  "evidence": "During the early years of the Linux kernel maintenance (1991–2002), changes to the software were passed around as patches and archived files."
+ },
+ {
+  "id": "q014",
+  "doc": "01_history",
+  "question": "What event triggered the decision to build a brand new version control tool?",
+  "evidence": "In 2005, the relationship between the community that developed the Linux kernel and the commercial company that developed BitKeeper broke down, and the tool's free-of-charge status was revoked."
+ },
+ {
+  "id": "q015",
+  "doc": "01_history",
+  "question": "Which commercial tool did the kernel developers adopt in 2002?",
+  "evidence": "In 2002, the Linux kernel project began using a proprietary DVCS called BitKeeper."
+ },
+ {
   "id": "q016",
-  "doc": "01_about-version-control",
-  "question": "What is the most obvious weakness of having one central server hold all versions?",
-  "evidence": "The most obvious is the single point of failure that the centralized server represents."
+  "doc": "01_installing",
+  "question": "What is the usual way to get the core Git programs onto a Linux machine?",
+  "evidence": "If you want to install the basic Git tools on Linux via a binary installer, you can generally do so through the package management tool that comes with your distribution."
  },
  {
   "id": "q017",
-  "doc": "01_about-version-control",
-  "question": "In a distributed system, why does losing the server not mean losing the history?",
-  "evidence": "Every clone is really a full backup of all the data."
+  "doc": "01_installing",
+  "question": "Where do I download a more current Git build for a Mac?",
+  "evidence": "A macOS Git installer is maintained and available for download at the Git website, at ^ (https://git-scm.com/download/mac)."
  },
  {
   "id": "q018",
   "doc": "01_installing",
-  "question": "What is the simplest way to get Git on a Mac?",
-  "evidence": "The easiest is probably to install the Xcode Command Line Tools."
+  "question": "Which libraries do I need before compiling Git myself?",
+  "evidence": "If you do want to install Git from source, you need to have the following libraries that Git depends on: autotools, curl, zlib, openssl, expat, and libiconv."
  },
  {
   "id": "q019",
-  "doc": "01_installing",
-  "question": "Which libraries must be present before compiling Git yourself?",
-  "evidence": "autotools, curl, zlib, openssl, expat, and libiconv"
+  "doc": "01_what-is-git",
+  "question": "Do everyday Git commands have to reach another machine to do their work?",
+  "evidence": "Most operations in Git need only local files and resources to operate -- generally no information is needed from another computer on your network."
  },
  {
   "id": "q020",
-  "doc": "02_getting-a-repository",
-  "question": "How does cloning in Git differ from a Subversion-style checkout?",
-  "evidence": "instead of getting just a working copy, Git receives a full copy of nearly all data that the server has."
+  "doc": "01_what-is-git",
+  "question": "What does Git actually record each time you save the state of a project?",
+  "evidence": "With Git, every time you commit, or save the state of your project, Git basically takes a picture of what all your files look like at that moment and stores a reference to that snapshot."
  },
  {
   "id": "q021",
-  "doc": "02_getting-a-repository",
-  "question": "What hidden folder appears when I turn an existing folder into a repository?",
-  "evidence": "This creates a new subdirectory named .git that contains all of your necessary repository files"
+  "doc": "01_what-is-git",
+  "question": "Where does Git keep the record of what is queued up for the next commit?",
+  "evidence": "The staging area is a file, generally contained in your Git directory, that stores information about what will go into your next commit."
  },
  {
   "id": "q022",
-  "doc": "02_getting-a-repository",
-  "question": "Which URL styles can be used to clone, besides https?",
-  "evidence": "you may also see git:// or user@server:path/to/repo.git, which uses the SSH transfer protocol."
+  "doc": "02_aliases",
+  "question": "How do I make a shortcut launch a program that isn't part of Git?",
+  "evidence": "maybe you want to run an external command, rather than a Git subcommand.\nIn that case, you start the command with a ! character."
  },
  {
   "id": "q023",
-  "doc": "02_recording-changes",
-  "question": "Why does a file show up as both staged and unstaged after I edit it following git add?",
-  "evidence": "It turns out that Git stages a file exactly as it is when you run the git add command."
+  "doc": "02_aliases",
+  "question": "Which tool do I use to set up shorthand names for long Git commands?",
+  "evidence": "If you don't want to type the entire text of each of the Git commands, you can easily set up an alias for each command using git config."
  },
  {
   "id": "q024",
-  "doc": "02_recording-changes",
-  "question": "In the compact status output, what do the left and right letter columns represent?",
-  "evidence": "the left-hand column indicates the status of the staging area and the right-hand column indicates the status of the working tree."
+  "doc": "02_aliases",
+  "question": "Will Git guess which subcommand I mean if I only type part of its name?",
+  "evidence": "Git doesn't automatically infer your command if you type it in partially."
  },
  {
   "id": "q025",
-  "doc": "02_recording-changes",
-  "question": "How do I make a gitignore rule apply only to directories?",
-  "evidence": "You can end patterns with a forward slash (/) to specify a directory."
+  "doc": "02_getting-a-repository",
+  "question": "After turning an existing folder into a repository, how do I record its current files?",
+  "evidence": "You can accomplish that with a few git add commands that specify the files you want to track, followed by a git commit:"
  },
  {
   "id": "q026",
-  "doc": "02_recording-changes",
-  "question": "How many ignore files does the Linux kernel repository contain?",
-  "evidence": "The Linux kernel source repository has 206 .gitignore files."
+  "doc": "02_getting-a-repository",
+  "question": "Can I choose a target folder name that differs from the project's own?",
+  "evidence": "If you want to clone the repository into a directory named something other than libgit2, you can specify the new directory name as an additional argument:"
  },
  {
   "id": "q027",
-  "doc": "02_recording-changes",
-  "question": "Which diff variant shows what is already staged for the next commit?",
-  "evidence": "If you want to see what you've staged that will go into your next commit, you can use git diff --staged."
+  "doc": "02_getting-a-repository",
+  "question": "How much of a project's past comes down when I copy a repository?",
+  "evidence": "Every version of every file for the history of the project is pulled down by default when you run git clone."
  },
  {
   "id": "q028",
   "doc": "02_recording-changes",
-  "question": "How can a commit skip the explicit add step for files Git already follows?",
-  "evidence": "Adding the -a option to the git commit command makes Git automatically stage every file that is already tracked before doing the commit"
+  "question": "I edited a file again after staging it; what do I have to do before committing?",
+  "evidence": "If you modify a file after you run git add, you have to run git add again to stage the latest version of the file:"
  },
  {
   "id": "q029",
   "doc": "02_recording-changes",
-  "question": "What flag is needed to delete a file from Git when it has staged or modified content?",
-  "evidence": "If you modified the file or had already added it to the staging area, you must force the removal with the -f option."
+  "question": "Is there a shortcut that commits my tracked changes without staging them first?",
+  "evidence": "Adding the -a option to the git commit command makes Git automatically stage every file that is already tracked before doing the commit, letting you skip the git add part:"
  },
  {
   "id": "q030",
   "doc": "02_recording-changes",
-  "question": "How do I stop Git tracking a file but leave it on my disk?",
-  "evidence": "keep the file in your working tree but remove it from your staging area"
+  "question": "Which files in my working directory does Git consider untracked?",
+  "evidence": "Untracked files are everything else -- any files in your working directory that were not in your last snapshot and are not in your staging area."
  },
  {
   "id": "q031",
-  "doc": "02_recording-changes",
-  "question": "Does Git remember that a file was renamed?",
-  "evidence": "Unlike many other VCSs, Git doesn't explicitly track file movement."
+  "doc": "02_remotes",
+  "question": "Besides downloading new commits, what else does pulling do?",
+  "evidence": "Running git pull generally fetches data from the server you originally cloned from and automatically tries to merge it into the code you're currently working on."
  },
  {
   "id": "q032",
-  "doc": "02_recording-changes",
-  "question": "What is the benefit of the move command compared with renaming by hand?",
-  "evidence": "The only real difference is that git mv is one command instead of three"
+  "doc": "02_remotes",
+  "question": "What else gets thrown away when I drop a remote from my repository?",
+  "evidence": "Once you delete the reference to a remote this way, all remote-tracking branches and configuration settings associated with that remote are also deleted."
  },
  {
   "id": "q033",
-  "doc": "02_viewing-history",
-  "question": "In what order does the history command list commits when run without options?",
-  "evidence": "lists the commits made in that repository in reverse chronological order"
+  "doc": "02_remotes",
+  "question": "What shortname does Git hand to the server a repository was copied from?",
+  "evidence": "If you've cloned your repository, you should at least see origin -- that is the default name Git gives to the server you cloned from:"
  },
  {
   "id": "q034",
-  "doc": "02_viewing-history",
-  "question": "Who counts as the author versus the committer of a change?",
-  "evidence": "The author is the person who originally wrote the work, whereas the committer is the person who last applied the work."
+  "doc": "02_tagging",
+  "question": "Do my tags travel to the server automatically when I push?",
+  "evidence": "By default, the git push command doesn't transfer tags to remote servers."
  },
  {
   "id": "q035",
-  "doc": "02_viewing-history",
-  "question": "Which log filter finds commits that changed how many times a given string occurs?",
-  "evidence": "Another really helpful filter is the -S option (colloquially referred to as Git's \"pickaxe\" option)"
+  "doc": "02_tagging",
+  "question": "How is an annotated tag represented inside the repository?",
+  "evidence": "Annotated tags, however, are stored as full objects in the Git database."
  },
  {
   "id": "q036",
-  "doc": "02_viewing-history",
-  "question": "How can I keep merge commits from cluttering the log output?",
-  "evidence": "simply add the log option --no-merges"
+  "doc": "02_tagging",
+  "question": "Which command gets rid of a tag in my own clone?",
+  "evidence": "To delete a tag on your local repository, you can use git tag -d <tagname>."
  },
  {
   "id": "q037",
   "doc": "02_undoing",
-  "question": "What actually happens to the old commit when you amend the last one?",
-  "evidence": "you're not so much fixing it as replacing it entirely with a new, improved commit"
+  "question": "If work was never recorded in a commit, what are my chances of getting it back?",
+  "evidence": "anything you lose that was never committed is likely never to be seen again."
  },
  {
   "id": "q038",
   "doc": "02_undoing",
-  "question": "Is it safe to amend a commit I have already shared with others?",
+  "question": "When is rewriting the most recent commit considered safe?",
   "evidence": "Only amend commits that are still local and have not been pushed somewhere."
  },
  {
   "id": "q039",
   "doc": "02_undoing",
-  "question": "In which version did the restore command arrive?",
-  "evidence": "Git version 2.23.0 introduced a new command: git restore."
+  "question": "Which Git release brought in a dedicated command for undoing file changes?",
+  "evidence": "Git version 2.23.0 introduced a new command: git restore.\nIt's basically an alternative to git reset which we just covered."
  },
  {
   "id": "q040",
-  "doc": "02_undoing",
-  "question": "Which lost work can never be brought back?",
-  "evidence": "anything you lose that was never committed is likely never to be seen again."
+  "doc": "02_viewing-history",
+  "question": "How do I track down commits where a particular piece of text appeared or vanished?",
+  "evidence": "Another really helpful filter is the -S option (colloquially referred to as Git's \"pickaxe\" option), which takes a string and shows only those commits that changed the number of occurrences of that string."
  },
  {
   "id": "q041",
-  "doc": "02_remotes",
-  "question": "What is the standard nickname for the server a repository was cloned from?",
-  "evidence": "origin -- that is the default name Git gives to the server you cloned from"
+  "doc": "02_viewing-history",
+  "question": "In what sequence are commits printed when no options are supplied?",
+  "evidence": "By default, with no arguments, git log lists the commits made in that repository in reverse chronological order; that is, the most recent commits show up first."
  },
  {
   "id": "q042",
-  "doc": "02_remotes",
-  "question": "Can a 'remote' repository live on my own computer?",
-  "evidence": "Remote repositories can be on your local machine."
+  "doc": "02_viewing-history",
+  "question": "What is the difference between the two people credited on a commit?",
+  "evidence": "The author is the person who originally wrote the work, whereas the committer is the person who last applied the work."
  },
  {
   "id": "q043",
-  "doc": "02_remotes",
-  "question": "What command registers an additional remote under a short name?",
-  "evidence": "run git remote add <shortname> <url>"
+  "doc": "03_basic-branching-and-merging",
+  "question": "What does Git do to the files in your working copy when you check out a different branch?",
+  "evidence": "when you switch branches, Git resets your working directory to look like it did the last time you committed on that branch."
  },
  {
   "id": "q044",
-  "doc": "03_nutshell",
-  "question": "What exactly is a branch in Git's data model?",
-  "evidence": "A branch in Git is simply a lightweight movable pointer to one of these commits."
+  "doc": "03_basic-branching-and-merging",
+  "question": "Which snapshots are combined when the current commit is not a direct ancestor of the branch being brought in?",
+  "evidence": "Git does a simple three-way merge, using the two snapshots pointed to by the branch tips and the common ancestor of the two."
  },
  {
   "id": "q045",
-  "doc": "03_nutshell",
-  "question": "How does Git know which branch is currently checked out?",
-  "evidence": "In Git, this is a pointer to the local branch you're currently on."
+  "doc": "03_basic-branching-and-merging",
+  "question": "Why was no new snapshot needed when the hotfix work was integrated back into master?",
+  "evidence": "Because the commit C4 pointed to by the branch hotfix you merged in was directly ahead of the commit C2 you're on, Git simply moves the pointer forward."
  },
  {
   "id": "q046",
-  "doc": "03_nutshell",
-  "question": "How much data is written when a new branch is created?",
-  "evidence": "Creating a new branch is as quick and simple as writing 41 bytes to a file"
+  "doc": "03_branch-management",
+  "question": "How can you get rid of a branch whose work has not been incorporated anywhere else?",
+  "evidence": "If you really do want to delete the branch and lose that work, you can force it with -D, as the helpful message points out."
  },
  {
   "id": "q047",
-  "doc": "03_nutshell",
-  "question": "Is the default branch special compared with other branches?",
-  "evidence": "The only reason nearly every repository has one is that the git init command creates it by default"
+  "doc": "03_branch-management",
+  "question": "What does the asterisk shown beside one entry in the branch listing mean?",
+  "evidence": "Notice the * character that prefixes the master branch: it indicates the branch that you currently have checked out (i.e., the branch that HEAD points to)."
  },
  {
   "id": "q048",
-  "doc": "03_nutshell",
-  "question": "After committing three files, how many objects are stored and of which kinds?",
-  "evidence": "Your Git repository now contains five objects: three blobs"
+  "doc": "03_branch-management",
+  "question": "What side effects follow from renaming the default branch of a repository?",
+  "evidence": "Changing the name of a branch like master/main/mainline/default will break the integrations, services, helper utilities and build/release scripts that your repository uses."
  },
  {
   "id": "q049",
   "doc": "03_nutshell",
-  "question": "Which newer command creates a branch and switches to it in one step?",
-  "evidence": "Create a new branch and switch to it: git switch -c new-branch."
+  "question": "What is recorded in the object Git writes each time you record a snapshot?",
+  "evidence": "When you make a commit, Git stores a commit object that contains a pointer to the snapshot of the content you staged."
  },
  {
   "id": "q050",
   "doc": "03_nutshell",
-  "question": "Why does the history view not display a branch that is ahead of the one I am on?",
+  "question": "Whose history does the log command display if you give it no extra arguments?",
   "evidence": "by default, git log will only show commit history below the branch you've checked out."
  },
  {
   "id": "q051",
-  "doc": "03_basic-branching-and-merging",
-  "question": "When does Git just move a pointer forward instead of creating a new commit while merging?",
-  "evidence": "there is no divergent work to merge together -- this is called a \"fast-forward.\""
+  "doc": "03_nutshell",
+  "question": "Why are branches so inexpensive to make and throw away in Git?",
+  "evidence": "Because a branch in Git is actually a simple file that contains the 40 character SHA-1 checksum of the commit it points to, branches are cheap to create and destroy."
  },
  {
   "id": "q052",
-  "doc": "03_basic-branching-and-merging",
-  "question": "What makes a merge commit different from an ordinary commit?",
-  "evidence": "This is referred to as a merge commit, and is special in that it has more than one parent."
+  "doc": "03_rebasing",
+  "question": "How does parallel development appear in the history after being replayed onto another base?",
+  "evidence": "If you examine the log of a rebased branch, it looks like a linear history: it appears that all the work happened in series, even when it originally happened in parallel."
  },
  {
   "id": "q053",
-  "doc": "03_basic-branching-and-merging",
-  "question": "Which three snapshots take part when diverged branches are merged?",
-  "evidence": "Git does a simple three-way merge, using the two snapshots pointed to by the branch tips and the common ancestor of the two."
+  "doc": "03_rebasing",
+  "question": "What does the rebase command do with work recorded on one branch?",
+  "evidence": "With the rebase command, you can take all the changes that were committed on one branch and replay them on a different branch."
  },
  {
   "id": "q054",
-  "doc": "03_basic-branching-and-merging",
-  "question": "How do I tell Git that a conflicted file is now fixed?",
-  "evidence": "run git add on each file to mark it as resolved"
- },
- {
-  "id": "q055",
-  "doc": "02_tagging",
-  "question": "Which two kinds of tags does Git support?",
-  "evidence": "Git supports two types of tags: lightweight and annotated."
- },
- {
-  "id": "q056",
-  "doc": "02_tagging",
-  "question": "What does a lightweight tag amount to?",
-  "evidence": "A lightweight tag is very much like a branch that doesn't change -- it's just a pointer to a specific commit."
- },
- {
-  "id": "q057",
-  "doc": "02_tagging",
-  "question": "Does a plain push send my tags to the server?",
-  "evidence": "By default, the git push command doesn't transfer tags to remote servers."
- },
- {
-  "id": "q058",
-  "doc": "02_tagging",
-  "question": "How do I send every tag to the remote in one go?",
-  "evidence": "you can also use the --tags option to the git push command"
- },
- {
-  "id": "q059",
-  "doc": "02_tagging",
-  "question": "Does deleting a tag locally remove it from the server?",
-  "evidence": "Note that this does not remove the tag from any remote servers."
- },
- {
-  "id": "q060",
-  "doc": "02_tagging",
-  "question": "What happens to a commit I make while sitting on a checked-out tag?",
-  "evidence": "your new commit won't belong to any branch and will be unreachable, except by the exact commit hash"
- },
- {
-  "id": "q061",
-  "doc": "02_tagging",
-  "question": "Can I label an older commit I forgot to mark as a release?",
-  "evidence": "You can also tag commits after you've moved past them."
- },
- {
-  "id": "q062",
-  "doc": "02_tagging",
-  "question": "Which push option sends only annotated tags?",
-  "evidence": "only annotated tags will be pushed to the remote"
- },
- {
-  "id": "q063",
-  "doc": "02_tagging",
-  "question": "What extra information does an annotated tag keep that a lightweight one does not?",
-  "evidence_from": "Annotated tags, however, are stored as full objects in the Git database.",
-  "evidence_to": "verified with GNU Privacy Guard (GPG)."
- },
- {
-  "id": "q064",
-  "doc": "02_aliases",
-  "question": "How can a Git alias run an ordinary shell program instead of a Git subcommand?",
-  "evidence": "In that case, you start the command with a ! character."
- },
- {
-  "id": "q065",
-  "doc": "02_aliases",
-  "question": "Will Git guess my command if I type only part of its name?",
-  "evidence": "Git doesn't automatically infer your command if you type it in partially."
- },
- {
-  "id": "q066",
-  "doc": "03_branch-management",
-  "question": "What does the star next to a branch name in the listing mean?",
-  "evidence": "it indicates the branch that you currently have checked out"
- },
- {
-  "id": "q067",
-  "doc": "03_branch-management",
-  "question": "Which flag lists the branches already folded into my current one?",
-  "evidence": "To see which branches are already merged into the branch you're on, you can run git branch --merged"
- },
- {
-  "id": "q068",
-  "doc": "03_branch-management",
-  "question": "How do I delete a branch that still has unmerged work?",
-  "evidence": "If you really do want to delete the branch and lose that work, you can force it with -D"
- },
- {
-  "id": "q069",
-  "doc": "03_branch-management",
-  "question": "Is it fine to rename a branch my teammates are using?",
-  "evidence": "Do not rename branches that are still in use by other collaborators."
- },
- {
-  "id": "q070",
-  "doc": "03_branch-management",
-  "question": "What can break when the main branch of a repository is renamed?",
-  "evidence": "will break the integrations, services, helper utilities and build/release scripts that your repository uses"
- },
- {
-  "id": "q071",
-  "doc": "03_branch-management",
-  "question": "Which branches are safe to remove with the lowercase delete flag?",
-  "evidence_from": "Branches on this list without the * in front of them",
-  "evidence_to": "you're not going to lose anything."
- },
- {
-  "id": "q072",
-  "doc": "03_workflows",
-  "question": "What is a topic branch?",
-  "evidence": "A topic branch is a short-lived branch that you create and use for a single particular feature or related work."
- },
- {
-  "id": "q073",
-  "doc": "03_workflows",
-  "question": "Why do some teams keep a develop or next branch next to master?",
-  "evidence": "whenever it gets to a stable state, it can be merged into master"
- },
- {
-  "id": "q074",
-  "doc": "03_workflows",
-  "question": "Does branching and merging involve contacting a server?",
-  "evidence": "everything is being done only in your Git repository -- there is no communication with the server"
- },
- {
-  "id": "q075",
-  "doc": "03_workflows",
-  "question": "What goes into the proposed-updates branch of large projects?",
-  "evidence": "that has integrated branches that may not be ready to go into the next or master branch"
- },
- {
-  "id": "q076",
-  "doc": "03_workflows",
-  "question": "How often do Git users typically create and discard topic branches?",
-  "evidence_from": "This is something you've likely never done with a VCS before",
-  "evidence_to": "several times a day."
- },
- {
-  "id": "q077",
   "doc": "03_rebasing",
-  "question": "What does rebasing do, in one sentence?",
-  "evidence": "you can take all the changes that were committed on one branch and replay them on a different branch."
- },
- {
-  "id": "q078",
-  "doc": "03_rebasing",
-  "question": "How does a rebased branch look in the log compared with a merged one?",
-  "evidence": "it looks like a linear history: it appears that all the work happened in series, even when it originally happened in parallel."
- },
- {
-  "id": "q079",
-  "doc": "03_rebasing",
-  "question": "What is the main rule to follow when rebasing?",
+  "question": "Which commits must never be rebased?",
   "evidence": "Do not rebase commits that exist outside your repository and that people may have based work on."
  },
  {
-  "id": "q080",
-  "doc": "03_rebasing",
-  "question": "What is a patch-id?",
-  "evidence": "Git also calculates a checksum that is based just on the patch introduced with the commit."
- },
- {
-  "id": "q081",
-  "doc": "03_rebasing",
-  "question": "How can I make pulling replay my commits rather than merge by default?",
-  "evidence": "you can set the pull.rebase config value"
- },
- {
-  "id": "q082",
-  "doc": "03_rebasing",
-  "question": "Which option replays a topic branch onto something other than the branch it grew from?",
-  "evidence": "by using the --onto option of git rebase"
- },
- {
-  "id": "q083",
-  "doc": "03_rebasing",
-  "question": "Do merging and rebasing produce a different final snapshot?",
-  "evidence": "There is no difference in the end product of the integration, but rebasing makes for a cleaner history."
- },
- {
-  "id": "q084",
-  "doc": "03_rebasing",
-  "question": "Step by step, how does a rebase work internally?",
-  "evidence_from": "This operation works by going to the common ancestor of the two branches",
-  "evidence_to": "and finally applying each change in turn."
- },
- {
-  "id": "q085",
-  "doc": "03_rebasing",
-  "question": "What trouble do collaborators face if I rewrite commits I already pushed?",
-  "evidence_from": "If you push commits somewhere and others pull them down and base work on them",
-  "evidence_to": "things will get messy when you try to pull their work back into yours."
- },
- {
-  "id": "q086",
-  "doc": "03_rebasing",
-  "question": "What is the argument for leaving a messy merge history untouched?",
-  "evidence_from": "One point of view on this is that your repository's commit history is a record of what actually happened.",
-  "evidence_to": "shouldn't be tampered with."
- },
- {
-  "id": "q087",
-  "doc": "03_rebasing",
-  "question": "What is the argument for tidying up commits before merging them?",
-  "evidence_from": "The opposing point of view is that the commit history is the story of how your project was made.",
-  "evidence_to": "so why show your messy work?"
- },
- {
-  "id": "q088",
+  "id": "q055",
   "doc": "03_remote-branches",
-  "question": "What is a remote-tracking branch?",
+  "question": "Do branches you create on your own machine reach the server by themselves?",
+  "evidence": "Your local branches aren't automatically synchronized to the remotes you write to -- you have to explicitly push the branches you want to share."
+ },
+ {
+  "id": "q056",
+  "doc": "03_remote-branches",
+  "question": "Does downloading new data from a remote alter the files you currently have checked out?",
+  "evidence": "While the git fetch command will fetch all the changes on the server that you don't have yet, it will not modify your working directory at all."
+ },
+ {
+  "id": "q057",
+  "doc": "03_remote-branches",
+  "question": "What do local pointers such as origin/master actually stand for?",
   "evidence": "Remote-tracking branches are references to the state of remote branches."
  },
  {
+  "id": "q058",
+  "doc": "03_workflows",
+  "question": "Is any network traffic involved while you create branches and combine them?",
+  "evidence": "When you're branching and merging, everything is being done only in your Git repository -- there is no communication with the server."
+ },
+ {
+  "id": "q059",
+  "doc": "03_workflows",
+  "question": "What is held in the proposed-updates branch that some bigger projects keep?",
+  "evidence": "Some larger projects also have a proposed or pu (proposed updates) branch that has integrated branches that may not be ready to go into the next or master branch."
+ },
+ {
+  "id": "q060",
+  "doc": "03_workflows",
+  "question": "What name is used for a branch created to hold one single feature or related piece of work?",
+  "evidence": "A topic branch is a short-lived branch that you create and use for a single particular feature or related work."
+ },
+ {
+  "id": "q061",
+  "doc": "04_generating-ssh-key",
+  "question": "In which folder does a user normally find their existing SSH keys?",
+  "evidence": "By default, a user's SSH keys are stored in that user's ~/.ssh directory."
+ },
+ {
+  "id": "q062",
+  "doc": "04_generating-ssh-key",
+  "question": "Of the two files produced for a key pair, which one is the half you hand out?",
+  "evidence": "The .pub file is your public key, and the other file is the corresponding private key."
+ },
+ {
+  "id": "q063",
+  "doc": "04_generating-ssh-key",
+  "question": "What difference does the -o flag make when a passphrase is chosen during key generation?",
+  "evidence": "if you do use a password, make sure to add the -o option; it saves the private key in a format that is more resistant to brute-force password cracking than is the default format."
+ },
+ {
+  "id": "q064",
+  "doc": "04_git-daemon",
+  "question": "What does the reuseaddr flag let the server do after being shut down?",
+  "evidence": "The --reuseaddr option allows the server to restart without waiting for old connections to time out"
+ },
+ {
+  "id": "q065",
+  "doc": "04_git-daemon",
+  "question": "Which command registers the service so it comes up when the machine boots?",
+  "evidence": "you'll run systemctl enable git-daemon to automatically start the service on boot"
+ },
+ {
+  "id": "q066",
+  "doc": "04_git-daemon",
+  "question": "Which port has to be opened if a firewall sits in front of the machine?",
+  "evidence": "If you're running a firewall, you'll also need to punch a hole in it at port 9418 on the box you're setting this up on."
+ },
+ {
+  "id": "q067",
+  "doc": "04_git-on-a-server",
+  "question": "What gives a developer the ability to send commits up, once they can log in over SSH?",
+  "evidence": "If a user SSHs into a server and has write access to the /srv/git/my_project.git directory, they will also automatically have push access."
+ },
+ {
+  "id": "q068",
+  "doc": "04_git-on-a-server",
+  "question": "Which flag makes the initialization set group write permissions correctly?",
+  "evidence": "Git will automatically add group write permissions to a repository properly if you run the git init command with the --shared option."
+ },
+ {
+  "id": "q069",
+  "doc": "04_git-on-a-server",
+  "question": "Which option to the clone command produces a repository with no working directory?",
+  "evidence": "In order to clone your repository to create a new bare repository, you run the clone command with the --bare option."
+ },
+ {
+  "id": "q070",
+  "doc": "04_gitlab",
+  "question": "How can a contributor propose changes when they lack write access to the repository?",
+  "evidence": "Users who don't have push permissions for a repository can \"fork\" it to create their own copy, push commits to their copy, and open a merge request from their fork back to the main project."
+ },
+ {
+  "id": "q071",
+  "doc": "04_gitlab",
+  "question": "Which installation route do the GitLab maintainers themselves advise for a server?",
+  "evidence": "GitLab strongly recommends installing GitLab on your server via the official Omnibus GitLab package."
+ },
+ {
+  "id": "q072",
+  "doc": "04_gitlab",
+  "question": "Who is able to read a project whose visibility has been set to Internal?",
+  "evidence": "An Internal project is visible to any logged-in user, and a Public project is visible to anyone."
+ },
+ {
+  "id": "q073",
+  "doc": "04_gitweb",
+  "question": "Which lightweight web server is usually already present on Linux, letting you launch the viewer with one command?",
+  "evidence": "On Linux machines, lighttpd is often installed, so you may be able to get it to run by typing git instaweb in your project directory."
+ },
+ {
+  "id": "q074",
+  "doc": "04_gitweb",
+  "question": "Which piece of software shipped with Git offers a simple web-based view of a project?",
+  "evidence": "Git comes with a CGI script called GitWeb that is sometimes used for this."
+ },
+ {
+  "id": "q075",
+  "doc": "04_gitweb",
+  "question": "Which setting tells the build where your repositories live when generating the script?",
+  "evidence": "Notice that you have to tell the command where to find your Git repositories with the GITWEB_PROJECTROOT variable."
+ },
+ {
+  "id": "q076",
+  "doc": "04_hosted",
+  "question": "What benefits come from putting your projects on an external dedicated service?",
+  "evidence": "a hosting site is generally quick to set up and easy to start projects on, and no server maintenance or monitoring is involved"
+ },
+ {
+  "id": "q077",
+  "doc": "04_hosted",
+  "question": "Where should you look for a currently maintained roster of hosting providers?",
+  "evidence": "To see an up-to-date list, check out the GitHosting page on the main Git wiki"
+ },
+ {
+  "id": "q078",
+  "doc": "04_hosted",
+  "question": "Why would someone running an internal server still put open source code on a public service?",
+  "evidence": "you may still want to use a public hosting site for your open source code -- it's generally easier for the open source community to find and help you with."
+ },
+ {
+  "id": "q079",
+  "doc": "04_protocols",
+  "question": "How many transport mechanisms can move data, and which are they?",
+  "evidence": "Git can use four distinct protocols to transfer data: Local, HTTP, Secure Shell (SSH) and Git."
+ },
+ {
+  "id": "q080",
+  "doc": "04_protocols",
+  "question": "What changes if a path to a nearby repository is written with an explicit scheme prefix?",
+  "evidence": "If you specify file://, Git fires up the processes that it normally uses to transfer data over a network, which is generally much less efficient."
+ },
+ {
+  "id": "q081",
+  "doc": "04_protocols",
+  "question": "What is the drawback of serving a project only over Secure Shell?",
+  "evidence": "The negative aspect of SSH is that it doesn't support anonymous access to your Git repository."
+ },
+ {
+  "id": "q082",
+  "doc": "04_setting-up-server",
+  "question": "What can accounts still reach through the connection even after their login shell is locked down?",
+  "evidence": "users are still able to use SSH port forwarding to access any host the git server is able to reach."
+ },
+ {
+  "id": "q083",
+  "doc": "04_setting-up-server",
+  "question": "What has to be done on the machine itself each time a new project should be hosted?",
+  "evidence": "Note that someone must shell onto the machine and create a bare repository every time you want to add a project."
+ },
+ {
+  "id": "q084",
+  "doc": "04_setting-up-server",
+  "question": "Which bundled tool keeps a shared account confined to version-control operations?",
+  "evidence": "You can easily restrict the git user account to only Git-related activities with a limited shell tool called git-shell that comes with Git."
+ },
+ {
+  "id": "q085",
+  "doc": "04_smart-http",
+  "question": "What essentially has to be turned on to offer the smarter HTTP service?",
+  "evidence": "Setting up Smart HTTP is basically just enabling a CGI script that is provided with Git called git-http-backend on the server."
+ },
+ {
+  "id": "q086",
+  "doc": "04_smart-http",
+  "question": "Which repositories stay reachable by anonymous clients when the export-all variable is omitted?",
+  "evidence": "If you leave out GIT_HTTP_EXPORT_ALL environment variable, then Git will only serve to unauthenticated clients the repositories with the git-daemon-export-ok file in them, just like the Git daemon did."
+ },
+ {
+  "id": "q087",
+  "doc": "04_smart-http",
+  "question": "Why does the group ownership of the repository directories need changing?",
+  "evidence": "You'll also need to set the Unix user group of the /srv/git directories to www-data so your web server can read- and write-access the repositories"
+ },
+ {
+  "id": "q088",
+  "doc": "05_contributing",
+  "question": "When two branch names are joined by a double dot in a git log command, which commits get shown?",
+  "evidence": "The issue54..origin/master syntax is a log filter that asks Git to display only those commits that are on the latter branch (in this case origin/master) and that are not on the first branch (in this case issue54)."
+ },
+ {
   "id": "q089",
-  "doc": "03_remote-branches",
-  "question": "Why can't I move origin/master by hand?",
-  "evidence": "They're local references that you can't move; Git moves them for you whenever you do any network communication"
+  "doc": "05_contributing",
+  "question": "Which Git command will list possible whitespace problems in your work before you make the commit?",
+  "evidence": "Git provides an easy way to check for this -- before you commit, run git diff --check, which identifies possible whitespace errors and lists them for you."
  },
  {
   "id": "q090",
-  "doc": "03_remote-branches",
-  "question": "Is origin a special name in Git?",
-  "evidence": "is the default name for a remote when you run git clone"
+  "doc": "05_contributing",
+  "question": "Which command turns a series of commits into mbox-format files suitable for mailing to a developer list?",
+  "evidence": "You use git format-patch to generate the mbox-formatted files that you can email to the list"
  },
  {
   "id": "q091",
-  "doc": "03_remote-branches",
-  "question": "Are my local branches pushed to the server automatically?",
-  "evidence": "Your local branches aren't automatically synchronized to the remotes you write to"
+  "doc": "05_contributing",
+  "question": "Why must a force flag be added when pushing a topic branch whose history you have just rewritten with a rebase?",
+  "evidence": "Because you rebased the branch, you have to specify the -f to your push command in order to be able to replace the featureA branch on the server with a commit that isn't a descendant of it."
  },
  {
   "id": "q092",
-  "doc": "03_remote-branches",
-  "question": "How can a local branch be pushed under a different name on the remote?",
-  "evidence": "You can use this format to push a local branch into a remote branch that is named differently."
+  "doc": "05_distributed-workflows",
+  "question": "If a team wants to keep working in a centralized style, what do they need to set up, and what stops people clobbering each other's commits?",
+  "evidence": "Simply set up a single repository, and give everyone on your team push access; Git won't let users overwrite each other."
  },
  {
   "id": "q093",
-  "doc": "03_remote-branches",
-  "question": "After fetching a new remote branch do I get an editable local copy of it?",
-  "evidence": "you don't automatically have local, editable copies of them"
+  "doc": "05_distributed-workflows",
+  "question": "In the integration-manager model, must a contributor sit idle until their submission is taken in?",
+  "evidence": "Contributors don't have to wait for the project to incorporate their changes -- each party can work at their own pace."
  },
  {
   "id": "q094",
-  "doc": "03_remote-branches",
-  "question": "What does a tracking branch let git pull work out by itself?",
-  "evidence": "Git automatically knows which server to fetch from and which branch to merge in."
+  "doc": "05_distributed-workflows",
+  "question": "What two roles can one and the same developer fill under Git, unlike in a centralized tool?",
+  "evidence": "In Git, however, every developer is potentially both a node and a hub"
  },
  {
   "id": "q095",
-  "doc": "03_remote-branches",
-  "question": "How current are the ahead and behind counts in the verbose branch listing?",
-  "evidence": "these numbers are only since the last time you fetched from each server"
+  "doc": "05_distributed-workflows",
+  "question": "Who is credited with the referenced guide covering patterns for source-code branching?",
+  "evidence": "Martin Fowler has made a guide \"Patterns for Managing Source Code Branches\"."
  },
  {
   "id": "q096",
-  "doc": "03_remote-branches",
-  "question": "How is pull related to fetch?",
-  "evidence": "git pull which is essentially a git fetch immediately followed by a git merge in most cases"
+  "doc": "05_maintaining",
+  "question": "How does git apply behave differently from the Unix patch program when only some hunks of a patchfile can be applied?",
+  "evidence": "Finally, git apply is an \"apply all or abort all\" model where either everything is applied or nothing is, whereas patch can partially apply patchfiles, leaving your working directory in a weird state."
  },
  {
   "id": "q097",
-  "doc": "03_remote-branches",
-  "question": "What does deleting a branch on the server actually remove?",
-  "evidence": "Basically all this does is to remove the pointer from the server."
+  "doc": "05_maintaining",
+  "question": "When a mailed patch is applied, which parts of the email supply the commit's authorship and its message?",
+  "evidence": "The author information is taken from the email's From and Date headers, and the message of the commit is taken from the Subject and body (before the patch) of the email."
  },
  {
   "id": "q098",
-  "doc": "03_remote-branches",
-  "question": "Does fetching change the files in my working directory?",
-  "evidence": "it will not modify your working directory at all."
+  "doc": "05_maintaining",
+  "question": "Which long-running branches does the Git project itself keep, and what is each one for?",
+  "evidence": "The Git project has four long-running branches: master, next, and seen (formerly 'pu' -- proposed updates) for new work, and maint for maintenance backports."
  },
  {
   "id": "q099",
-  "doc": "03_remote-branches",
-  "question": "What is an upstream branch and when does Git create a tracking branch?",
-  "evidence_from": "Checking out a local branch from a remote-tracking branch",
-  "evidence_to": "direct relationship to a remote branch."
+  "doc": "05_maintaining",
+  "question": "Which sort of tag does git describe expect by default, and how can non-annotated ones be taken into account?",
+  "evidence": "By default, the git describe command requires annotated tags (tags created with the -a or -s flag); if you want to take advantage of lightweight (non-annotated) tags as well, add the --tags option to the command."
  },
  {
   "id": "q100",
-  "doc": "02_recording-changes",
-  "question": "What does the status command report right after a fresh clone?",
-  "evidence": "This means you have a clean working directory; in other words, none of your tracked files are modified."
+  "doc": "06_1-setting-up-account",
+  "question": "How much of GitHub is unavailable if you never pay for a plan?",
+  "evidence": "GitHub provides almost all of its functionality with free accounts, except some advanced features."
  },
  {
   "id": "q101",
-  "doc": "02_recording-changes",
-  "question": "Why do newer repositories often start on main instead of master?",
-  "evidence": "GitHub changed the default branch name from master to main in mid-2020, and other Git hosts followed suit."
+  "doc": "06_1-setting-up-account",
+  "question": "What piece of information does GitHub use to attribute a commit to a particular member?",
+  "evidence": "The way that GitHub maps your Git commits to your user is by email address."
  },
  {
   "id": "q102",
-  "doc": "02_recording-changes",
-  "question": "What are glob patterns compared to?",
-  "evidence": "Glob patterns are like simplified regular expressions that shells use."
+  "doc": "06_1-setting-up-account",
+  "question": "Which tab of the account settings holds the 2FA setup?",
+  "evidence": "You can find the Two-factor Authentication setup under the Security tab of your Account settings."
  },
  {
   "id": "q103",
-  "doc": "02_recording-changes",
-  "question": "How can an ignore pattern match directories nested at any depth?",
-  "evidence": "You can also use two asterisks to match nested directories"
+  "doc": "06_1-setting-up-account",
+  "question": "Why is it worth giving each uploaded public key a label such as the machine it belongs to?",
+  "evidence": "You can name each of your keys (e.g. \"My Laptop\" or \"Work Account\") so that if you need to revoke a key later, you can easily tell which one you're looking for."
  },
  {
   "id": "q104",
-  "doc": "02_recording-changes",
-  "question": "Do ignore files in subfolders affect the whole repository?",
-  "evidence": "The rules in these nested .gitignore files apply only to the files under the directory where they are located."
+  "doc": "06_2-contributing",
+  "question": "After forking on GitHub, who owns the resulting copy and where does it sit?",
+  "evidence": "When you \"fork\" a project, GitHub will make a copy of the project that is entirely yours; it lives in your namespace, and you can push to it."
  },
  {
   "id": "q105",
-  "doc": "02_recording-changes",
-  "question": "What does the verbose commit flag add to the message editor?",
-  "evidence": "Doing so also puts the diff of your change in the editor so you can see exactly what changes you're committing."
+  "doc": "06_2-contributing",
+  "question": "Is it a good idea to force push over the branch an open Pull Request points at when tidying it up?",
+  "evidence": "If you absolutely wish to rebase the branch to clean it up, you can certainly do so, but it is highly encouraged to not force push over the branch that the Pull Request is already opened on."
  },
  {
   "id": "q106",
-  "doc": "02_recording-changes",
-  "question": "Which command opens diffs in a graphical or external viewer?",
-  "evidence": "If you run git difftool instead of git diff"
+  "doc": "06_2-contributing",
+  "question": "On GitHub, how do you act on review feedback instead of re-rolling a patch series and mailing it again?",
+  "evidence": "Where over email you may have to re-roll your series and resubmit it to the mailing list, with GitHub you simply commit to the topic branch again and push, which will automatically update the Pull Request."
  },
  {
   "id": "q107",
-  "doc": "02_recording-changes",
-  "question": "How should I think about what git add really does?",
-  "evidence_from": "git add is a multipurpose command",
-  "evidence_to": "add this file to the project"
+  "doc": "06_2-contributing",
+  "question": "Which single keystroke pulls highlighted text from another comment into your reply as a quotation?",
+  "evidence": "If you highlight text in a comment that you want to directly reply to and hit the r key, it will quote that text in the comment box for you."
  },
  {
   "id": "q108",
-  "doc": "02_recording-changes",
-  "question": "Why does Git list a new file as untracked instead of adding it for me?",
-  "evidence_from": "You can see that your new README file is untracked",
-  "evidence_to": "files that you did not mean to include."
+  "doc": "06_3-maintaining",
+  "question": "How do heavy GitHub users commonly cope with a flood of notifications?",
+  "evidence": "Many GitHub power users will simply turn off email notifications entirely and manage all of their notifications through this screen."
  },
  {
   "id": "q109",
-  "doc": "02_recording-changes",
-  "question": "What does git rm do beyond removing the file from disk?",
-  "evidence_from": "To remove a file from Git, you have to remove it from your tracked files",
-  "evidence_to": "the next time around."
+  "doc": "06_3-maintaining",
+  "question": "Once the default branch is switched in the dropdown, what does a fresh clone check out?",
+  "evidence": "Simply change the default branch in the dropdown and that will be the default for all major operations from then on, including which branch is checked out by default when someone clones the repository."
  },
  {
   "id": "q110",
-  "doc": "03_basic-branching-and-merging",
-  "question": "Why must I commit before switching branches?",
-  "evidence": "if your working directory or staging area has uncommitted changes that conflict with the branch you're checking out, Git won't let you switch branches."
+  "doc": "06_3-maintaining",
+  "question": "What do you have to make someone on GitHub in order to let them commit to your repository?",
+  "evidence": "If you're working with other people who you want to give commit access to, you need to add them as \"collaborators\"."
  },
  {
   "id": "q111",
-  "doc": "03_basic-branching-and-merging",
-  "question": "In a conflict block, which part is my current branch?",
-  "evidence": "This means the version in HEAD (your master branch, because that was what you had checked out when you ran your merge command) is the top part of that block"
+  "doc": "06_3-maintaining",
+  "question": "Which reference namespace holds the hidden pseudo-branches for a repository's open Pull Requests?",
+  "evidence": "If the repository is on GitHub and you have any Pull Requests that have been opened, you'll get these references that are prefixed with refs/pull/."
  },
  {
   "id": "q112",
-  "doc": "03_nutshell",
-  "question": "How do I jump back to the branch I was on before?",
-  "evidence": "Return to your previously checked out branch: git switch -."
+  "doc": "06_4-managing-organization",
+  "question": "Under what condition does an organizational account cost nothing?",
+  "evidence": "Like personal accounts, organizations are free if everything you plan to store there will be open source."
  },
  {
   "id": "q113",
-  "doc": "03_nutshell",
-  "question": "What does a commit object contain and how many parents can it have?",
-  "evidence_from": "When you make a commit, Git stores a commit object",
-  "evidence_to": "one parent for a normal commit"
+  "doc": "06_4-managing-organization",
+  "question": "What construct links members of an organization to repositories and to the rights they hold there?",
+  "evidence": "Organizations are associated with individual people by way of teams, which are simply a grouping of individual user accounts and repositories within the organization and what kind of access those people have in those repositories."
  },
  {
   "id": "q114",
-  "doc": "03_nutshell",
-  "question": "What happens to the default branch pointer as I commit, and is that branch special?",
-  "evidence_from": "As you start making commits, you're given a master branch",
-  "evidence_to": "It is exactly like any other branch."
+  "doc": "06_4-managing-organization",
+  "question": "What is the effect of @-mentioning a whole team rather than one person?",
+  "evidence": "Additionally, team @mentions (such as @acmecorp/frontend) work much the same as they do with individual users, except that all members of the team are then subscribed to the thread."
  },
  {
   "id": "q115",
-  "doc": "03_nutshell",
-  "question": "Why is creating a branch in Git instant while older tools take minutes?",
-  "evidence_from": "Because a branch in Git is actually a simple file",
-  "evidence_to": "the process is always instantaneous."
+  "doc": "06_4-managing-organization",
+  "question": "Where can an owner find out which org-level events happened, who caused them and from what part of the world?",
+  "evidence": "You can go to the 'Audit Log' tab and see what events have happened at an organization level, who did them and where in the world they were done."
  },
  {
   "id": "q116",
-  "doc": "03_nutshell",
-  "question": "What are the two effects of switching back to the master branch?",
-  "evidence_from": "That command did two things.",
-  "evidence_to": "snapshot that master points to."
+  "doc": "06_5-scripting",
+  "question": "How does the generic hooks mechanism hand event data over to your own system?",
+  "evidence": "You specify a URL and GitHub will post an HTTP payload to that URL on any event you want."
  },
  {
   "id": "q117",
-  "doc": "01_first-time-setup",
-  "question": "Where does Git look for the personal configuration file on Windows?",
-  "evidence": "On Windows systems, Git looks for the .gitconfig file in the $HOME directory"
+  "doc": "06_5-scripting",
+  "question": "How many API calls per hour are permitted with and without credentials?",
+  "evidence": "Without authenticating, you will be limited to 60 requests per hour.\nIf you authenticate you can make up to 5,000 requests per hour."
  },
  {
   "id": "q118",
-  "doc": "01_first-time-setup",
-  "question": "How can I find out which config file supplied a value?",
-  "evidence": "you can query Git as to the origin for that value, and it will tell you which configuration file had the final say in setting that value"
+  "doc": "06_5-scripting",
+  "question": "Which kind of event do most of the ready-made GitHub service integrations actually watch for?",
+  "evidence": "Services can listen for lots of different types of events, but most only listen for push events and then do something with that data."
  },
  {
   "id": "q119",
-  "doc": "01_command-line",
-  "question": "Why does the book use the terminal instead of graphical clients?",
-  "evidence": "the command line is the only place you can run all Git commands"
+  "doc": "06_5-scripting",
+  "question": "Whose status does a Pull Request report, and what does it do if that one failed?",
+  "evidence": "You can also see that the Pull Request takes the status of the last commit on the branch and warns you if it is a failure."
  },
  {
   "id": "q120",
-  "doc": "01_history",
-  "question": "Which proprietary tool did the Linux kernel project adopt before Git, and when?",
-  "evidence": "In 2002, the Linux kernel project began using a proprietary DVCS called BitKeeper."
+  "doc": "07_advanced-merging",
+  "question": "What is the name of the unusual diff output that puts a pair of change indicators before every line?",
+  "evidence": "The format is called \"Combined Diff\" and gives you two columns of data next to each line."
  },
  {
   "id": "q121",
-  "doc": "01_installing",
-  "question": "Why would someone build Git from source instead of using an installer?",
-  "evidence_from": "Some people may instead find it useful to install Git from source",
-  "evidence_to": "this has made less of a difference."
+  "doc": "07_advanced-merging",
+  "question": "When undoing a merge with a revert, what is the purpose of passing -m 1?",
+  "evidence": "The -m 1 flag indicates which parent is the \"mainline\" and should be kept."
  },
  {
   "id": "q122",
-  "doc": "01_what-is-git",
-  "question": "Why is browsing project history nearly instant, and where does Git read it from?",
-  "evidence_from": "Because you have the entire history of the project right there on your local disk",
-  "evidence_to": "you see the project history almost instantly."
+  "doc": "07_advanced-merging",
+  "question": "Which numbered index slot holds the common ancestor of a conflicted file, and which one holds the incoming branch's copy?",
+  "evidence": "Stage 1 is the common ancestor, stage 2 is your version and stage 3 is from the MERGE_HEAD, the version you're merging in (\"theirs\")."
  },
  {
   "id": "q123",
-  "doc": "01_what-is-git",
-  "question": "Can file contents change without Git noticing?",
-  "evidence_from": "Everything in Git is checksummed before it is stored",
-  "evidence_to": "without Git knowing about it."
+  "doc": "07_advanced-merging",
+  "question": "Which two merge arguments can I add when nearly every conflict comes from reformatted blank space?",
+  "evidence": "If you see that you have a lot of whitespace issues in a merge, you can simply abort it and do it again, this time with -Xignore-all-space or -Xignore-space-change."
  },
  {
   "id": "q124",
-  "doc": "01_what-is-git",
-  "question": "How hard is it to lose committed work, and what makes it safer still?",
-  "evidence_from": "It is hard to get the system to do anything that is not undoable",
-  "evidence_to": "push your database to another repository."
+  "doc": "07_bundling",
+  "question": "Does Git work out automatically which refs belong in a bundle, or must I enumerate them?",
+  "evidence": "With the bundle command you need to list out every reference or specific range of commits that you want to be included."
  },
  {
   "id": "q125",
-  "doc": "01_what-is-git",
-  "question": "What are the three steps of the basic Git workflow?",
-  "evidence_from": "1. You modify files in your working tree.",
-  "evidence_to": "to your Git directory."
+  "doc": "07_bundling",
+  "question": "What artifact does Git produce from the data a push would normally send across the network?",
+  "evidence": "The bundle command will package up everything that would normally be pushed over the wire with a git push command into a binary file"
  },
  {
   "id": "q126",
-  "doc": "02_getting-a-repository",
-  "question": "Could a corrupted server be restored from a client's clone?",
-  "evidence_from": "Every version of every file for the history of the project is pulled down by default",
-  "evidence_to": "when it was cloned"
+  "doc": "07_bundling",
+  "question": "What goes wrong if someone packages only their newest couple of commits and the receiving repository lacks the earlier ones?",
+  "evidence": "If the bundler had created a bundle of just the last two commits they had done, rather than all three, the original repository would not be able to import it, since it is missing requisite history."
  },
  {
   "id": "q127",
-  "doc": "02_viewing-history",
-  "question": "If a maintainer applies my patch, who is credited as author and who as committer?",
-  "evidence_from": "The author is the person who originally wrote the work",
-  "evidence_to": "the core member as the committer."
+  "doc": "07_bundling",
+  "question": "Why might a clone from a bundled file not know which branch to check out, and what extra flag fixes it?",
+  "evidence": "If you don't include HEAD in the references, you have to also specify -b master or whatever branch is included because otherwise it won't know what branch to check out."
  },
  {
   "id": "q128",
-  "doc": "02_viewing-history",
-  "question": "What does the stat option add underneath each log entry?",
-  "evidence_from": "As you can see, the --stat option prints below each commit entry",
-  "evidence_to": "a summary of the information at the end."
+  "doc": "07_credentials",
+  "question": "Am I restricted to the helpers shipped with Git, or can my own program serve credentials?",
+  "evidence": "Given that git-credential-store and friends are separate programs from Git, it's not much of a leap to realize that any program can be a Git credential helper."
  },
  {
   "id": "q129",
-  "doc": "02_viewing-history",
-  "question": "Why use a custom log format when a script will parse the output?",
-  "evidence_from": "The most interesting option value is format",
-  "evidence_to": "with updates to Git"
+  "doc": "07_credentials",
+  "question": "If more than one helper is configured, which one's answer does Git end up using for a given host?",
+  "evidence": "When looking for credentials for a particular host, Git will query them in order, and stop after the first answer is provided."
  },
  {
   "id": "q130",
-  "doc": "02_undoing",
-  "question": "After an amend, does the replaced commit remain visible in the history?",
-  "evidence_from": "It's important to understand that when you're amending your last commit",
-  "evidence_to": "it won't show up in your repository history."
+  "doc": "07_credentials",
+  "question": "Which credential helper ships with Git on Apple machines, and where does it keep the secrets?",
+  "evidence": "If you're using macOS, Git comes with an \"osxkeychain\" mode, which caches credentials in the secure keychain that's attached to your system account."
+ },
+ {
+  "id": "q131",
+  "doc": "07_credentials",
+  "question": "With the in-memory credential option, how long are secrets retained and are they ever written to the filesystem?",
+  "evidence": "None of the passwords are ever stored on disk, and they are purged from the cache after 15 minutes."
+ },
+ {
+  "id": "q132",
+  "doc": "07_debugging",
+  "question": "After tracking down the faulty revision, what command returns me to the checkout I had beforehand?",
+  "evidence": "When you're finished, you should run git bisect reset to reset your HEAD to where you were before you started, or you'll end up in a weird state"
+ },
+ {
+  "id": "q133",
+  "doc": "07_debugging",
+  "question": "In annotation output, what is meant by a caret placed in front of an abbreviated hash?",
+  "evidence": "note the ^1da177e4c3f4 commit lines, where the ^ prefix designates lines that were introduced in the repository's initial commit and have remained unchanged ever since."
+ },
+ {
+  "id": "q134",
+  "doc": "07_debugging",
+  "question": "What search technique does Git use to pin down the revision that introduced a regression?",
+  "evidence": "The bisect command does a binary search through your commit history to help you identify as quickly as possible which commit introduced an issue."
+ },
+ {
+  "id": "q135",
+  "doc": "07_debugging",
+  "question": "Which annotation flag tracks down where a block of code lived before it was copied into the current file?",
+  "evidence": "If you pass -C to git blame, Git analyzes the file you're annotating and tries to figure out where snippets of code within it originally came from if they were copied from elsewhere."
+ },
+ {
+  "id": "q136",
+  "doc": "07_interactive-staging",
+  "question": "Can hunk-by-hunk staging be launched straight from the shell instead of through the menu?",
+  "evidence": "You also don't need to be in interactive add mode to do the partial-file staging -- you can start the same script by using git add -p or git add --patch on the command line."
+ },
+ {
+  "id": "q137",
+  "doc": "07_interactive-staging",
+  "question": "Inside the menu-driven prompt, which letter or number takes a file back out of the staging area?",
+  "evidence": "If you want to unstage the TODO file at this point, you use the r or 3 (for revert) option"
+ },
+ {
+  "id": "q138",
+  "doc": "07_interactive-staging",
+  "question": "Which menu choice displays the changes already added to the staging area?",
+  "evidence": "To see the diff of what you've staged, you can use the d or 6 (for diff) command."
+ },
+ {
+  "id": "q139",
+  "doc": "07_interactive-staging",
+  "question": "Which two command-line switches make the add command open its menu-driven prompt?",
+  "evidence": "If you run git add with the -i or --interactive option, Git enters an interactive shell mode, displaying something like this"
+ },
+ {
+  "id": "q140",
+  "doc": "07_replace",
+  "question": "Once the graft is in place, which commit is genuinely the parent of 81a708d, despite what the log prints?",
+  "evidence": "Remember that the actual parent of 81a708d was our placeholder commit (622e88e), not 9c68fdce as it states here."
+ },
+ {
+  "id": "q141",
+  "doc": "07_replace",
+  "question": "What illusion does the replace command create about a nominated object in the database?",
+  "evidence": "The replace command lets you specify an object in Git and say \"every time you refer to this object, pretend it's a different object\"."
+ },
+ {
+  "id": "q142",
+  "doc": "07_replace",
+  "question": "When joining a short recent history to a long archived one, which two commits do you pair up?",
+  "evidence": "You can graft one history onto the other by \"replacing\" the earliest commit in the new line with the latest commit on the older one."
+ },
+ {
+  "id": "q143",
+  "doc": "07_replace",
+  "question": "Which low-level command turns a tree into a fresh commit object that has no parent?",
+  "evidence": "We can create our base commit using the commit-tree command, which just takes a tree and will give us a brand new, parentless commit object SHA-1 back."
+ },
+ {
+  "id": "q144",
+  "doc": "07_rerere",
+  "question": "Apart from the config flag, which directory can I create inside one repository to switch the feature on there?",
+  "evidence": "You can also turn it on by creating the .git/rr-cache directory in a specific repository, but the config setting is clearer and enables that feature globally for you."
+ },
+ {
+  "id": "q145",
+  "doc": "07_rerere",
+  "question": "What repeated routine lets a long-lived topic branch stay mergeable without littering history with interim merge commits?",
+  "evidence": "With rerere enabled, you can attempt the occasional merge, resolve the conflicts, then back out of the merge."
+ },
+ {
+  "id": "q146",
+  "doc": "07_rerere",
+  "question": "What three words is the odd-looking name of Git's conflict-memory feature short for?",
+  "evidence": "The name stands for \"reuse recorded resolution\" and, as the name implies, it allows you to ask Git to remember how you've resolved a hunk conflict"
+ },
+ {
+  "id": "q147",
+  "doc": "07_rerere",
+  "question": "Which subcommand lists the files whose pre-merge state has been captured for later reuse?",
+  "evidence": "git rerere will also tell you what it has recorded the pre-merge state for with git rerere status"
+ },
+ {
+  "id": "q148",
+  "doc": "07_reset",
+  "question": "Between resetting and checking out a branch, which one relocates the branch pointer and which relocates HEAD?",
+  "evidence": "Whereas reset will move the branch that HEAD points to, checkout will move HEAD itself to point to another branch."
+ },
+ {
+  "id": "q149",
+  "doc": "07_reset",
+  "question": "In the three-tree model, what does HEAD actually refer to?",
+  "evidence": "HEAD is the pointer to the current branch reference, which is in turn a pointer to the last commit made on that branch."
+ },
+ {
+  "id": "q150",
+  "doc": "07_reset",
+  "question": "Which of the three usual stages is omitted when a filename is handed to the reset command?",
+  "evidence": "If you specify a path, reset will skip step 1, and limit the remainder of its actions to a specific file or set of files."
+ },
+ {
+  "id": "q151",
+  "doc": "07_reset",
+  "question": "Which reset option is the one you cannot recover from, and what makes it irreversible?",
+  "evidence": "Any other invocation of reset can be pretty easily undone, but the --hard option cannot, since it forcibly overwrites files in the working directory."
+ },
+ {
+  "id": "q152",
+  "doc": "07_revision-selection",
+  "question": "How far back does Git's background record of where HEAD and branch tips have pointed normally reach?",
+  "evidence": "One of the things Git does in the background while you're working away is keep a \"reflog\" -- a log of where your HEAD and branch references have been for the last few months."
+ },
+ {
+  "id": "q153",
+  "doc": "07_revision-selection",
+  "question": "How many characters of a hash must you supply before Git can resolve it to a particular commit?",
+  "evidence": "Git is smart enough to figure out what commit you're referring to if you provide the first few characters of the SHA-1 hash, as long as that partial hash is at least four characters long and unambiguous"
+ },
+ {
+  "id": "q154",
+  "doc": "07_revision-selection",
+  "question": "What notation picks out the second parent of a merge commit such as d921970?",
+  "evidence": "You can also specify a number after the ^ to identify which parent you want; for example, d921970^2 means \"the second parent of d921970.\""
+ },
+ {
+  "id": "q155",
+  "doc": "07_revision-selection",
+  "question": "Which range notation lists commits reachable from one of two refs but excludes those shared by both?",
+  "evidence": "The last major range-selection syntax is the triple-dot syntax, which specifies all the commits that are reachable by either of two references but not by both of them."
+ },
+ {
+  "id": "q156",
+  "doc": "07_rewriting-history",
+  "question": "After an import leaves junk top-level folders, how can an inner folder like trunk be promoted to the project root throughout history?",
+  "evidence": "If you want to make the trunk subdirectory be the new project root for every commit, filter-branch can help you do that, too:"
+ },
+ {
+  "id": "q157",
+  "doc": "07_rewriting-history",
+  "question": "What Python-based replacement is suggested for the bulk history-scrubbing command that is full of pitfalls?",
+  "evidence": "git filter-branch has many pitfalls, and is no longer the recommended way to rewrite history.\nInstead, consider using git-filter-repo, which is a Python script that does a better job"
+ },
+ {
+  "id": "q158",
+  "doc": "07_rewriting-history",
+  "question": "Which instruction word in the rebase script melds a commit into the one before it and asks you to join their log messages?",
+  "evidence": "If, instead of \"pick\" or \"edit\", you specify \"squash\", Git applies both that change and the change directly before it and makes you merge the commit messages together."
+ },
+ {
+  "id": "q159",
+  "doc": "07_rewriting-history",
+  "question": "Why does a batch rewrite of author addresses alter the identity of every commit rather than only the ones that matched?",
+  "evidence": "Because commits contain the SHA-1 values of their parents, this command changes every commit SHA-1 in your history, not just those that have the matching email address."
+ },
+ {
+  "id": "q160",
+  "doc": "07_searching",
+  "question": "How can you ask the log command to replay the whole evolution of a single function as patches?",
+  "evidence": "Simply run git log with the -L option, and it will show you the history of a function or line of code in your codebase."
+ },
+ {
+  "id": "q161",
+  "doc": "07_searching",
+  "question": "Which grep flag demands that two separate patterns both appear on the very same line?",
+  "evidence": "You can also search for complex combinations of strings with the --and flag, which ensures that multiple matches must occur in the same line of text."
+ },
+ {
+  "id": "q162",
+  "doc": "07_searching",
+  "question": "Which pickaxe-style log flag takes a regular expression rather than a fixed string?",
+  "evidence": "If you need to be more specific, you can provide a regular expression to search for with the -G option."
+ },
+ {
+  "id": "q163",
+  "doc": "07_searching",
+  "question": "With no revision argument given, which set of files does Git's own grep command examine?",
+  "evidence": "By default, git grep will look through the files in your working directory."
+ },
+ {
+  "id": "q164",
+  "doc": "07_signing",
+  "question": "From which release can merging and pulling be made to reject unsigned incoming commits, and with what argument?",
+  "evidence": "In Git 1.8.3 and later, git merge and git pull can be told to inspect and reject when merging a commit that does not carry a trusted GPG signature with the --verify-signatures command."
+ },
+ {
+  "id": "q165",
+  "doc": "07_signing",
+  "question": "What should each teammate run so that everything they record in a shared repository is signed without them remembering to ask for it?",
+  "evidence": "asking everyone working with the repository to run git config --local commit.gpgsign true to automatically have all of their commits in the repository signed by default"
+ },
+ {
+  "id": "q166",
+  "doc": "07_signing",
+  "question": "Which configuration entry records which GPG key Git should reach for when it signs things?",
+  "evidence": "Once you have a private key to sign with, you can configure Git to use it for signing things by setting the user.signingkey config setting."
+ },
+ {
+  "id": "q167",
+  "doc": "07_signing",
+  "question": "Which tag flag replaces -a when you want the tag cryptographically signed?",
+  "evidence": "If you have a GPG private key set up, you can now use it to sign new tags.\nAll you have to do is use -s instead of -a:"
+ },
+ {
+  "id": "q168",
+  "doc": "07_stashing-cleaning",
+  "question": "Since -u still skips files matched by ignore rules, what flag sweeps those in as well?",
+  "evidence": "including untracked files in the stash will still not include explicitly ignored files; to additionally include ignored files, use --all (or just -a)."
+ },
+ {
+  "id": "q169",
+  "doc": "07_stashing-cleaning",
+  "question": "Which clean invocation discards untracked files and also any folders left empty by the deletion?",
+  "evidence": "To remove all the untracked files in your working directory, you can run git clean -f -d, which removes any files and also any subdirectories that become empty as a result."
+ },
+ {
+  "id": "q170",
+  "doc": "07_stashing-cleaning",
+  "question": "Which popular stash flag puts staged content into the saved entry yet still leaves that content ready for commit?",
+  "evidence": "The first option that is quite popular is the --keep-index option to the git stash command.\nThis tells Git to not only include all staged content in the stash being created, but simultaneously leave it in the index."
+ },
+ {
+  "id": "q171",
+  "doc": "07_stashing-cleaning",
+  "question": "Why is the push form of stashing preferred over the older save form?",
+  "evidence": "The main reason for this is that git stash push introduces the option of stashing selected pathspecs, something git stash save does not support."
+ },
+ {
+  "id": "q172",
+  "doc": "07_submodules",
+  "question": "What argument to clone fills in every subproject, including ones nested inside them, without extra steps?",
+  "evidence": "If you pass --recurse-submodules to the git clone command, it will automatically initialize and update each submodule in the repository, including nested submodules if any of the submodules in the repository have submodules themselves."
+ },
+ {
+  "id": "q173",
+  "doc": "07_submodules",
+  "question": "Where do modern versions of Git keep a subproject's repository data, and why does wiping its folder no longer lose branches?",
+  "evidence": "submodules these days keep all their Git data in the top project's .git directory, so unlike much older versions of Git, destroying a submodule directory won't lose any commits or branches that you had"
+ },
+ {
+  "id": "q174",
+  "doc": "07_submodules",
+  "question": "Which tracked configuration file records the pairing of a subproject's URL with the local folder it sits in?",
+  "evidence": "First you should notice the new .gitmodules file.\nThis is a configuration file that stores the mapping between the project's URL and the local subdirectory you've pulled it into:"
+ },
+ {
+  "id": "q175",
+  "doc": "07_submodules",
+  "question": "Why can work you commit inside a subproject vanish when the superproject later refreshes it?",
+  "evidence": "With no working branch tracking changes, that means even if you commit changes to the submodule, those changes will quite possibly be lost the next time you run git submodule update."
+ },
+ {
+  "id": "q176",
+  "doc": "07_subtree-merges",
+  "question": "Since ordinary diff will not compare the vendored folder against the branch it came from, what must you use instead?",
+  "evidence": "you must run git diff-tree with the branch you want to compare to:"
+ },
+ {
+  "id": "q177",
+  "doc": "07_subtree-merges",
+  "question": "What relationship between two codebases does this style of merging assume?",
+  "evidence": "The idea of the subtree merge is that you have two projects, and one of the projects maps to a subdirectory of the other one."
+ },
+ {
+  "id": "q178",
+  "doc": "07_subtree-merges",
+  "question": "Which plumbing command loads another branch's top-level tree into your index and working files?",
+  "evidence": "You'll learn more about read-tree and its friends in ch10-git-internals#ch10-git-internals, but for now know that it reads the root tree of one branch into your current staging area and working directory."
+ },
+ {
+  "id": "q179",
+  "doc": "07_subtree-merges",
+  "question": "Which two settings bring the vendored project's updates across with a ready-made commit message?",
+  "evidence": "To pull in the changes and prepopulate the commit message, use the --squash option, as well as the recursive merge strategy's -Xsubtree option."
+ },
+ {
+  "id": "q180",
+  "doc": "08_attributes",
+  "question": "Where do you declare that particular paths should be run through scripts on checkout and on staging, and what are those two processing steps named?",
+  "evidence": "In the .gitattributes file, you can set a filter for particular paths and then set up scripts that will process files just before they're checked out (\"smudge\", see filters_a) and just before they're staged (\"clean\", see filters_b)."
+ },
+ {
+  "id": "q181",
+  "doc": "08_attributes",
+  "question": "Which attribute keeps a tracked directory such as test/ out of a tarball produced by git archive?",
+  "evidence": "If there is a subdirectory or file that you don't want to include in your archive file but that you do want checked into your project, you can determine those files via the export-ignore attribute."
+ },
+ {
+  "id": "q182",
+  "doc": "08_attributes",
+  "question": "Why might a content filter that works for you break for a colleague who clones the same project?",
+  "evidence": "You have to be careful, though, because the .gitattributes file is committed and passed around with the project, but the driver (in this case, dater) isn't, so it won't work everywhere."
+ },
+ {
+  "id": "q183",
+  "doc": "08_config",
+  "question": "In what time unit is the numeric value of the mistyped-command correction delay expressed?",
+  "evidence": "help.autocorrect is actually an integer which represents tenths of a second."
+ },
+ {
+  "id": "q184",
+  "doc": "08_config",
+  "question": "Which configuration file is consulted first, and whose repositories does it affect?",
+  "evidence": "The first place Git looks for these values is in the system-wide [path]/etc/gitconfig file, which contains settings that are applied to every user on the system and all of their repositories."
+ },
+ {
+  "id": "q185",
+  "doc": "08_config",
+  "question": "Which line-ending setting normalises carriage returns when staging without rewriting files on checkout?",
+  "evidence": "You can tell Git to convert CRLF to LF on commit but not the other way around by setting core.autocrlf to input:"
+ },
+ {
+  "id": "q186",
+  "doc": "08_hooks",
+  "question": "What two properties must a file have for Git to start invoking it as a hook?",
+  "evidence": "To enable a hook script, put a file in the hooks subdirectory of your .git directory that is named appropriately (without any extension) and is executable."
+ },
+ {
+  "id": "q187",
+  "doc": "08_hooks",
+  "question": "When somebody pushes several branches at once, how many times does each of the two main receive-side scripts run?",
+  "evidence": "The update script is very similar to the pre-receive script, except that it's run once for each branch the pusher is trying to update."
+ },
+ {
+  "id": "q188",
+  "doc": "08_hooks",
+  "question": "Which client hook fires once remote refs are known but before any object data leaves the machine?",
+  "evidence": "The pre-push hook runs during git push, after the remote refs have been updated but before any objects have been transferred."
+ },
+ {
+  "id": "q189",
+  "doc": "08_policy",
+  "question": "How many parameters does the server-side script used for this policy receive, and how frequently is it executed?",
+  "evidence": "The update hook runs once per branch being pushed and takes three arguments:"
+ },
+ {
+  "id": "q190",
+  "doc": "08_policy",
+  "question": "In revision syntax, which set of commits does appending the caret-at suffix to a hash expand to?",
+  "evidence": "The SHA^@ syntax resolves to all the parents of that commit."
+ },
+ {
+  "id": "q191",
+  "doc": "08_policy",
+  "question": "Where does text printed by a server-side enforcement script end up?",
+  "evidence": "Anything your script echoes to stdout will be transferred to the client."
+ },
+ {
+  "id": "q192",
+  "doc": "10_environment",
+  "question": "What combination of thresholds makes Git give up on a sluggish HTTP transfer?",
+  "evidence": "If the data rate of an HTTP operation is lower than GIT_HTTP_LOW_SPEED_LIMIT bytes per second for longer than GIT_HTTP_LOW_SPEED_TIME seconds, Git will abort that operation."
+ },
+ {
+  "id": "q193",
+  "doc": "10_environment",
+  "question": "Which variable points at the repository metadata folder, and what search does Git perform when it is unset?",
+  "evidence": "GIT_DIR is the location of the .git folder.\nIf this isn't specified, Git walks up the directory tree until it gets to ~ or /, looking for a .git directory at every step."
+ },
+ {
+  "id": "q194",
+  "doc": "10_environment",
+  "question": "Which variable supplies fallback locations to search when an object is missing from the main object store?",
+  "evidence": "GIT_ALTERNATE_OBJECT_DIRECTORIES is a colon-separated list (formatted like /dir/one:/dir/two:…) which tells Git where to check for objects if they aren't in GIT_OBJECT_DIRECTORY."
+ },
+ {
+  "id": "q195",
+  "doc": "10_maintenance",
+  "question": "How many unpacked objects or how many pack files does it take before the automatic cleanup actually does work?",
+  "evidence": "You must have around 7,000 loose objects or more than 50 packfiles for Git to fire up a real gc command."
+ },
+ {
+  "id": "q196",
+  "doc": "10_maintenance",
+  "question": "In which order are the two possible storage locations for a branch pointer consulted when resolving a name?",
+  "evidence": "To get the appropriate SHA-1 for a given reference, Git checks for that reference in the refs directory and then checks the packed-refs file as a fallback."
+ },
+ {
+  "id": "q197",
+  "doc": "10_maintenance",
+  "question": "When purging a big file from past commits with an index filter, why is a plain filesystem deletion the wrong command?",
+  "evidence": "Rather than remove a specific file with something like rm file, you have to remove it with git rm --cached – you must remove it from the index, not from disk."
+ },
+ {
+  "id": "q198",
+  "doc": "10_objects",
+  "question": "How is the on-disk path of a stored object split up between folder name and file name?",
+  "evidence": "The subdirectory is named with the first 2 characters of the SHA-1, and the filename is the remaining 38 characters."
+ },
+ {
+  "id": "q199",
+  "doc": "10_objects",
+  "question": "Is an object's checksum computed over its payload alone, or over something more?",
+  "evidence": "Git concatenates the header and the original content and then calculates the SHA-1 checksum of that new content."
+ },
+ {
+  "id": "q200",
+  "doc": "10_objects",
+  "question": "What does each record inside a tree object hold?",
+  "evidence": "A single tree object contains one or more entries, each of which is the SHA-1 hash of a blob or subtree with its associated mode, type, and filename."
+ },
+ {
+  "id": "q201",
+  "doc": "10_packfiles",
+  "question": "Besides the automatic repacking Git performs on its own, how can someone trigger a repack deliberately?",
+  "evidence": "Git will occasionally repack your database automatically, always trying to save more space, but you can also manually repack at any time by running git gc by hand."
+ },
+ {
+  "id": "q202",
+  "doc": "10_packfiles",
+  "question": "What name is given to the storage layout Git uses when every object is written as its own separate file?",
+  "evidence": "The initial format in which Git saves objects on disk is called a \"loose\" object format."
+ },
+ {
+  "id": "q203",
+  "doc": "10_packfiles",
+  "question": "What similarity does Git look for between objects when deciding which ones to store as differences?",
+  "evidence": "When Git packs objects, it looks for files that are named and sized similarly, and stores just the deltas from one version of the file to the next."
+ },
+ {
+  "id": "q204",
+  "doc": "10_plumbing-porcelain",
+  "question": "Among the core pieces of a repository, what are the respective jobs of HEAD and of the index?",
+  "evidence": "the HEAD file points to the branch you currently have checked out, and the index file is where Git stores your staging area information."
+ },
+ {
+  "id": "q205",
+  "doc": "10_plumbing-porcelain",
+  "question": "What does initialising a repository put on disk, and what is kept inside it?",
+  "evidence": "When you run git init in a new or existing directory, Git creates the .git directory, which is where almost everything that Git stores and manipulates is located."
+ },
+ {
+  "id": "q206",
+  "doc": "10_plumbing-porcelain",
+  "question": "Which single tool actually makes use of the description file found in a repository?",
+  "evidence": "The description file is used only by the GitWeb program, so don't worry about it."
+ },
+ {
+  "id": "q207",
+  "doc": "10_refs",
+  "question": "Rather than writing a hash straight into a ref file by hand, which command is recommended?",
+  "evidence": "You aren't encouraged to directly edit the reference files; instead, Git provides the safer command git update-ref to do this if you want to update a reference:"
+ },
+ {
+  "id": "q208",
+  "doc": "10_refs",
+  "question": "What does HEAD normally hold, and how does that differ from an ordinary ref?",
+  "evidence": "Usually the HEAD file is a symbolic reference to the branch you're currently on.\nBy symbolic reference, we mean that unlike a normal reference, it contains a pointer to another reference."
+ },
+ {
+  "id": "q209",
+  "doc": "10_refs",
+  "question": "Which pieces of data live inside a tag object, and which other object type is it closest to?",
+  "evidence": "The tag object is very much like a commit object -- it contains a tagger, a date, a message, and a pointer."
+ },
+ {
+  "id": "q210",
+  "doc": "10_refspec",
+  "question": "What does the leading plus sign in front of a mapping authorise Git to do?",
+  "evidence": "The + tells Git to update the reference even if it isn't a fast-forward."
+ },
+ {
+  "id": "q211",
+  "doc": "10_refspec",
+  "question": "What mapping does adding a remote put in the config by default, and where do the server's branches land locally?",
+  "evidence": "In the default case that is automatically written by a git remote add origin command, Git fetches all the references under refs/heads/ on the server and writes them to refs/remotes/origin/ locally."
+ },
+ {
+  "id": "q212",
+  "doc": "10_refspec",
+  "question": "Why does pushing with nothing before the colon wipe out a branch upstream?",
+  "evidence": "Because the refspec is <src>:<dst>, by leaving off the <src> part, this basically says to make the topic branch on the remote nothing, which deletes it."
+ },
+ {
+  "id": "q213",
+  "doc": "10_transfer-protocols",
+  "question": "How is the length of each piece of data on the wire encoded, and does that figure count its own bytes?",
+  "evidence": "Each chunk starts with a 4-character hex value specifying how long the chunk is (including the 4 bytes of the length itself)."
+ },
+ {
+  "id": "q214",
+  "doc": "10_transfer-protocols",
+  "question": "What is being communicated when an object id made entirely of zeros appears in a ref-update line?",
+  "evidence": "The SHA-1 value of all '0's means that nothing was there before – because you're adding the experiment reference."
+ },
+ {
+  "id": "q215",
+  "doc": "10_transfer-protocols",
+  "question": "Which of the two transfer mechanisms is used more widely, and what does it demand of the far end?",
+  "evidence": "The smart protocol is a more common method of transferring data, but it requires a process on the remote end that is intelligent about Git"
  }
 ]

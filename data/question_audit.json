@@ -1,60 +1,31 @@
 {
-  "n_questions": 130,
+  "n_questions": 215,
   "n_docs": 64,
   "verbatim_leak": [],
-  "high_lexical_overlap": [
-    "q123"
-  ],
-  "anaphoric_evidence": [
-    "q010",
-    "q014",
-    "q021",
-    "q023",
-    "q051",
-    "q052",
-    "q064",
-    "q066",
-    "q075",
-    "q076",
-    "q078",
-    "q083",
-    "q084",
-    "q095",
-    "q098",
-    "q100",
-    "q111",
-    "q116",
-    "q124"
-  ],
-  "very_short_evidence": [
-    "q019",
-    "q036",
-    "q042",
-    "q043",
-    "q081",
-    "q082"
-  ],
-  "docs_with_questions": 20,
-  "max_questions_in_one_doc": 20,
-  "max_doc_share": 0.154,
+  "high_lexical_overlap": [],
+  "anaphoric_evidence": [],
+  "very_short_evidence": [],
+  "docs_with_questions": 64,
+  "max_questions_in_one_doc": 4,
+  "max_doc_share": 0.019,
   "evidence_words": {
-    "min": 6,
-    "median": 16,
-    "max": 99
+    "min": 10,
+    "median": 24,
+    "max": 39
   },
   "embedder": "bge-small",
   "duplicate_pairs": [],
   "question_evidence_similarity": {
-    "mean": 0.737,
-    "min": 0.477
+    "mean": 0.729,
+    "min": 0.493
   },
-  "n_ambiguous": 54,
-  "ambiguous_share": 0.415,
+  "n_ambiguous": 67,
+  "ambiguous_share": 0.312,
   "most_ambiguous": [
-    "q078",
-    "q051",
-    "q017",
-    "q010",
-    "q025"
+    "q057",
+    "q005",
+    "q014",
+    "q004",
+    "q133"
   ]
 }

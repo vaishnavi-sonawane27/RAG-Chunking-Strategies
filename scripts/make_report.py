@@ -204,32 +204,41 @@ def chart_sweep(d, rows, info):
     plt.close(fig)
 
 
-def chart_models(d, rows_a, info_a, rows_b, info_b):
-    """Does the ranking survive a change of embedding model, on the SAME chunks?"""
-    A = head(rows_a, "dense")
-    by_b = {(r["strategy"], int(r["param"]), int(r["overlap"])): r for r in rows_b if r["retriever"] == "dense"}
-    B = {}
-    for st, v in info_a["selected_on_dev"].items():
+def _same_configs(rows_other, info_ref):
+    """Look up, in another model's results, the rows for the reference model's selected configs."""
+    by = {(r["strategy"], int(r["param"]), int(r["overlap"])): r
+          for r in rows_other if r["retriever"] == "dense"}
+    out = {}
+    for st, v in info_ref["selected_on_dev"].items():
         key = (st, int(v["size"]), int(v["overlap"]))
-        if key in by_b:
-            B[st] = by_b[key]
-    names = [s for s in ORDER if s in A and s in B]
-    if len(names) < 2:
+        if key in by:
+            out[st] = by[key]
+    return out
+
+
+def chart_models(d, rows_a, info_a, others):
+    """Does the ranking survive a change of embedding model? Same chunks throughout."""
+    cols = [(info_a["embedder"], head(rows_a, "dense"))]
+    for rows_b, info_b in others:
+        cols.append((info_b["embedder"], _same_configs(rows_b, info_a)))
+    names = [s for s in ORDER if all(s in c[1] for c in cols)]
+    if len(names) < 2 or len(cols) < 2:
         return
-    fig, ax = plt.subplots(figsize=(9.5, 4.6), facecolor=SURFACE)
+    xs = list(range(len(cols)))
+    fig, ax = plt.subplots(figsize=(1.9 + 2.3 * len(cols), 4.8), facecolor=SURFACE)
     style(ax)
-    for i, s in enumerate(names):
-        ax.plot([0, 1], [A[s]["mrr@10"], B[s]["mrr@10"]], color=COLOR[s], linewidth=2.5, zorder=2)
-        ax.scatter([0, 1], [A[s]["mrr@10"], B[s]["mrr@10"]], s=90, color=COLOR[s],
-                   edgecolor=SURFACE, linewidth=2, zorder=3)
-        ax.text(-0.03, A[s]["mrr@10"], LABEL[s], ha="right", va="center", color=INK, fontsize=9)
-        ax.text(1.03, B[s]["mrr@10"], f"{B[s]['mrr@10']:.2f}", ha="left", va="center", color=INK, fontsize=9)
-    ax.set_xticks([0, 1])
-    ax.set_xticklabels([info_a["embedder"], info_b["embedder"]], color=INK, fontsize=10, fontweight="bold")
-    ax.set_xlim(-0.42, 1.3)
+    for s in names:
+        ys = [c[1][s]["mrr@10"] for c in cols]
+        ax.plot(xs, ys, color=COLOR[s], linewidth=2.5, zorder=2)
+        ax.scatter(xs, ys, s=85, color=COLOR[s], edgecolor=SURFACE, linewidth=2, zorder=3)
+        ax.text(-0.06, ys[0], LABEL[s], ha="right", va="center", color=INK, fontsize=9)
+        ax.text(xs[-1] + 0.06, ys[-1], f"{ys[-1]:.2f}", ha="left", va="center", color=INK, fontsize=9)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([c[0] for c in cols], color=INK, fontsize=9.5, fontweight="bold")
+    ax.set_xlim(-0.75, len(cols) - 1 + 0.5)
     ax.set_ylabel("MRR@10", color=INK2, fontsize=9)
-    ax.set_title("Same chunks, different embedding model: does the ranking survive?", loc="left",
-                 color=INK, fontsize=12, fontweight="bold")
+    ax.set_title("Same chunks, different embedding models: does the ranking survive?",
+                 loc="left", color=INK, fontsize=12, fontweight="bold")
     fig.tight_layout()
     fig.savefig(d / "chart_models.png", dpi=160, facecolor=SURFACE)
     plt.close(fig)
@@ -237,7 +246,7 @@ def chart_models(d, rows_a, info_a, rows_b, info_b):
 
 # ------------------------------------------------------------------- tables
 def ci(r, m, nd=2):
-    return f"{r[m]:.{nd}f} ({r[m + '_lo']:.{nd}f}–{r[m + '_hi']:.{nd}f})"
+    return f"{r[m]:.{nd}f} ({r[m + '_lo']:.{nd}f} to {r[m + '_hi']:.{nd}f})"
 
 
 def table_headline(rows, retriever, info):
@@ -323,21 +332,24 @@ def table_taxonomy(tax):
     return "\n".join(out)
 
 
-def table_models(rows_a, info_a, rows_b, info_b):
-    A = head(rows_a, "dense")
-    by_b = {(r["strategy"], int(r["param"]), int(r["overlap"])): r for r in rows_b if r["retriever"] == "dense"}
-    B = {st: by_b[(st, int(v["size"]), int(v["overlap"]))] for st, v in info_a["selected_on_dev"].items()
-         if (st, int(v["size"]), int(v["overlap"])) in by_b}
-    names = [s for s in ORDER if s in A and s in B]
+def table_models(rows_a, info_a, others):
+    cols = [(info_a["embedder"], head(rows_a, "dense"))]
+    for rows_b, info_b in others:
+        cols.append((info_b["embedder"], _same_configs(rows_b, info_a)))
+    names = [s for s in ORDER if all(s in c[1] for c in cols)]
     if len(names) < 2:
         return ""
-    ra = sorted(names, key=lambda s: -A[s]["mrr@10"])
-    rb = sorted(names, key=lambda s: -B[s]["mrr@10"])
-    out = [f"| Strategy | Configuration | MRR@10 ({info_a['embedder']}) | rank | MRR@10 ({info_b['embedder']}) | rank |",
-           "|---|---|---:|---:|---:|---:|"]
+    ranks = [sorted(names, key=lambda s: -c[1][s]["mrr@10"]) for c in cols]
+    head_row = "| Strategy | Configuration | " + " | ".join(f"{c[0]} | rank" for c in cols) + " |"
+    sep = "|---|---|" + "---:|---:|" * len(cols)
+    out = [head_row, sep]
     for s in names:
-        out.append(f"| {LABEL[s]} | `{A[s]['label']}` | {A[s]['mrr@10']:.2f} | {ra.index(s) + 1} | "
-                   f"{B[s]['mrr@10']:.2f} | {rb.index(s) + 1} |")
+        cells = " | ".join(f"{c[1][s]['mrr@10']:.2f} | {ranks[i].index(s) + 1}" for i, c in enumerate(cols))
+        out.append(f"| {LABEL[s]} | `{cols[0][1][s]['label']}` | {cells} |")
+    stable = [s for s in names if len({r.index(s) for r in ranks}) == 1]
+    out.append("")
+    out.append(f"Strategies holding the same rank across all {len(cols)} models: "
+               + (", ".join(LABEL[s] for s in stable) if stable else "**none**") + ".")
     return "\n".join(out)
 
 
@@ -356,7 +368,7 @@ def table_dense_vs_bm25(dvb):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", required=True)
-    ap.add_argument("--compare", default=None, help="a second tag (another embedding model)")
+    ap.add_argument("--compare", nargs="*", default=[], help="further tags (other embedding models)")
     args = ap.parse_args()
     d, rows, paired, tax, dvb, info = load(args.tag)
     info["overlap_size"] = next((r["param"] for r in rows if r["strategy"] == "fixed_overlap"), 200)
@@ -390,10 +402,13 @@ def main():
               "\n### Where retrieval failed\n", table_taxonomy(tax)]
 
     if args.compare:
-        d2, rows2, _, _, _, info2 = load(args.compare)
-        chart_models(d, rows, info, rows2, info2)
-        parts += ["\n### Same chunks, a different embedding model\n",
-                  "![Model comparison](chart_models.png)\n", table_models(rows, info, rows2, info2)]
+        others = []
+        for tag2 in args.compare:
+            _, rows2, _, _, _, info2 = load(tag2)
+            others.append((rows2, info2))
+        chart_models(d, rows, info, others)
+        parts += [f"\n### Same chunks, {len(others) + 1} embedding models\n",
+                  "![Model comparison](chart_models.png)\n", table_models(rows, info, others)]
 
     (d / "results_section.md").write_text("\n".join(p for p in parts if p) + "\n", encoding="utf-8")
     print(f"wrote charts and results_section.md in {d}")

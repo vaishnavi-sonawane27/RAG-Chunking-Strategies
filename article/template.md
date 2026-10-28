@@ -1,36 +1,39 @@
 ---
-title: "Do RAG chunking strategies actually differ? Error bars, two embedding models and an overlap sweep"
+title: "Do RAG chunking strategies actually differ? Error bars, {n_models} embedding models and an overlap sweep"
 subtitle: "{n_docs} documents, {n_questions} questions, five strategies, sizes in tokens, a dev/test split and paired bootstrap confidence intervals. Code and raw results included."
 canonical_url: ""
 tags: rag, retrieval, llm, benchmarking
 ---
 
-# Do RAG chunking strategies actually differ? Error bars, two embedding models and an overlap sweep
+# Do RAG chunking strategies actually differ? Error bars, {n_models} embedding models and an overlap sweep
 
 Chunking is the step everyone has an opinion about and almost nobody measures with error bars.
 Blog posts rank the strategies confidently; the gaps they report are often two or three points,
 reported once, from a single run, with no interval around them.
 
 I went looking for how much of that advice survives a significance test. Five strategies, a corpus
-of {n_docs} documents, {n_questions} questions, two embedding models, chunk sizes in tokens, and the
+of {n_docs} documents, {n_questions} questions, {n_models} embedding models, chunk sizes in tokens, and the
 part that matters: **every setting chosen on a held-out dev split and every number reported on test
 questions the tuning never saw**, with paired bootstrap confidence intervals over {n_boot} resamples.
 
-**The short answer: on one embedding model every alternative beats plain fixed-size chunking, and
-on a second model almost none of them do.** Against the {reference} baseline on MRR@10 with
-{embedder}, {all_beat_baseline} of the other four strategies beat it with an interval clear of zero:
-{beat_baseline_detail}.
+**The short answer: on one embedding model {n_beat_word} of the four alternatives beat plain
+fixed-size chunking, and on a second model {n_replicate_word} of those still do.** Against the
+{reference} baseline on MRR@10 with {embedder}, {all_beat_baseline} of the other four strategies
+beat it with an interval clear of zero: {beat_baseline_detail}. The others ({losers_list}) have
+point estimates above the baseline but intervals that include it.
 
-Then I ran the **identical chunks** through {embedder2} and the result largely evaporated:
-{replication_detail}. Only **{robust_strategies}** beats plain fixed-size on both models.
+Then I ran the **identical chunks** through {embedder2}, and the picture did not hold:
+{replication_detail}. {robust_sentence} What does survive the model change is weaker but more
+useful: {ends_stable}, and {n_rank_stable} of the five strategies hold their rank throughout
+({rank_stable}).
 
 That is the finding I would actually stand behind, and it is a warning about every chunking
 comparison you have read, including the first half of this one: **a chunking result measured on one
 embedding model mostly describes that model.** Three further things came out of it:
 
-1. **Strategy may matter more than size, on one model.** Switching strategy at a fixed size moves
+1. **Strategy may matter more than size, {strategy_size_scope}.** Switching strategy at a fixed size moves
    MRR by {strategy_spread} (mean {mean_strategy_spread}); changing size within a strategy moves it
-   by {size_spread} (mean {mean_size_spread}). But this {replicates} on the second model
+   by {size_spread} (mean {mean_size_spread}). {replicates_conj} {replicates} on the second model
    (strategy {model2_strategy_spread} vs size {model2_size_spread}), so treat it as a property of
    this corpus and this retriever, not a rule.
 2. **Overlap helps, and nothing beyond the smallest step is resolvable.** Going from no overlap to
@@ -100,20 +103,20 @@ Settings chosen on dev: {selected}.
   enough that a better retriever cannot exploit it is itself worth noticing.
 - **{best_name} had the best point estimate** ({best_mrr}) and {worst_name} the worst
   ({worst_mrr}), a spread of {spread} MRR, and {best_name} is also the most context-efficient at
-  {best_tprec} token precision. Both of those are point estimates on one model: its gaps to the
-  other three winners do not clear zero, and it is not the strategy that held up on {embedder2}.
-- **All {n_compared} other strategies beat the baseline on MRR with intervals clear of zero on
-  {embedder}.** Not every comparison separates: on recall@3 several intervals still include zero,
-  and the widest paired interval spans {widest_ci} MRR. Across all {n_all_comparisons} paired
-  comparisons, {n_all_separated} separated.
+  {best_tprec} token precision. Both of those are point estimates on one model: {best_gap_note},
+  and it is not necessarily the strategy that held up on {embedder2}.
+- **{n_beat_word} of the {n_compared} other strategies beat the baseline on MRR with intervals clear
+  of zero on {embedder}.** Not every comparison separates: on recall@3 several intervals still
+  include zero, and the widest paired interval spans {widest_ci} MRR. Across all
+  {n_all_comparisons} paired comparisons, {n_all_separated} separated.
 - **The ordering among the winners is not resolvable.** {best_name} has the highest point estimate,
-  but its gaps to the other three do not clear zero, so read the table as "these four beat
-  fixed-size" and not as a ranking.
+  but {best_gap_note}: {best_vs_winners}. So read the table as "{winners_verdict}" and not as a
+  ranking.
 - **Splitting the answer is a real failure mode only at small sizes.** At {small_size} tokens,
   fixed-size chunking left the answer passage intact in {intact_small} of questions. At the selected
   settings: {intact_table}.
 - **Semantic chunking works, but it is the most expensive way to get there.** It reached
-  {semantic_mrr} on {embedder}, a real improvement on the baseline, for {semantic_cost} the
+  {semantic_mrr} on {embedder}, {semantic_verdict} ({semantic_ci}), for {semantic_cost} the
   embedding work to build the index. Cheaper strategies reached the same place for the same indexing
   cost as plain fixed-size, and on {embedder2} its advantage over the baseline is no longer
   distinguishable. The published literature keeps reaching the same verdict.
@@ -159,13 +162,18 @@ instead of {embedder}, the strategy ranking is **{ranking_same}**.
 On {embedder}: {model1_order}.
 On {embedder2}, same chunks: {model2_order}.
 
-Every position moved ({rank_moves}), and {ends_stable}. The strategy that came first on one model
-comes {model2_best} first on the other. The spread between best and worst collapses from {spread}
+Rank changes: {rank_moves}, and {ends_stable}. The spread between best and worst goes from {spread}
 MRR to {model2_spread}.
 
-Tested against the same baseline on the second model, {replication_detail}. So of the four
-strategies that beat plain fixed-size on {embedder}, **{n_replicate}** still does on {embedder2}:
-{robust_strategies}.
+Tested against the same baseline on the second model, {replication_detail}. So of the
+{n_beat_baseline} strategies that beat plain fixed-size on {embedder}, **{n_replicate_word}** still does so
+on {embedder2}.
+
+Across all {n_models} models ({model_names}), {winners_differ}. Best strategy per model:
+{model_best_each}. {n_rank_stable} of the five strategies hold the same rank on every model
+({rank_stable}), and {robust_all_sentence}. The strategies that hold their rank are the ones worth
+taking from this article, because they are the only claims here that do not depend on which encoder
+you happen to use.
 
 This is the single most useful thing I found, and it is uncomfortable, because it undercuts the
 first half of my own article. A chunking comparison run on one embedding model is largely a
@@ -205,7 +213,7 @@ you are choosing a chunker for real work, read these rather than me:
   overlapping retrieved spans (see the overlap section above). It reports standard deviations rather
   than confidence intervals, and those deviations are large relative to the gaps being discussed.
 - **"Is Semantic Chunking Worth the Computational Cost?"** (Qu, Tu & Bao, *Findings of ACL: NAACL
-  2025*, pp. 2155–2177; arXiv:2410.13070). The key negative result. Semantic chunking won mainly on
+  2025*, pp. 2155-2177; arXiv:2410.13070). The key negative result. Semantic chunking won mainly on
   corpora artificially stitched from short documents, and fixed-size won on naturally long ones.
 - **"Chunking Methods on Retrieval-Augmented Generation"** (Śmigielski et al., arXiv:2606.00881, May
   2026). The broadest method sweep I found: 8 methods across 8 datasets with wall-clock cost. On
@@ -233,21 +241,23 @@ Specific enough to be falsifiable:
   `scripts/analyse_questions.py` measures the things that decide whether a question set is sound,
   and its output is in the repo. On this set: {qa_dups} near-duplicate questions, {qa_leak} with
   verbatim leakage from their own evidence, {qa_overlap} with heavy lexical overlap, mean
-  question-to-evidence similarity {qa_sim}. Two real weaknesses show up. {qa_anaphoric} of the
-  {n_questions} evidence passages open with an anaphor ("This is...", "In that case...") and so are
-  not self-contained, though the chunk around them supplies the context. And the questions are
-  unevenly spread: {qa_docs} documents carry questions and the busiest single document holds
-  {qa_maxshare} of them.
+  question-to-evidence similarity {qa_sim}. {qa_anaphoric} of the {n_questions} evidence passages
+  open with an anaphor ("This is...", "In that case..."), which matters because a passage that starts
+  with a back-reference cannot be judged relevant on its own. Coverage is even: {qa_docs} documents
+  carry questions and the busiest single document holds {qa_maxshare} of them. An earlier version of
+  this set failed both of those checks, with 19 anaphoric passages and 130 questions crowded onto 20
+  of the 64 documents, so it was rebuilt from scratch before these results were produced.
 - **Some questions are genuinely ambiguous.** For {qa_ambiguous} of the {n_questions} questions
   ({qa_ambiguous_pct}), another question's evidence passage matches the question better than its own
   does. Most of that is a good sign, since it means the questions are paraphrased rather than
   lookups, but part of it is real ambiguity: a passage I score as wrong may be a defensible answer.
   That depresses every strategy equally, so the comparisons stand, but the absolute recall and MRR
   numbers should be read as a floor rather than a ceiling.
-- **Two embedding models, both small.** Better models may behave differently again.
+- **{n_models} embedding models, all small.** Better models may behave differently again. The
+  repo takes `--compare` any number of times, so adding more is one command per model.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et
   al. found retrieval differences largely washed out in generation.
-- **Context windows differ between the two models, and this is a confound.** {embedder} reads at
+- **Context windows differ between models, and this is a confound.** {embedder} reads at
   most {max_len} tokens; {embedder2} reads at most {model2_maxlen}. On {embedder} the selected
   configurations are affected as follows: {truncation}, so {worst_trunc}. On {embedder2} the shorter
   window bites harder: {truncation2}. Any {embedder2} number for an affected configuration is partly

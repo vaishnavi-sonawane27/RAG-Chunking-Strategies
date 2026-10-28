@@ -23,7 +23,7 @@ the repo small and avoids redistributing the book.
 
 ## Questions
 
-`data/questions.json` holds **130 questions**. Each is tied to one evidence passage that occurs
+`data/questions.json` holds **215 questions**. Each is tied to one evidence passage that occurs
 **exactly once** in its source document, given either as:
 
 * `evidence`: a verbatim string, or
@@ -33,13 +33,20 @@ the repo small and avoids redistributing the book.
 `scripts/validate_questions.py` checks that every passage resolves uniquely and warns when a question
 repeats six or more consecutive words from its own evidence (which would make it trivially easy).
 
-**Coverage:** questions cover 20 of the 64 documents. The remaining 44 documents act as distractors.
-This is deliberate: a retriever must reject plausible but wrong sections, not just rank within a
-small candidate set.
+**Coverage:** every one of the 64 documents carries questions, 3 or 4 each, and no single document
+holds more than 2% of the set. For any given question the other 63 documents are distractors, so a
+retriever still has to reject plausible but wrong sections. An earlier version of this set put 130
+questions on 20 documents; that concentrated the headline result on under a third of the corpus and
+left 44 sections as decoration, so it was rebuilt.
 
-**Evidence length** ranges from 6 to 99 words (median 16). Because the relevance rule is an overlap
-threshold, longer evidence is easier to hit, so every metric is also reported split by
-short (≤25 words) and long (>25 words) evidence.
+**Evidence length** is constrained to 10 to 39 words (median 24). Because the relevance rule is an
+overlap threshold, longer evidence is easier to hit, so every metric is also reported split by short
+(≤40 tokens, 171 questions) and long (>40 tokens, 44 questions) evidence.
+
+**Every passage stands alone.** No evidence passage opens with a back-reference (this, that, it,
+these, they, so, such, here, there, also, however, instead, thus, hence), and no two questions in the
+same document point at overlapping spans of text. A passage that begins "This is why it fails" cannot
+be judged relevant or not on its own, which makes it unusable as ground truth.
 
 ### Licensing of the questions
 
@@ -51,27 +58,26 @@ the MIT license that covers the code. The NonCommercial clause applies.
 
 `scripts/analyse_questions.py` writes `data/question_audit.json` and reports:
 
-| Check | Result |
-|---|---|
-| Near-duplicate questions (cosine > 0.90) | 0 |
-| Questions repeating 6+ consecutive words of their own evidence | 0 |
-| Questions with >75% lexical overlap with their evidence | 1 |
-| Evidence passages opening with an anaphor (not self-contained) | 19 of 130 |
-| Evidence passages of 8 words or fewer | 6 |
-| Documents carrying questions | 20 of 64 |
-| Largest share from a single document | 15% |
-| Mean question-to-evidence cosine similarity | 0.737 |
-| Questions where another passage matches better | 54 (42%) |
+| Check | Result | Previous set |
+|---|---|---|
+| Near-duplicate questions (cosine > 0.90) | 0 | 0 |
+| Questions repeating 6+ consecutive words of their own evidence | 0 | 0 |
+| Questions with >75% lexical overlap with their evidence | 0 | 1 |
+| Evidence passages opening with an anaphor (not self-contained) | 0 of 215 | 19 of 130 |
+| Evidence passages of 9 words or fewer | 0 | 6 |
+| Documents carrying questions | 64 of 64 | 20 of 64 |
+| Largest share from a single document | 2% | 15% |
+| Mean question-to-evidence cosine similarity | 0.729 | 0.737 |
+| Questions where another passage matches better | 67 (31%) | 54 (42%) |
 
-Read those last two together. A mean similarity of 0.74 with 42% of questions matching some other
-passage more closely means the questions are genuinely paraphrased rather than lookups, which is
-what you want. It also means a minority are ambiguous enough that a passage scored as wrong could be
-defended as right. That lowers every strategy's absolute score equally, so comparisons between
-strategies hold, but absolute numbers are a floor.
+Read the last two rows together. A mean similarity of 0.73 with 31% of questions matching some other
+labelled passage more closely means the questions are genuinely paraphrased rather than lookups,
+which is what you want. It also means a minority are ambiguous enough that a passage scored as wrong
+could be defended as right. That lowers every strategy's absolute score about equally, so comparisons
+between strategies hold, but absolute numbers are a floor rather than a ceiling.
 
-Known weak question: `q102` ("What are glob patterns compared to?") is vague and close to a
-fill-in-the-blank. It is left in rather than quietly removed, since dropping questions after seeing
-results is how benchmarks get flattered.
+The 31% is measured against a *larger* field than the 42% it replaces: 215 competing passages instead
+of 130, so the improvement is not an artefact of having fewer rivals to lose to.
 
 ### Honest provenance
 

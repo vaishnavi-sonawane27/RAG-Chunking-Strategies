@@ -21,7 +21,7 @@ from make_report import LABEL, ORDER, head, load, primary_of  # noqa: E402
 
 
 def ci(r, m, nd=2):
-    return f"{r[m]:.{nd}f} (95% CI {r[m + '_lo']:.{nd}f}–{r[m + '_hi']:.{nd}f})"
+    return f"{r[m]:.{nd}f} (95% CI {r[m + '_lo']:.{nd}f} to {r[m + '_hi']:.{nd}f})"
 
 
 def pct(x):
@@ -51,7 +51,7 @@ def paired_from_perq(d, a, b, n_boot=5000, seed=0):
     return float(diff.mean()), float(_np.percentile(boots, 2.5)), float(_np.percentile(boots, 97.5))
 
 
-def facts(tag, compare=None):
+def facts(tag, compare=()):
     d, rows, paired, tax, dvb, info = load(tag)
     info["overlap_size"] = next((r["param"] for r in rows if r["strategy"] == "fixed_overlap"), 200)
     prim = primary_of(rows)
@@ -158,6 +158,40 @@ def facts(tag, compare=None):
         f"**{LABEL[r['strategy']]}** {r['diff_vs_reference']:+.3f} [{r['diff_lo']:+.3f}, {r['diff_hi']:+.3f}]"
         for r in sorted(mrr_sep, key=lambda r: -r["diff_vs_reference"]))
     f["all_beat_baseline"] = "every single one" if len(mrr_sep) == len(pm) else f"only {len(mrr_sep)}"
+    WORD = {0: "none", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+    _sem = next((r for r in pm if r["strategy"] == "semantic"), None)
+    f["semantic_verdict"] = ("a real improvement on the baseline" if _sem and _sem["diff_lo"] > 0
+                             else "not distinguishable from the baseline")
+    f["semantic_ci"] = (f"{_sem['diff_vs_reference']:+.3f} [{_sem['diff_lo']:+.3f}, "
+                        f"{_sem['diff_hi']:+.3f}]") if _sem else "n/a"
+    winners = [r["strategy"] for r in sorted(mrr_sep, key=lambda r: -r["diff_vs_reference"])]
+    f["n_beat_word"] = WORD.get(len(winners), str(len(winners)))
+    f["winners_list"] = ", ".join(LABEL[x] for x in winners) if winners else "none of them"
+    f["losers_list"] = ", ".join(LABEL[r["strategy"]] for r in pm if r["diff_lo"] <= 0) or "none"
+    f["winners_verdict"] = (f"these {WORD.get(len(winners), len(winners))} beat fixed-size"
+                            if len(winners) > 1 else "one strategy beat fixed-size")
+    # is the best strategy actually separable from the others that also beat the baseline?
+    if len(winners) > 1:
+        bk = (winners[0], int(info["selected_on_dev"][winners[0]]["size"]),
+              int(info["selected_on_dev"][winners[0]]["overlap"]))
+        det, any_sep = [], False
+        for st in winners[1:]:
+            key = (st, int(info["selected_on_dev"][st]["size"]), int(info["selected_on_dev"][st]["overlap"]))
+            got = paired_from_perq(d, key, bk)
+            if got:
+                m2, lo2, hi2 = got
+                any_sep = any_sep or lo2 > 0
+                det.append(f"**{LABEL[winners[0]]}** vs **{LABEL[st]}** {m2:+.3f} [{lo2:+.3f}, {hi2:+.3f}]")
+        f["best_vs_winners"] = "; ".join(det)
+        f["n_winners_others"] = WORD.get(len(winners) - 1, str(len(winners) - 1))
+        f["best_separates"] = "does" if any_sep else "does not"
+        f["best_gap_note"] = ("its gaps to the %s other strategy that beat the baseline %s clear zero"
+                              % (f["n_winners_others"], "do" if any_sep else "do not"))
+    else:
+        f["best_vs_winners"] = "no other strategy beat the baseline, so there is nothing to rank against"
+        f["n_winners_others"] = "no"
+        f["best_separates"] = "does not"
+        f["best_gap_note"] = "no other strategy beat the baseline with an interval clear of zero"
 
     # ---- token efficiency across sizes
     small = min((r for r in rows if r["retriever"] == prim and r["strategy"] == "fixed"), key=lambda r: r["param"])
@@ -188,11 +222,13 @@ def facts(tag, compare=None):
     f["n_selected_configs"] = len(info["selected_on_dev"])
     ans = {r["answerable"] for r in rows}
     f["answerable_note"] = ("`answerable` = 1.00 in all %d rows of summary.csv" % len(rows)) if ans == {1.0} \
-        else f"answerable ranged {min(ans):.2f}–{max(ans):.2f}"
+        else f"answerable ranged {min(ans):.2f} to {max(ans):.2f}"
 
-    # ---- second embedding model, compared on the IDENTICAL configurations
+    # ---- further embedding models, always compared on the IDENTICAL configurations.
+    # The pairwise block below uses the first comparison model so that the prose can quote a
+    # specific second model; the aggregate block after it reads correctly for any number.
     if compare:
-        d2, rows2, _, _, _, info2 = load(compare)
+        d2, rows2, _, _, _, info2 = load(compare[0])
         by2 = {(r["strategy"], int(r["param"]), int(r["overlap"])): r
                for r in rows2 if r["retriever"] == "dense"}
         pairs = []
@@ -210,9 +246,15 @@ def facts(tag, compare=None):
             f["model2_order"] = " > ".join(LABEL[x] for x in rb)
             moved = [f"{LABEL[x]} {ra.index(x) + 1} to {rb.index(x) + 1}" for x in ra if ra.index(x) != rb.index(x)]
             f["rank_moves"] = ", ".join(moved) if moved else "no strategy changed rank"
-            f["ends_stable"] = ("the best and the worst strategy are the same on both models"
-                                if ra[0] == rb[0] and ra[-1] == rb[-1] else
-                                "not even the best and worst strategies hold")
+            _tb, _tw = ra[0] == rb[0], ra[-1] == rb[-1]
+            f["ends_stable"] = (
+                f"the best ({LABEL[ra[0]]}) and the worst ({LABEL[ra[-1]]}) are the same on both models"
+                if _tb and _tw else
+                f"the worst strategy is the same on both models ({LABEL[ra[-1]]}) but the best is not"
+                if _tw else
+                f"the best strategy is the same on both models ({LABEL[ra[0]]}) but the worst is not"
+                if _tb else
+                "neither the best nor the worst strategy holds")
             f["model1_best"], f["model2_best"] = LABEL[ra[0]], LABEL[rb[0]]
             f["model1_worst"], f["model2_worst"] = LABEL[ra[-1]], LABEL[rb[-1]]
             sp2 = max(p_[2] for p_ in pairs) - min(p_[2] for p_ in pairs)
@@ -257,12 +299,70 @@ def facts(tag, compare=None):
                     robust.append(LABEL[st])
             f["replication_detail"] = "; ".join(rep)
             f["n_replicate"] = len(robust)
+            _W = {0: "none", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+            f["n_replicate_word"] = _W.get(len(robust), str(len(robust)))
+            f["robust_sentence"] = (
+                "No strategy beats plain fixed-size with an interval clear of zero on both models."
+                if not robust else
+                f"Only **{', '.join(robust)}** beats plain fixed-size on both models."
+                if len(robust) < len(pm) else
+                "Every strategy that beat plain fixed-size on the first model does so on the second too.")
             f["robust_strategies"] = ", ".join(robust) if robust else "none"
             f["robust_one"] = robust[0] if len(robust) == 1 else ""
             f["model2_strategy_spread"] = f"{sum(ss2) / len(ss2):.3f}"
             f["model2_size_spread"] = f"{sum(zs2) / len(zs2):.3f}"
-            f["replicates"] = ("replicates" if sum(ss2) / len(ss2) > sum(zs2) / len(zs2) * 1.15
-                               else "does not replicate")
+            _rep = sum(ss2) / len(ss2) > sum(zs2) / len(zs2) * 1.15
+            f["replicates"] = "replicates" if _rep else "does not replicate"
+            f["replicates_conj"] = "And this" if _rep else "But this"
+            f["strategy_size_scope"] = "on both models" if _rep else "on one model only"
+
+    # ---- aggregate across every comparison model (works for 1 or 20 of them)
+    if compare:
+        base_key = ("fixed", int(info["selected_on_dev"]["fixed"]["size"]),
+                    int(info["selected_on_dev"]["fixed"]["overlap"]))
+        models, orders, beats = [(info["embedder"], None)], [], {}
+        for tag2 in compare:
+            dX, rowsX, _, _, _, infoX = load(tag2)
+            byX = {(r["strategy"], int(r["param"]), int(r["overlap"])): r
+                   for r in rowsX if r["retriever"] == "dense"}
+            got = {}
+            for st, v in info["selected_on_dev"].items():
+                key = (st, int(v["size"]), int(v["overlap"]))
+                if key in byX:
+                    got[st] = byX[key]["mrr@10"]
+                    if st != "fixed":
+                        pr = paired_from_perq(dX, base_key, key)
+                        if pr and pr[1] > 0:
+                            beats.setdefault(st, set()).add(tag2)
+            if got:
+                models.append((infoX["embedder"], got))
+                orders.append(sorted(got, key=lambda x: -got[x]))
+        own = sorted(H, key=lambda x: -H[x]["mrr@10"])
+        allo = [own] + orders
+        f["n_models"] = len(allo)
+        f["model_names"] = ", ".join(m[0] for m in models)
+        f["model_best_each"] = ", ".join(f"{m[0]}: {LABEL[o[0]]}"
+                                         for m, o in zip(models, allo) if o)
+        stable = [x for x in own if len({o.index(x) for o in allo if x in o}) == 1]
+        f["n_rank_stable"] = len(stable)
+        f["rank_stable"] = ", ".join(LABEL[x] for x in stable) if stable else "none"
+        # a strategy is "robust" only if it beats the fixed-size baseline, with a CI clear of
+        # zero, on the reference model AND on every comparison model
+        allrobust = [LABEL[st] for st in own
+                     if st != "fixed"
+                     and any(r["strategy"] == st and r["diff_lo"] > 0 for r in pm)
+                     and len(beats.get(st, ())) == len(compare)]
+        f["n_robust_all"] = len(allrobust)
+        f["robust_all"] = ", ".join(allrobust) if allrobust else "none"
+        f["robust_all_sentence"] = (
+            "no strategy beats plain fixed-size with an interval clear of zero on every model"
+            if not allrobust else
+            f"{', '.join(allrobust)} beats plain fixed-size with an interval clear of zero on every model"
+            if len(allrobust) == 1 else
+            f"{', '.join(allrobust)} beat plain fixed-size with an interval clear of zero on every model")
+        f["winners_differ"] = ("the same strategy wins on every model"
+                               if len({tuple(o[:1]) for o in allo if o}) == 1
+                               else "a different strategy wins depending on the model")
 
     # ---- is the overlap "saturation" actually resolvable?
     if len(ov) >= 3:
@@ -312,7 +412,7 @@ def facts(tag, compare=None):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", required=True)
-    ap.add_argument("--compare", default=None)
+    ap.add_argument("--compare", nargs="*", default=[])
     ap.add_argument("--template", default="article/template.md")
     ap.add_argument("--out", default="article/FINAL.md")
     args = ap.parse_args()

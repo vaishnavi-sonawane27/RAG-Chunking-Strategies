@@ -49,11 +49,15 @@ cost reported next to quality. These are gaps several of those authors name them
   was actually the answer. Both are reported two ways: counting text that appears in two
   overlapping chunks twice (which is what Chroma's published implementation does) and counting it
   once. The choice changes the verdict on overlap.
-* **Two embedding models.** Published work shows the strategy ranking can change between models,
-  so a single-model result cannot support a general claim.
+* **More than one embedding model.** Published work shows the strategy ranking can change between
+  models, so a single-model result cannot support a general claim. The committed run uses two; the
+  pipeline accepts any number, and the article reports which strategies survive *all* of them.
 * **Cost is reported.** `index_embed_words` counts the embedding work to build each index, including
   the extra sentence pass semantic chunking needs.
-* **Distractors.** Questions cover 20 of 64 documents; the other 44 exist to be wrongly retrieved.
+* **Every document is a target and a distractor.** All 64 documents carry questions (3 or 4 each, no
+  document holding more than 2% of the set), and for any one question the other 63 are there to be
+  wrongly retrieved. An earlier version of this set put 130 questions on just 20 documents, which
+  both concentrated the result on a fifth of the corpus and left the rest as mere decoration.
 
 ## Reproduce
 
@@ -73,6 +77,11 @@ python scripts/make_report.py   --tag bge-small --compare minilm
 python scripts/build_article.py --tag bge-small --compare minilm
 ```
 
+`--compare` takes any number of tags, so a six-model comparison is
+`--compare minilm e5-base-v2 gte-base ...`. Chunk boundaries never change between models, because
+sizing always uses one canonical tokenizer, so a difference between two columns is a difference
+between the models rather than between two different sets of chunks.
+
 `results/bge-small/` then contains `summary.csv`, `paired_vs_reference.csv`, `per_question.csv`,
 `failure_taxonomy.csv`, `failures.md`, four charts and `results_section.md`.
 `article/FINAL.md` is the written article with every number injected from those files. The build
@@ -89,6 +98,15 @@ Hugging Face, prefer the official weights:
 pip install sentence-transformers
 python run_experiment.py --embedder st:BAAI/bge-small-en-v1.5 --tag bge-official
 ```
+
+To sweep several official models and rebuild the report and article in one go:
+
+```bash
+python scripts/run_models.py          # six popular English encoders, bge-small as reference
+python scripts/run_models.py BAAI/bge-base-en-v1.5 intfloat/e5-base-v2 thenlper/gte-base
+```
+
+A model that fails to download is reported and skipped rather than taking the whole run down.
 
 ### Without any model download
 
@@ -108,7 +126,7 @@ src/dataset.py            corpus + question loading, evidence resolution, dev/te
 src/models.py             model provenance and pinned hashes
 scripts/                  fetch_corpus, fetch_models, validate_questions, make_report, build_article
 tests/                    chunker unit tests, evidence-as-query sanity check
-data/questions.json       130 questions with evidence passages  (see data/README.md)
+data/questions.json       215 questions with evidence passages  (see data/README.md)
 article/template.md       article prose with {placeholders}
 article/FINAL.md          generated article
 results/<tag>/            CSVs, charts, failure analysis
@@ -122,9 +140,11 @@ Git*. The book text itself is never committed; `scripts/fetch_corpus.py` downloa
 
 ## Limitations
 
-One corpus, one language, one embedding model, retrieval only (no generation), chunk size in words
-rather than model tokens, and a question set drafted with AI assistance that has been verified
-programmatically but not reviewed by a second person. The test split is deliberately small enough
+One corpus, one language, two embedding models, retrieval only (no generation), and a question set
+drafted with AI assistance that has been verified programmatically but not reviewed by a second
+person. On 31% of questions some other labelled passage in the set is a closer embedding match than
+the question's own evidence; Git's chapters overlap in subject matter, so this is a property of the
+corpus rather than a bug, but it does put a ceiling on achievable recall. The test split is deliberately small enough
 that many differences are *not* resolvable. That is the finding, not a defect, but it does mean
 this cannot prove two strategies are equivalent.
 
