@@ -274,8 +274,8 @@ def main():
             print(f"{label(strategy, param, ov):18s}{kind:5s} chunks={len(chunks):5d} tok={ntok.mean():6.1f} "
                   f"intact={row['evidence_intact']:.2f} R@3={row['recall@3']:.2f} MRR={row['mrr@10']:.3f} "
                   f"R@{BUDGET_TOKENS}t={row[f'recall@{BUDGET_TOKENS}tok']:.2f} "
-                  f"tPrec={row[f"token_precision@{TOKEN_METRIC_K}"]:.4f} "
-                  f"tIoU={row[f"token_iou@{TOKEN_METRIC_K}"]:.4f}" + (f" trunc={over}" if over else ""))
+                  f"tPrec={row[f'token_precision@{TOKEN_METRIC_K}']:.4f} "
+                  f"tIoU={row[f'token_iou@{TOKEN_METRIC_K}']:.4f}" + (f" trunc={over}" if over else ""))
 
     # ---- choose one configuration per strategy on the DEV questions only
     primary = kinds[0]
