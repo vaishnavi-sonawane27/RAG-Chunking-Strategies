@@ -9,8 +9,9 @@ repository-code: "https://github.com/vaishnavi-sonawane27/rag-chunking-experimen
 abstract: >-
   A small, fully reproducible comparison of five document chunking strategies
   (fixed-size, fixed-size with overlap, sentence-based, recursive and semantic)
-  for retrieval in RAG pipelines. Uses a 130-question evaluation set over ~107k
-  words of the openly licensed Pro Git book, a held-out dev/test split so chunk
+  for retrieval in RAG pipelines. Uses a 215-question evaluation set covering all
+  64 sections of the openly licensed Pro Git book (~107k words), a held-out
+  dev/test split so chunk
   sizes are not tuned on the reported data, and paired bootstrap confidence
   intervals so that differences between strategies can be assessed for
   significance rather than ranked on point estimates alone.
