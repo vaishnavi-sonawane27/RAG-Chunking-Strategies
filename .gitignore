@@ -19,3 +19,6 @@ logs/
 # generated reading copies of the article (scripts/build_doc.py rebuilds them)
 article/*.docx
 article/*.pdf
+
+# personal publishing checklist, not part of the project
+PUBLISHING.md
