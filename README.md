@@ -63,6 +63,7 @@ pip install -r requirements.txt
 
 python scripts/fetch_corpus.py            # downloads Pro Git, converts to plain text
 python scripts/validate_questions.py      # every evidence passage must resolve uniquely
+python scripts/analyse_questions.py       # question-set quality audit -> data/question_audit.json
 python -m pytest -q                       # unit tests + an end-to-end sanity check
 
 python scripts/fetch_models.py            # ONNX weights, pinned by SHA-512

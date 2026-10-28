@@ -290,6 +290,21 @@ def facts(tag, compare=None):
     f["fragile_selections"] = "; ".join(close) if close else "none were close"
     f["n_fragile"] = len(close)
 
+    # ---- question-set audit (scripts/analyse_questions.py)
+    aud_p = ROOT / "data" / "question_audit.json"
+    if aud_p.exists():
+        import json as _j
+        a = _j.loads(aud_p.read_text())
+        f["qa_dups"] = len(a.get("duplicate_pairs", []))
+        f["qa_leak"] = len(a.get("verbatim_leak", []))
+        f["qa_overlap"] = len(a.get("high_lexical_overlap", []))
+        f["qa_anaphoric"] = len(a.get("anaphoric_evidence", []))
+        f["qa_short"] = len(a.get("very_short_evidence", []))
+        f["qa_maxshare"] = f"{a['max_doc_share']:.0%}"
+        f["qa_docs"] = a["docs_with_questions"]
+        f["qa_ambiguous"] = a.get("n_ambiguous", "n/a")
+        f["qa_ambiguous_pct"] = f"{a['ambiguous_share']:.0%}" if "ambiguous_share" in a else "n/a"
+        f["qa_sim"] = a.get("question_evidence_similarity", {}).get("mean", "n/a")
     f["results_section"] = (d / "results_section.md").read_text(encoding="utf-8")
     return d, f
 

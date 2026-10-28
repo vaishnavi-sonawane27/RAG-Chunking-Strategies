@@ -229,9 +229,21 @@ Specific enough to be falsifiable:
   different numbers on PDFs with tables, transcripts, or multilingual corpora.
 - **{n_test} test questions.** That is why so many intervals include zero. This experiment can show
   that differences are *not resolvable*; it cannot prove they are absent.
-- **Questions were drafted with AI assistance** and verified programmatically (each evidence passage
-  occurs exactly once; questions are checked for verbatim leakage), but not reviewed by a second
-  person. They are paraphrased by construction, which favours embeddings over lexical matching.
+- **Questions were drafted with AI assistance and audited, not reviewed by a second person.**
+  `scripts/analyse_questions.py` measures the things that decide whether a question set is sound,
+  and its output is in the repo. On this set: {qa_dups} near-duplicate questions, {qa_leak} with
+  verbatim leakage from their own evidence, {qa_overlap} with heavy lexical overlap, mean
+  question-to-evidence similarity {qa_sim}. Two real weaknesses show up. {qa_anaphoric} of the
+  {n_questions} evidence passages open with an anaphor ("This is...", "In that case...") and so are
+  not self-contained, though the chunk around them supplies the context. And the questions are
+  unevenly spread: {qa_docs} documents carry questions and the busiest single document holds
+  {qa_maxshare} of them.
+- **Some questions are genuinely ambiguous.** For {qa_ambiguous} of the {n_questions} questions
+  ({qa_ambiguous_pct}), another question's evidence passage matches the question better than its own
+  does. Most of that is a good sign, since it means the questions are paraphrased rather than
+  lookups, but part of it is real ambiguity: a passage I score as wrong may be a defensible answer.
+  That depresses every strategy equally, so the comparisons stand, but the absolute recall and MRR
+  numbers should be read as a floor rather than a ceiling.
 - **Two embedding models, both small.** Better models may behave differently again.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et
   al. found retrieval differences largely washed out in generation.

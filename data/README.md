@@ -47,6 +47,32 @@ The evidence fields contain short verbatim excerpts of Pro Git. `data/questions.
 derivative work and is distributed under **CC BY-NC-SA 3.0**, the same license as the book, *not*
 the MIT license that covers the code. The NonCommercial clause applies.
 
+### Audit
+
+`scripts/analyse_questions.py` writes `data/question_audit.json` and reports:
+
+| Check | Result |
+|---|---|
+| Near-duplicate questions (cosine > 0.90) | 0 |
+| Questions repeating 6+ consecutive words of their own evidence | 0 |
+| Questions with >75% lexical overlap with their evidence | 1 |
+| Evidence passages opening with an anaphor (not self-contained) | 19 of 130 |
+| Evidence passages of 8 words or fewer | 6 |
+| Documents carrying questions | 20 of 64 |
+| Largest share from a single document | 15% |
+| Mean question-to-evidence cosine similarity | 0.737 |
+| Questions where another passage matches better | 54 (42%) |
+
+Read those last two together. A mean similarity of 0.74 with 42% of questions matching some other
+passage more closely means the questions are genuinely paraphrased rather than lookups, which is
+what you want. It also means a minority are ambiguous enough that a passage scored as wrong could be
+defended as right. That lowers every strategy's absolute score equally, so comparisons between
+strategies hold, but absolute numbers are a floor.
+
+Known weak question: `q102` ("What are glob patterns compared to?") is vague and close to a
+fill-in-the-blank. It is left in rather than quietly removed, since dropping questions after seeing
+results is how benchmarks get flattered.
+
 ### Honest provenance
 
 The questions were drafted with AI assistance and then checked programmatically: every evidence
