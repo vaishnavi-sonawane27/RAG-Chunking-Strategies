@@ -15,3 +15,7 @@ venv/
 results/ci-smoke/
 results/smoke/
 logs/
+
+# generated reading copies of the article (scripts/build_doc.py rebuilds them)
+article/*.docx
+article/*.pdf
