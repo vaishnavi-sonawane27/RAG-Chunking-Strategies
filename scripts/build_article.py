@@ -219,12 +219,15 @@ def facts(tag, compare=()):
         f["semantic_mrr"] = ci(H["semantic"], "mrr@10")
     trunc = {LABEL[s]: (int(v["chunks_over_model_limit"]), int(v["n_chunks"])) for s, v in H.items()}
     f["max_len"] = int(info.get("max_len", 512))
-    f["truncation"] = ", ".join(f"{a} {n}/{t}" for a, (n, t) in trunc.items())
+    _hit = {a: v for a, v in trunc.items() if v[0]}
+    # one sentence either way; listing five zeroes is noise
+    f["truncation"] = (", ".join(f"{a} {n}/{t}" for a, (n, t) in _hit.items()) if _hit
+                       else f"none of the {len(trunc)} selected configurations has a chunk over it")
     worst_t = max(trunc.items(), key=lambda kv: kv[1][0] / max(kv[1][1], 1))
-    f["worst_trunc"] = (f"{worst_t[0]} ({100 * worst_t[1][0] / max(worst_t[1][1], 1):.0f}% of its chunks), so part "
-                        f"of its score is a context-window artefact rather than a verdict on its boundaries"
-                        if worst_t[1][0] else
-                        "no selected configuration on this model is affected")
+    f["worst_trunc"] = (f", the worst being {worst_t[0]} at "
+                        f"{100 * worst_t[1][0] / max(worst_t[1][1], 1):.0f}% of its chunks, so part of its score is a "
+                        f"context-window artefact rather than a verdict on its boundaries"
+                        if worst_t[1][0] else "")
 
     if tax:
         f["total_misses"] = sum(int(r["misses_top5"]) for r in tax)

@@ -258,14 +258,13 @@ Specific enough to be falsifiable:
   repo. The comparisons quoted above live in `{cross_model_csv}`, because
   `paired_vs_reference.csv` holds each model's comparison against its own reference and so cannot
   answer the cross-model question.
-- **{n_models} embedding models, all small.** Better models may behave differently again. The
+- **Only {n_models} embedding models, both small.** Better models may behave differently again. The
   repo takes `--compare` any number of times, so adding more is one command per model.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et
   al. found retrieval differences largely washed out in generation.
 - **Context windows differ between models, and this is a confound.** {embedder} reads at
-  most {max_len} tokens; {embedder2} reads at most {model2_maxlen}. On {embedder} the selected
-  configurations are affected as follows: {truncation}, so {worst_trunc}. On {embedder2} the shorter
-  window bites harder: {truncation2}. Any {embedder2} number for an affected configuration is partly
+  most {max_len} tokens; {embedder2} reads at most {model2_maxlen}. On {embedder},
+  {truncation}{worst_trunc}. On {embedder2} the shorter window bites harder: {truncation2}. Any {embedder2} number for an affected configuration is partly
   a context-window artefact and not purely a verdict on its boundaries. I did not separate the two
   effects, and it is one reason the cross-model section should be read as "these results are
   fragile" rather than as a clean ranking of models.

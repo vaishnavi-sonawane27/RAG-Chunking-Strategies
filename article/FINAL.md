@@ -398,14 +398,13 @@ Specific enough to be falsifiable:
   repo. The comparisons quoted above live in `results/bge-small/paired_cross_model.csv`, because
   `paired_vs_reference.csv` holds each model's comparison against its own reference and so cannot
   answer the cross-model question.
-- **2 embedding models, all small.** Better models may behave differently again. The
+- **Only 2 embedding models, both small.** Better models may behave differently again. The
   repo takes `--compare` any number of times, so adding more is one command per model.
 - **Retrieval only.** I did not measure whether any of this survives to the generated answer. Qu et
   al. found retrieval differences largely washed out in generation.
 - **Context windows differ between models, and this is a confound.** bge-small reads at
-  most 512 tokens; minilm reads at most 256. On bge-small the selected
-  configurations are affected as follows: Fixed-size 0/904, Sentence-based 0/963, Recursive 0/1114, Fixed + overlap 0/1451, Semantic 0/1002, so no selected configuration on this model is affected. On minilm the shorter
-  window bites harder: Semantic 218/985 (22%). Any minilm number for an affected configuration is partly
+  most 512 tokens; minilm reads at most 256. On bge-small,
+  none of the 5 selected configurations has a chunk over it. On minilm the shorter window bites harder: Semantic 218/985 (22%). Any minilm number for an affected configuration is partly
   a context-window artefact and not purely a verdict on its boundaries. I did not separate the two
   effects, and it is one reason the cross-model section should be read as "these results are
   fragile" rather than as a clean ranking of models.
