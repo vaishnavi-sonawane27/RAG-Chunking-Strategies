@@ -11,8 +11,12 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import dataset  # noqa: E402
+from tokenization import Tok  # noqa: E402
 import run_experiment as rx  # noqa: E402
 from retrieval import BM25Retriever  # noqa: E402
+
+
+TOK = Tok()
 
 
 def _load():
@@ -24,8 +28,8 @@ def test_evidence_as_query_is_retrieved():
     """If the query IS the answer passage, retrieval must find it. If this fails, the
     harness is broken and no result from it means anything."""
     docs, qs = _load()
-    for strategy, param in (("fixed", 150), ("sentence", 150), ("recursive", 150)):
-        chunks = rx.build_chunks(strategy, param, 0, docs, None)
+    for strategy, param in (("fixed", 200), ("sentence", 200), ("recursive", 200)):
+        chunks = rx.build_chunks(strategy, param, 0, docs, None, TOK)
         retr = BM25Retriever(chunks)
         hits = sum(rx.first_rank(retr.search(q["evidence"], 10), chunks, q) == 1 for q in qs)
         rate = hits / len(qs)
@@ -37,7 +41,7 @@ def test_every_question_is_answerable_by_some_chunking():
     """Each question's evidence must be recoverable by at least one strategy, otherwise
     the question is unanswerable by construction rather than hard."""
     docs, qs = _load()
-    chunks = rx.build_chunks("sentence", 300, 0, docs, None)
+    chunks = rx.build_chunks("sentence", 400, 0, docs, None, TOK)
     missing = [q["id"] for q in qs if not any(rx.relevant(c, q) for c in chunks)]
     assert not missing, f"evidence unreachable even with large sentence chunks: {missing}"
 

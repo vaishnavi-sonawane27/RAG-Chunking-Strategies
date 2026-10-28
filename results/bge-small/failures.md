@@ -1,773 +1,787 @@
-# Failure cases: bge-small, dense retrieval, headline configurations
+# Failure cases: bge-small, dense retrieval, selected configurations
 
 A question counts as a miss when its first relevant chunk is not in the top 5.
 
-## fixed - q002: right document, wrong passage
+## fixed 200 - q003: wrong document
 
-- **Question:** Which flag makes git config store a value for my user account across all my repositories?
-- **Evidence (01_first-time-setup):** You can make Git read and write to this file specifically by passing the --global option
-- **First relevant rank:** 8
-- **Top-1 retrieved (01_first-time-setup):** config <key>: $ git config user.name John Doe Since Git might read the same configuration variable value from more than one file, it's possible that you have an unexpected value for one of these values and you don't know why. In cases like…
+- **Question:** From which Git release can the name of the initial branch be customised?
+- **Evidence (01_first-time-setup):** From Git version 2.28 onwards, you can set a different name for the initial branch.
+- **First relevant rank:** 6
+- **Top-1 retrieved (03_branch-management):** ame a branch like master/main/mainline without having read the section _changing_master. Suppose you have a branch that is called bad-branch-name and you want to change it to corrected-branch-name, while keeping all history. You also want …
 
-## fixed - q013: wrong document
+## fixed 200 - q009: wrong document
 
-- **Question:** Which part of a Git project holds the metadata and the object database?
-- **Evidence (01_what-is-git):** The Git directory is where Git stores the metadata and object database for your project.
-- **First relevant rank:** 7
-- **Top-1 retrieved (10_objects):** tree 1 git/objects/fa/49b077972391ad58037050f2a75f74e3671e92 # new.txt git/objects/fd/f4fc3344e67ab068f836878b6c4951e3b15f3d # commit 1 If you follow all the internal pointers, you get an object graph something like this: All the reachable…
+- **Question:** Why can I keep committing while on a train with no internet?
+- **Evidence (01_what-is-git):** you can commit happily (to your local copy, remember?) until you get to a network connection to upload.
+- **First relevant rank:** >10
+- **Top-1 retrieved (07_reset):** | NO | YES | checkout [commit] <paths> | NO | YES | YES | NO |================================
 
-## fixed - q022: wrong document
+## fixed 200 - q011: wrong document
+
+- **Question:** What is the formal name for the area that holds what will go into the next commit?
+- **Evidence (01_what-is-git):** Its technical name in Git parlance is the "index", but the phrase "staging area" works just as well.
+- **First relevant rank:** >10
+- **Top-1 retrieved (10_objects):** blank line, and then the commit message. Next, you'll write the other two commit objects, each referencing the commit that came directly before it: $ echo 'Second commit' | git commit-tree 0155eb -p fdf4fc3 cac0cab538b970a37ea1e769cbbde608…
+
+## fixed 200 - q014: wrong document
+
+- **Question:** What goes wrong with the habit of duplicating project folders by hand as a backup scheme?
+- **Evidence (01_about-version-control):** It is easy to forget which directory you're in and accidentally write to the wrong file or copy over files you don't mean to.
+- **First relevant rank:** 9
+- **Top-1 retrieved (02_undoing):** checkout -- <file>..." to discard changes in working directory) modified: CONTRIBUTING.md The command is a bit strange, but it works. The CONTRIBUTING.md file is modified but once again unstaged. ===== It's true that git reset can be a dan…
+
+## fixed 200 - q022: wrong document
 
 - **Question:** Which URL styles can be used to clone, besides https?
 - **Evidence (02_getting-a-repository):** you may also see git:// or user@server:path/to/repo.git, which uses the SSH transfer protocol.
-- **First relevant rank:** 8
-- **Top-1 retrieved (04_protocols):** like GitHub, the URL you use to view the repository online (for example, ^ (https://github.com/schacon/simplegit)) is the same URL you can use to clone and, if you have access, push over. Dumb HTTP If the server does not respond with a Git…
-
-## fixed - q028: right document, wrong passage
-
-- **Question:** How can a commit skip the explicit add step for files Git already follows?
-- **Evidence (02_recording-changes):** Adding the -a option to the git commit command makes Git automatically stage every file that is already tracked before doing the commit
 - **First relevant rank:** >10
-- **Top-1 retrieved (02_recording-changes):** you skip the git add part: $ git status On branch master Your branch is up-to-date with 'origin/master'. Changes not staged for commit: (use "git add <file>..." to update what will be committed) (use "git checkout -- <file>..." to discard …
+- **Top-1 retrieved (04_protocols):** goes for read access. In fact, for services like GitHub, the URL you use to view the repository online (for example, ^ (https://github.com/schacon/simplegit)) is the same URL you can use to clone and, if you have access, push over. Dumb HT…
 
-## fixed - q033: wrong document
+## fixed 200 - q048: wrong document
 
-- **Question:** In what order does the history command list commits when run without options?
-- **Evidence (02_viewing-history):** lists the commits made in that repository in reverse chronological order
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_rewriting-history):** # Note that empty commits are commented out It's important to note that these commits are listed in the opposite order than you normally see them using the log command. If you run a log, you see something like this: $ git log --pretty=form…
+- **Question:** After committing three files, how many objects are stored and of which kinds?
+- **Evidence (03_nutshell):** Your Git repository now contains five objects: three blobs
+- **First relevant rank:** 10
+- **Top-1 retrieved (10_packfiles):** Packfiles If you followed all of the instructions in the example from the previous section, you should now have a test Git repository with 11 objects -- four blobs, three trees, three commits, and one tag: $ find .git/objects -type f git/o…
 
-## fixed - q057: right document, wrong passage
+## fixed 200 - q052: wrong document
 
-- **Question:** Does a plain push send my tags to the server?
-- **Evidence (02_tagging):** By default, the git push command doesn't transfer tags to remote servers.
-- **First relevant rank:** >10
-- **Top-1 retrieved (02_tagging):** to a shared server after you have created them. This process is just like sharing remote branches -- you can run git push origin <tagname>. $ git push origin v1.5 Counting objects: 14, done. Delta compression using up to 8 threads. Compres…
+- **Question:** What makes a merge commit different from an ordinary commit?
+- **Evidence (03_basic-branching-and-merging):** This is referred to as a merge commit, and is special in that it has more than one parent.
+- **First relevant rank:** 10
+- **Top-1 retrieved (07_advanced-merging):** Merge made by the 'ours' strategy. $ git diff HEAD HEAD~ $ You can see that there is no difference between the branch we were on and the result of the merge. This can often be useful to basically trick Git into thinking that a branch is al…
 
-## fixed - q060: right document, wrong passage
+## fixed 200 - q055: right document, wrong passage
 
-- **Question:** What happens to a commit I make while sitting on a checked-out tag?
-- **Evidence (02_tagging):** your new commit won't belong to any branch and will be unreachable, except by the exact commit hash
-- **First relevant rank:** >10
-- **Top-1 retrieved (02_tagging):** date the commit was tagged, and the annotation message before showing the commit information. Lightweight Tags Another way to tag commits is with a lightweight tag. This is basically the commit checksum stored in a file -- no other informa…
+- **Question:** Which two kinds of tags does Git support?
+- **Evidence (02_tagging):** Git supports two types of tags: lightweight and annotated.
+- **First relevant rank:** 7
+- **Top-1 retrieved (02_tagging):** Tagging Like most VCSs, Git has the ability to tag specific points in a repository's history as being important. Typically, people use this functionality to mark release points (v1.0, v2.0 and so on). In this section, you'll learn how to l…
 
-## fixed - q066: wrong document
+## fixed 200 - q066: wrong document
 
 - **Question:** What does the star next to a branch name in the listing mean?
 - **Evidence (03_branch-management):** it indicates the branch that you currently have checked out
-- **First relevant rank:** 7
-- **Top-1 retrieved (02_recording-changes):** the command tells you which branch you're on and informs you that it has not diverged from the same branch on the server. For now, that branch is always master, which is the default; you won't worry about it here. ch03-git-branching#ch03-g…
+- **First relevant rank:** 6
+- **Top-1 retrieved (06_3-maintaining):** if you're in your repository and you run git ls-remote origin or whatever remote you want to check, it will show you something similar to this. If the repository is on GitHub and you have any Pull Requests that have been opened, you'll get…
 
-## fixed - q071: wrong document
+## fixed 200 - q068: wrong document
+
+- **Question:** How do I delete a branch that still has unmerged work?
+- **Evidence (03_branch-management):** If you really do want to delete the branch and lose that work, you can force it with -D
+- **First relevant rank:** 6
+- **Top-1 retrieved (07_rewriting-history):** filter-branch. Its documentation and source code can be found at ^ (https://github.com/newren/git-filter-repo). Removing a File from Every Commit This occurs fairly commonly. Someone accidentally commits a huge binary file with a thoughtle…
+
+## fixed 200 - q069: right document, wrong passage
+
+- **Question:** Is it fine to rename a branch my teammates are using?
+- **Evidence (03_branch-management):** Do not rename branches that are still in use by other collaborators.
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_branch-management):** branch-name remotes/origin/corrected-branch-name remotes/origin/main Notice that you're on the branch corrected-branch-name and it's available on the remote. However, the branch with the bad name is also still present there but you can del…
+
+## fixed 200 - q071: wrong document
 
 - **Question:** Which branches are safe to remove with the lowercase delete flag?
 - **Evidence (03_branch-management):** Branches on this list without the * in front of them are generally fine to delete with git branch -d; you've already incorporated their work into another branch, so you're not going to lose anything.
-- **First relevant rank:** 10
-- **Top-1 retrieved (08_config):** denies any deletion of branches or tags -- no user can do it. To remove remote branches, you must remove the ref files from the server manually. There are also more interesting ways to do this on a per-user basis via ACLs, as you'll learn …
+- **First relevant rank:** >10
+- **Top-1 retrieved (08_config):** .denyDeletes to true: $ git config --system receive.denyDeletes true This denies any deletion of branches or tags -- no user can do it. To remove remote branches, you must remove the ref files from the server manually. There are also more …
 
-## fixed - q074: wrong document
+## fixed 200 - q074: wrong document
 
 - **Question:** Does branching and merging involve contacting a server?
 - **Evidence (03_workflows):** everything is being done only in your Git repository -- there is no communication with the server
 - **First relevant rank:** >10
 - **Top-1 retrieved (03_basic-branching-and-merging):** Basic Branching and Merging Let's go through a simple example of branching and merging with a workflow that you might use in the real world. You'll follow these steps: - Do some work on a website. - Create a branch for a new user story you…
 
-## fixed - q077: right document, wrong passage
+## fixed 200 - q075: wrong document
+
+- **Question:** What goes into the proposed-updates branch of large projects?
+- **Evidence (03_workflows):** that has integrated branches that may not be ready to go into the next or master branch
+- **First relevant rank:** >10
+- **Top-1 retrieved (05_maintaining):** a while, you fast-forward your master branch. Large-Merging Workflows The Git project has four long-running branches: master, next, and seen (formerly 'pu' -- proposed updates) for new work, and maint for maintenance backports. When new wo…
+
+## fixed 200 - q077: right document, wrong passage
 
 - **Question:** What does rebasing do, in one sentence?
 - **Evidence (03_rebasing):** you can take all the changes that were committed on one branch and replay them on a different branch.
 - **First relevant rank:** >10
 - **Top-1 retrieved (03_rebasing):** Rebasing In Git, there are two main ways to integrate changes from one branch into another: the merge and the rebase. In this section you'll learn what rebasing is, how to do it, why it's a pretty amazing tool, and in what cases you won't …
 
-## fixed - q081: right document, wrong passage
+## fixed 200 - q080: wrong document
+
+- **Question:** What is a patch-id?
+- **Evidence (03_rebasing):** Git also calculates a checksum that is based just on the patch introduced with the commit.
+- **First relevant rank:** 6
+- **Top-1 retrieved (05_maintaining):** scripts if you want. Applying a Patch with `am` If the contributor is a Git user and was good enough to use the format-patch command to generate their patch, then your job is easier because the patch contains author information and a commi…
+
+## fixed 200 - q081: right document, wrong passage
 
 - **Question:** How can I make pulling replay my commits rather than merge by default?
 - **Evidence (03_rebasing):** you can set the pull.rebase config value
 - **First relevant rank:** >10
-- **Top-1 retrieved (03_rebasing):** were ready to submit your patches to the main project. That way, the maintainer doesn't have to do any integration work -- just a fast-forward or a clean apply. Note that the snapshot pointed to by the final commit you end up with, whether…
+- **Top-1 retrieved (03_rebasing):** to the main project. That way, the maintainer doesn't have to do any integration work -- just a fast-forward or a clean apply. Note that the snapshot pointed to by the final commit you end up with, whether it's the last of the rebased comm…
 
-## fixed - q084: right document, wrong passage
+## fixed 200 - q084: right document, wrong passage
 
 - **Question:** Step by step, how does a rebase work internally?
 - **Evidence (03_rebasing):** This operation works by going to the common ancestor of the two branches (the one you're on and the one you're rebasing onto), getting the diff introduced by each commit of the branch you're on, saving those diffs to temporary files, resetting the current branch to the same commit as the branch you are rebasing onto, …
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_rebasing):** make --rebase the default, you can set the pull.rebase config value with something like git config --global pull.rebase true. If you only ever rebase commits that have never left your own computer, you'll be just fine. If you rebase commit…
-
-## fixed - q089: wrong document
-
-- **Question:** Why can't I move origin/master by hand?
-- **Evidence (03_remote-branches):** They're local references that you can't move; Git moves them for you whenever you do any network communication
-- **First relevant rank:** >10
-- **Top-1 retrieved (05_contributing):** origin/master is reachable from Jessica's master branch, so she should be able to successfully push (assuming John hasn't pushed even more changes in the meantime): $ git push origin master ... To jessica@githost:simplegit.git 72bbc59..805…
-
-## fixed - q092: wrong document
-
-- **Question:** How can a local branch be pushed under a different name on the remote?
-- **Evidence (03_remote-branches):** You can use this format to push a local branch into a remote branch that is named differently.
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_branch-management):** like master/main/mainline without having read the section _changing_master. Suppose you have a branch that is called bad-branch-name and you want to change it to corrected-branch-name, while keeping all history. You also want to change the…
-
-## fixed - q093: wrong document
-
-- **Question:** After fetching a new remote branch do I get an editable local copy of it?
-- **Evidence (03_remote-branches):** you don't automatically have local, editable copies of them
-- **First relevant rank:** 9
-- **Top-1 retrieved (02_remotes):** issue-43 new (next fetch will store in remotes/origin) issue-45 new (next fetch will store in remotes/origin) refs/remotes/origin/issue-11 stale (use 'git remote prune' to remove) Local branches configured for 'git pull': dev-branch merges…
-
-## fixed - q112: wrong document
-
-- **Question:** How do I jump back to the branch I was on before?
-- **Evidence (03_nutshell):** Return to your previously checked out branch: git switch -.
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_rewriting-history):** will be returned to the state it was in before you started the rebase. If you finish a rebase and decide it's not what you want, you can use git reflog to recover an earlier version of your branch. See ch10-git-internals#_data_recovery for…
-
-## fixed - q123: wrong document
-
-- **Question:** Can file contents change without Git noticing?
-- **Evidence (01_what-is-git):** Everything in Git is checksummed before it is stored and is then referred to by that checksum. This means it's impossible to change the contents of any file or directory without Git knowing about it.
-- **First relevant rank:** 9
-- **Top-1 retrieved (02_undoing):** how to do that, too. In the last example output, the unstaged area looks like this: Changes not staged for commit: (use "git add <file>..." to update what will be committed) (use "git checkout -- <file>..." to discard changes in working di…
-
-## fixed - q125: wrong document
-
-- **Question:** What are the three steps of the basic Git workflow?
-- **Evidence (01_what-is-git):** 1. You modify files in your working tree. 2. You selectively stage just those changes you want to be part of your next commit, which adds only those changes to the staging area. 3. You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
-- **First relevant rank:** 6
-- **Top-1 retrieved (05_contributing):** section, we covered multiple workflows, and talked about the differences between working as part of a small team on closed-source projects vs contributing to a big public project. You know to check for white-space errors before committing,…
-
-## fixed - q127: wrong document
-
-- **Question:** If a maintainer applies my patch, who is credited as author and who as committer?
-- **Evidence (02_viewing-history):** The author is the person who originally wrote the work, whereas the committer is the person who last applied the work. So, if you send in a patch to a project and one of the core members applies the patch, both of you get credit -- you as the author, and the core member as the committer.
-- **First relevant rank:** 7
-- **Top-1 retrieved (05_maintaining):** If the contributor is a Git user and was good enough to use the format-patch command to generate their patch, then your job is easier because the patch contains author information and a commit message for you. If you can, encourage your co…
-
-## sentence - q022: wrong document
-
-- **Question:** Which URL styles can be used to clone, besides https?
-- **Evidence (02_getting-a-repository):** you may also see git:// or user@server:path/to/repo.git, which uses the SSH transfer protocol.
-- **First relevant rank:** 7
-- **Top-1 retrieved (04_protocols):** In fact, for services like GitHub, the URL you use to view the repository online (for example, ^ (https://github.com/schacon/simplegit)) is the same URL you can use to clone and, if you have access, push over. Dumb HTTP If the server does …
-
-## sentence - q030: right document, wrong passage
-
-- **Question:** How do I stop Git tracking a file but leave it on my disk?
-- **Evidence (02_recording-changes):** keep the file in your working tree but remove it from your staging area
-- **First relevant rank:** 10
-- **Top-1 retrieved (02_recording-changes):** In other words, you may want to keep the file on your hard drive but not have Git track it anymore. This is particularly useful if you forgot to add something to your .gitignore file and accidentally staged it, like a large log file or a b…
-
-## sentence - q036: wrong document
-
-- **Question:** How can I keep merge commits from cluttering the log output?
-- **Evidence (02_viewing-history):** simply add the log option --no-merges
-- **First relevant rank:** 6
-- **Top-1 retrieved (07_advanced-merging):** We can further simplify this though to give us much more specific context. If we add the --merge option to git log, it will only show the commits in either side of the merge that touch a file that's currently conflicted. $ git log --onelin…
-
-## sentence - q048: wrong document
-
-- **Question:** After committing three files, how many objects are stored and of which kinds?
-- **Evidence (03_nutshell):** Your Git repository now contains five objects: three blobs
-- **First relevant rank:** >10
-- **Top-1 retrieved (10_packfiles):** Packfiles If you followed all of the instructions in the example from the previous section, you should now have a test Git repository with 11 objects -- four blobs, three trees, three commits, and one tag: $ find .git/objects -type f git/o…
-
-## sentence - q051: wrong document
-
-- **Question:** When does Git just move a pointer forward instead of creating a new commit while merging?
-- **Evidence (03_basic-branching-and-merging):** there is no divergent work to merge together -- this is called a "fast-forward."
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_advanced-merging):** This approach also won't work if any other commits have been created since the merge; moving the refs would effectively lose those changes. Reverse the commit If moving the branch pointers around isn't going to work for you, Git gives you …
-
-## sentence - q054: right document, wrong passage
-
-- **Question:** How do I tell Git that a conflicted file is now fixed?
-- **Evidence (03_basic-branching-and-merging):** run git add on each file to mark it as resolved
-- **First relevant rank:** 10
-- **Top-1 retrieved (03_basic-branching-and-merging):** If you want to see which files are unmerged at any point after a merge conflict, you can run git status: $ git status On branch master You have unmerged paths. (fix conflicts and run "git commit") Unmerged paths: (use "git add <file>..." t…
-
-## sentence - q061: right document, wrong passage
-
-- **Question:** Can I label an older commit I forgot to mark as a release?
-- **Evidence (02_tagging):** You can also tag commits after you've moved past them.
-- **First relevant rank:** 9
-- **Top-1 retrieved (02_tagging):** Suppose your commit history looks like this: $ git log --pretty=oneline 15027957951b64cf874c3557a0f3547bd83b3ff6 Merge branch 'experiment' a6b4c97498bd301d84096da251c98a07c7723e65 Create write support 0d52aaab4479697da7686c15f77a3d64d91651…
-
-## sentence - q066: wrong document
-
-- **Question:** What does the star next to a branch name in the listing mean?
-- **Evidence (03_branch-management):** it indicates the branch that you currently have checked out
 - **First relevant rank:** 8
-- **Top-1 retrieved (03_remote-branches):** This will list out your local branches with more information including what each branch is tracking and if your local branch is ahead, behind or both. $ git branch -vv iss53 7e424c3 [origin/iss53: ahead 2] Add forgotten brackets master 1ae…
+- **Top-1 retrieved (03_rebasing):** to the main project. That way, the maintainer doesn't have to do any integration work -- just a fast-forward or a clean apply. Note that the snapshot pointed to by the final commit you end up with, whether it's the last of the rebased comm…
 
-## sentence - q071: right document, wrong passage
-
-- **Question:** Which branches are safe to remove with the lowercase delete flag?
-- **Evidence (03_branch-management):** Branches on this list without the * in front of them are generally fine to delete with git branch -d; you've already incorporated their work into another branch, so you're not going to lose anything.
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_branch-management):** Because it contains work that isn't merged in yet, trying to delete it with git branch -d will fail: $ git branch -d testing error: The branch 'testing' is not fully merged. If you are sure you want to delete it, run 'git branch -D testing…
-
-## sentence - q077: right document, wrong passage
-
-- **Question:** What does rebasing do, in one sentence?
-- **Evidence (03_rebasing):** you can take all the changes that were committed on one branch and replay them on a different branch.
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_rebasing):** Let's look at an example of how rebasing work that you've made public can cause problems. Suppose you clone from a central server and then do some work off that. Your commit history looks like this: Clone a repository, and base some work o…
-
-## sentence - q081: wrong document
-
-- **Question:** How can I make pulling replay my commits rather than merge by default?
-- **Evidence (03_rebasing):** you can set the pull.rebase config value
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_advanced-merging):** This approach also won't work if any other commits have been created since the merge; moving the refs would effectively lose those changes. Reverse the commit If moving the branch pointers around isn't going to work for you, Git gives you …
-
-## sentence - q084: right document, wrong passage
-
-- **Question:** Step by step, how does a rebase work internally?
-- **Evidence (03_rebasing):** This operation works by going to the common ancestor of the two branches (the one you're on and the one you're rebasing onto), getting the diff introduced by each commit of the branch you're on, saving those diffs to temporary files, resetting the current branch to the same commit as the branch you are rebasing onto, …
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_rebasing):** If you examine the log of a rebased branch, it looks like a linear history: it appears that all the work happened in series, even when it originally happened in parallel. Often, you'll do this to make sure your commits apply cleanly on a r…
-
-## sentence - q089: wrong document
+## fixed 200 - q089: right document, wrong passage
 
 - **Question:** Why can't I move origin/master by hand?
 - **Evidence (03_remote-branches):** They're local references that you can't move; Git moves them for you whenever you do any network communication
 - **First relevant rank:** >10
-- **Top-1 retrieved (05_contributing):** Now origin/master is reachable from Jessica's master branch, so she should be able to successfully push (assuming John hasn't pushed even more changes in the meantime): $ git push origin master ... To jessica@githost:simplegit.git 72bbc59.…
+- **Top-1 retrieved (03_remote-branches):** , neither does "origin". While "master" is the default name for a starting branch when you run git init which is the only reason it's widely used, "origin" is the default name for a remote when you run git clone. If you run git clone -o bo…
 
-## sentence - q092: wrong document
+## fixed 200 - q091: wrong document
 
-- **Question:** How can a local branch be pushed under a different name on the remote?
-- **Evidence (03_remote-branches):** You can use this format to push a local branch into a remote branch that is named differently.
-- **First relevant rank:** 7
-- **Top-1 retrieved (02_remotes):** master merges with remote master Local refs configured for 'git push': dev-branch pushes to dev-branch (up to date) markdown-strip pushes to markdown-strip (up to date) master pushes to master (up to date) This command shows which branch i…
+- **Question:** Are my local branches pushed to the server automatically?
+- **Evidence (03_remote-branches):** Your local branches aren't automatically synchronized to the remotes you write to
+- **First relevant rank:** 10
+- **Top-1 retrieved (02_remotes):** new work that has been pushed to that server since you cloned (or last fetched from) it. It's important to note that the git fetch command only downloads the data to your local repository -- it doesn't automatically merge it with any of yo…
 
-## sentence - q101: wrong document
-
-- **Question:** Why do newer repositories often start on main instead of master?
-- **Evidence (02_recording-changes):** GitHub changed the default branch name from master to main in mid-2020, and other Git hosts followed suit.
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_remote-branches):** Git also gives you your own local master branch starting at the same place as origin's master branch, so you have something to work from. ."origin" is not special Just like the branch name "master" does not have any special meaning in Git,…
-
-## sentence - q104: wrong document
+## fixed 200 - q104: wrong document
 
 - **Question:** Do ignore files in subfolders affect the whole repository?
 - **Evidence (02_recording-changes):** The rules in these nested .gitignore files apply only to the files under the directory where they are located.
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_stashing-cleaning):** By default, git stash will stash only modified and staged tracked files. If you specify --include-untracked or -u, Git will include untracked files in the stash being created. However, including untracked files in the stash will still not …
+- **First relevant rank:** 6
+- **Top-1 retrieved (08_config):** ignoring. But sometimes you want to ignore certain files for all repositories that you work with. If your computer is running macOS, you're probably familiar with .DS_Store files. If your preferred editor is Emacs or Vim, you know about fi…
 
-## sentence - q107: wrong document
+## fixed 200 - q107: wrong document
 
 - **Question:** How should I think about what git add really does?
 - **Evidence (02_recording-changes):** git add is a multipurpose command -- you use it to begin tracking new files, to stage files, and to do other things like marking merge-conflicted files as resolved. It may be helpful to think of it more as "add precisely this content to the next commit" rather than "add this file to the project
-- **First relevant rank:** 10
-- **Top-1 retrieved (01_help):** In addition, if you don't need the full-blown manpage help, but just need a quick refresher on the available options for a Git command, you can ask for the more concise "help" output with the -h option, as in: $ git add -h usage: git add […
+- **First relevant rank:** >10
+- **Top-1 retrieved (01_help):** if you don't need the full-blown manpage help, but just need a quick refresher on the available options for a Git command, you can ask for the more concise "help" output with the -h option, as in: $ git add -h usage: git add [<options>] [-…
 
-## sentence - q112: wrong document
+## fixed 200 - q112: right document, wrong passage
 
 - **Question:** How do I jump back to the branch I was on before?
 - **Evidence (03_nutshell):** Return to your previously checked out branch: git switch -.
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_rewriting-history):** If you finish a rebase and decide it's not what you want, you can use git reflog to recover an earlier version of your branch. See ch10-git-internals#_data_recovery for more information on the reflog command. Drew DeVault made a practical …
+- **First relevant rank:** 7
+- **Top-1 retrieved (03_nutshell):** and then switched back to your main branch and did other work. Both of those changes are isolated in separate branches: you can switch back and forth between the branches and merge them together when you're ready. And you did all that with…
 
-## sentence - q116: right document, wrong passage
+## fixed 200 - q116: right document, wrong passage
 
 - **Question:** What are the two effects of switching back to the master branch?
 - **Evidence (03_nutshell):** That command did two things. It moved the HEAD pointer back to point to the master branch, and it reverted the files in your working directory back to the snapshot that master points to.
 - **First relevant rank:** >10
-- **Top-1 retrieved (03_nutshell):** It essentially rewinds the work you've done in your testing branch so you can go in a different direction. Switching branches changes files in your working directory It's important to note that when you switch branches in Git, files in you…
+- **Top-1 retrieved (03_nutshell):** it reverted the files in your working directory back to the snapshot that master points to. This also means the changes you make from this point forward will diverge from an older version of the project. It essentially rewinds the work you…
 
-## sentence - q125: wrong document
+## fixed 200 - q124: wrong document
+
+- **Question:** How hard is it to lose committed work, and what makes it safer still?
+- **Evidence (01_what-is-git):** It is hard to get the system to do anything that is not undoable or to make it erase data in any way. As with any VCS, you can lose or mess up changes you haven't committed yet, but after you commit a snapshot into Git, it is very difficult to lose, especially if you regularly push your database to another repository.
+- **First relevant rank:** >10
+- **Top-1 retrieved (01_about-version-control):** that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save versioned changes to anything they're working on. If the hard disk the central database is on becomes…
+
+## fixed 200 - q125: wrong document
 
 - **Question:** What are the three steps of the basic Git workflow?
 - **Evidence (01_what-is-git):** 1. You modify files in your working tree. 2. You selectively stage just those changes you want to be part of your next commit, which adds only those changes to the staging area. 3. You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
 - **First relevant rank:** >10
-- **Top-1 retrieved (07_reset):** Git's typical workflow is to record snapshots of your project in successively better states, by manipulating these three trees. Git's typical workflow Let's visualize this process: say you go into a new directory with a single file in it. …
+- **Top-1 retrieved (07_reset):** these three trees. Git's typical workflow Let's visualize this process: say you go into a new directory with a single file in it. We'll call this v1 of the file, and we'll indicate it in blue. Now we run git init, which will create a Git r…
 
-## recursive - q002: right document, wrong passage
+## fixed 200 - q126: wrong document
 
-- **Question:** Which flag makes git config store a value for my user account across all my repositories?
-- **Evidence (01_first-time-setup):** You can make Git read and write to this file specifically by passing the --global option
+- **Question:** Could a corrupted server be restored from a client's clone?
+- **Evidence (02_getting-a-repository):** Every version of every file for the history of the project is pulled down by default when you run git clone. In fact, if your server disk gets corrupted, you can often use nearly any of the clones on any client to set the server back to the state it was in when it was cloned
 - **First relevant rank:** >10
-- **Top-1 retrieved (01_first-time-setup):** Since Git might read the same configuration variable value from more than one file, it's possible that you have an unexpected value for one of these values and you don't know why. In cases like that, you can query Git as to the origin for …
+- **Top-1 retrieved (01_about-version-control):** client repositories can be copied back up to the server to restore it. Every clone is really a full backup of all the data. Distributed version control diagram Furthermore, many of these systems deal pretty well with having several remote …
 
-## recursive - q017: right document, wrong passage
+## sentence 100 - q011: wrong document
 
-- **Question:** In a distributed system, why does losing the server not mean losing the history?
-- **Evidence (01_about-version-control):** Every clone is really a full backup of all the data.
+- **Question:** What is the formal name for the area that holds what will go into the next commit?
+- **Evidence (01_what-is-git):** Its technical name in Git parlance is the "index", but the phrase "staging area" works just as well.
+- **First relevant rank:** 10
+- **Top-1 retrieved (10_objects):** Next, you'll write the other two commit objects, each referencing the commit that came directly before it: $ echo 'Second commit' | git commit-tree 0155eb -p fdf4fc3 cac0cab538b970a37ea1e769cbbde608743bc96d $ echo 'Third commit' | git comm…
+
+## sentence 100 - q014: wrong document
+
+- **Question:** What goes wrong with the habit of duplicating project folders by hand as a backup scheme?
+- **Evidence (01_about-version-control):** It is easy to forget which directory you're in and accidentally write to the wrong file or copy over files you don't mean to.
 - **First relevant rank:** >10
-- **Top-1 retrieved (01_about-version-control):** If the hard disk the central database is on becomes corrupted, and proper backups haven't been kept, you lose absolutely everything -- the entire history of the project except whatever single snapshots people happen to have on their local …
+- **Top-1 retrieved (04_protocols):** This is often used if everyone on your team has access to a shared filesystem such as an NFS^ (https://en.wikipedia.org/wiki/Network_File_System) mount, or in the less likely case that everyone logs in to the same computer. The latter woul…
 
-## recursive - q022: wrong document
+## sentence 100 - q020: right document, wrong passage
+
+- **Question:** How does cloning in Git differ from a Subversion-style checkout?
+- **Evidence (02_getting-a-repository):** instead of getting just a working copy, Git receives a full copy of nearly all data that the server has.
+- **First relevant rank:** 7
+- **Top-1 retrieved (02_getting-a-repository):** At this point, you have a Git repository with tracked files and an initial commit. Cloning an Existing Repository If you want to get a copy of an existing Git repository -- for example, a project you'd like to contribute to -- the command …
+
+## sentence 100 - q022: right document, wrong passage
 
 - **Question:** Which URL styles can be used to clone, besides https?
 - **Evidence (02_getting-a-repository):** you may also see git:// or user@server:path/to/repo.git, which uses the SSH transfer protocol.
 - **First relevant rank:** >10
-- **Top-1 retrieved (04_protocols):** In fact, for services like GitHub, the URL you use to view the repository online (for example, ^ (https://github.com/schacon/simplegit)) is the same URL you can use to clone and, if you have access, push over. Dumb HTTP
+- **Top-1 retrieved (02_getting-a-repository):** You clone a repository with git clone <url>. For example, if you want to clone the Git linkable library called libgit2, you can do so like this: $ git clone https://github.com/libgit2/libgit2
 
-## recursive - q033: wrong document
+## sentence 100 - q029: right document, wrong passage
+
+- **Question:** What flag is needed to delete a file from Git when it has staged or modified content?
+- **Evidence (02_recording-changes):** If you modified the file or had already added it to the staging area, you must force the removal with the -f option.
+- **First relevant rank:** >10
+- **Top-1 retrieved (02_recording-changes):** This is convenient, but be careful; sometimes this flag will cause you to include unwanted changes. Removing Files To remove a file from Git, you have to remove it from your tracked files (more accurately, remove it from your staging area)…
+
+## sentence 100 - q031: right document, wrong passage
+
+- **Question:** Does Git remember that a file was renamed?
+- **Evidence (02_recording-changes):** Unlike many other VCSs, Git doesn't explicitly track file movement.
+- **First relevant rank:** >10
+- **Top-1 retrieved (02_recording-changes):** If you rename a file in Git, no metadata is stored in Git that tells it you renamed the file. However, Git is pretty smart about figuring that out after the fact -- we'll deal with detecting file movement a bit later. Thus it's a bit confu…
+
+## sentence 100 - q033: right document, wrong passage
 
 - **Question:** In what order does the history command list commits when run without options?
 - **Evidence (02_viewing-history):** lists the commits made in that repository in reverse chronological order
 - **First relevant rank:** 7
-- **Top-1 retrieved (07_rewriting-history):** Running this command gives you a list of commits in your text editor that looks something like this: pick f7f3f6d Change my name a bit pick 310154e Update README formatting and add blame pick a5f4a0d Add cat-file
+- **Top-1 retrieved (02_viewing-history):** This command works with lots of formats -- you can specify a specific date like "2008-01-15", or a relative date such as "2 years 1 day 3 minutes ago". You can also filter the list to commits that match some search criteria. The --author o…
 
-## recursive - q041: wrong document
+## sentence 100 - q047: right document, wrong passage
 
-- **Question:** What is the standard nickname for the server a repository was cloned from?
-- **Evidence (02_remotes):** origin -- that is the default name Git gives to the server you cloned from
+- **Question:** Is the default branch special compared with other branches?
+- **Evidence (03_nutshell):** The only reason nearly every repository has one is that the git init command creates it by default
 - **First relevant rank:** >10
-- **Top-1 retrieved (04_protocols):** In fact, for services like GitHub, the URL you use to view the repository online (for example, ^ (https://github.com/schacon/simplegit)) is the same URL you can use to clone and, if you have access, push over. Dumb HTTP
+- **Top-1 retrieved (03_nutshell):** A branch in Git is simply a lightweight movable pointer to one of these commits. The default branch name in Git is master. As you start making commits, you're given a master branch that points to the last commit you made. Every time you co…
 
-## recursive - q052: wrong document
+## sentence 100 - q052: wrong document
 
 - **Question:** What makes a merge commit different from an ordinary commit?
 - **Evidence (03_basic-branching-and-merging):** This is referred to as a merge commit, and is special in that it has more than one parent.
 - **First relevant rank:** >10
-- **Top-1 retrieved (07_advanced-merging):** Now that you know how to create a merge commit, you'll probably make some by mistake. One of the great things about working with Git is that it's okay to make mistakes, because it's possible (and in many cases easy) to fix them. Merge comm…
+- **Top-1 retrieved (06_3-maintaining):** If the merge is trivial, you can also just hit the "Merge" button on the GitHub site. This will do a "non-fast-forward" merge, creating a merge commit even if a fast-forward merge was possible. This means that no matter what, every time yo…
 
-## recursive - q054: wrong document
+## sentence 100 - q065: right document, wrong passage
 
-- **Question:** How do I tell Git that a conflicted file is now fixed?
-- **Evidence (03_basic-branching-and-merging):** run git add on each file to mark it as resolved
+- **Question:** Will Git guess my command if I type only part of its name?
+- **Evidence (02_aliases):** Git doesn't automatically infer your command if you type it in partially.
 - **First relevant rank:** >10
-- **Top-1 retrieved (07_rerere):** You should notice the new line Recorded preimage for FILE in there. Otherwise it should look exactly like a normal merge conflict. At this point, rerere can tell us a few things. Normally, you might run git status at this point to see what…
+- **Top-1 retrieved (02_aliases):** If you don't want to type the entire text of each of the Git commands, you can easily set up an alias for each command using git config. Here are a couple of examples you may want to set up: $ git config --global alias.co checkout $ git co…
 
-## recursive - q074: wrong document
+## sentence 100 - q069: right document, wrong passage
 
-- **Question:** Does branching and merging involve contacting a server?
-- **Evidence (03_workflows):** everything is being done only in your Git repository -- there is no communication with the server
-- **First relevant rank:** >10
-- **Top-1 retrieved (05_contributing):** In this environment, you can follow a workflow similar to what you might do when using Subversion or another centralized system. You still get the advantages of things like offline committing and vastly simpler branching and merging, but t…
+- **Question:** Is it fine to rename a branch my teammates are using?
+- **Evidence (03_branch-management):** Do not rename branches that are still in use by other collaborators.
+- **First relevant rank:** 6
+- **Top-1 retrieved (03_branch-management):** Suppose you have a branch that is called bad-branch-name and you want to change it to corrected-branch-name, while keeping all history. You also want to change the branch name on the remote (GitHub, GitLab, other server). How do you do thi…
 
-## recursive - q077: right document, wrong passage
+## sentence 100 - q077: right document, wrong passage
 
 - **Question:** What does rebasing do, in one sentence?
 - **Evidence (03_rebasing):** you can take all the changes that were committed on one branch and replay them on a different branch.
 - **First relevant rank:** >10
 - **Top-1 retrieved (03_rebasing):** Rebasing In Git, there are two main ways to integrate changes from one branch into another: the merge and the rebase. In this section you'll learn what rebasing is, how to do it, why it's a pretty amazing tool, and in what cases you won't …
 
-## recursive - q079: wrong document
+## sentence 100 - q079: wrong document
 
 - **Question:** What is the main rule to follow when rebasing?
 - **Evidence (03_rebasing):** Do not rebase commits that exist outside your repository and that people may have based work on.
 - **First relevant rank:** >10
 - **Top-1 retrieved (07_rerere):** This same tactic can be used if you want to keep a branch rebased so you don't have to deal with the same rebasing conflicts each time you do it. Or if you want to take a branch that you merged and fixed a bunch of conflicts and then decid…
 
-## recursive - q081: right document, wrong passage
+## sentence 100 - q080: wrong document
+
+- **Question:** What is a patch-id?
+- **Evidence (03_rebasing):** Git also calculates a checksum that is based just on the patch introduced with the commit.
+- **First relevant rank:** >10
+- **Top-1 retrieved (05_maintaining):** The Commit information indicates the person who applied the patch and the time it was applied. The Author information is the individual who originally created the patch and when it was originally created. But it's possible that the patch w…
+
+## sentence 100 - q081: wrong document
 
 - **Question:** How can I make pulling replay my commits rather than merge by default?
 - **Evidence (03_rebasing):** you can set the pull.rebase config value
 - **First relevant rank:** >10
-- **Top-1 retrieved (03_rebasing):** Note that the snapshot pointed to by the final commit you end up with, whether it's the last of the rebased commits for a rebase or the final merge commit after a merge, is the same snapshot -- it's only the history that is different. Reba…
+- **Top-1 retrieved (07_advanced-merging):** This approach also won't work if any other commits have been created since the merge; moving the refs would effectively lose those changes. Reverse the commit If moving the branch pointers around isn't going to work for you, Git gives you …
 
-## recursive - q084: wrong document
+## sentence 100 - q084: wrong document
 
 - **Question:** Step by step, how does a rebase work internally?
 - **Evidence (03_rebasing):** This operation works by going to the common ancestor of the two branches (the one you're on and the one you're rebasing onto), getting the diff introduced by each commit of the branch you're on, saving those diffs to temporary files, resetting the current branch to the same commit as the branch you are rebasing onto, …
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_rewriting-history):** Notice the reverse order. The interactive rebase gives you a script that it's going to run. It will start at the commit you specify on the command line (HEAD~3) and replay the changes introduced in each of these commits from top to bottom.…
+- **First relevant rank:** 7
+- **Top-1 retrieved (07_rewriting-history):** See ch10-git-internals#_data_recovery for more information on the reflog command. Drew DeVault made a practical hands-on guide with exercises to learn how to use git rebase. You can find it at: ^ (https://git-rebase.io/) The Nuclear Option…
 
-## recursive - q087: right document, wrong passage
-
-- **Question:** What is the argument for tidying up commits before merging them?
-- **Evidence (03_rebasing):** The opposing point of view is that the commit history is the story of how your project was made. You wouldn't publish the first draft of a book, so why show your messy work?
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_rebasing):** Now, to the question of whether merging or rebasing is better: hopefully you'll see that it's not that simple. Git is a powerful tool, and allows you to do many things to and with your history, but every team and every project is different…
-
-## recursive - q089: wrong document
+## sentence 100 - q089: right document, wrong passage
 
 - **Question:** Why can't I move origin/master by hand?
 - **Evidence (03_remote-branches):** They're local references that you can't move; Git moves them for you whenever you do any network communication
 - **First relevant rank:** >10
-- **Top-1 retrieved (05_contributing):** Now origin/master is reachable from Jessica's master branch, so she should be able to successfully push (assuming John hasn't pushed even more changes in the meantime): $ git push origin master ... To jessica@githost:simplegit.git 72bbc59.…
+- **Top-1 retrieved (03_remote-branches):** If you do some work on your local master branch, and, in the meantime, someone else pushes to git.ourcompany.com and updates its master branch, then your histories move forward differently. Also, as long as you stay out of contact with you…
 
-## recursive - q091: wrong document
+## sentence 100 - q091: right document, wrong passage
 
 - **Question:** Are my local branches pushed to the server automatically?
 - **Evidence (03_remote-branches):** Your local branches aren't automatically synchronized to the remotes you write to
-- **First relevant rank:** 9
-- **Top-1 retrieved (02_remotes):** This command shows which branch is automatically pushed to when you run git push while on certain branches. It also shows you which remote branches on the server you don't yet have, which remote branches you have that have been removed fro…
+- **First relevant rank:** 10
+- **Top-1 retrieved (03_remote-branches):** Now, your local branch sf will automatically pull from origin/serverfix. If you already have a local branch and want to set it to a remote branch you just pulled down, or want to change the upstream branch you're tracking, you can use the …
 
-## recursive - q100: right document, wrong passage
-
-- **Question:** What does the status command report right after a fresh clone?
-- **Evidence (02_recording-changes):** This means you have a clean working directory; in other words, none of your tracked files are modified.
-- **First relevant rank:** >10
-- **Top-1 retrieved (02_recording-changes):** The main tool you use to determine which files are in which state is the git status command. If you run this command directly after a clone, you should see something like this: $ git status On branch master Your branch is up-to-date with '…
-
-## recursive - q104: right document, wrong passage
+## sentence 100 - q104: wrong document
 
 - **Question:** Do ignore files in subfolders affect the whole repository?
 - **Evidence (02_recording-changes):** The rules in these nested .gitignore files apply only to the files under the directory where they are located.
 - **First relevant rank:** >10
-- **Top-1 retrieved (02_recording-changes):** Here is another example .gitignore file: # ignore all .a files *.a # but do track lib.a, even though you're ignoring .a files above !lib.a # only ignore the TODO file in the current directory, not subdir/TODO /TODO # ignore all files in an…
+- **Top-1 retrieved (08_attributes):** You can tell Git not to export certain files or directories when generating an archive. If there is a subdirectory or file that you don't want to include in your archive file but that you do want checked into your project, you can determin…
 
-## recursive - q105: wrong document
-
-- **Question:** What does the verbose commit flag add to the message editor?
-- **Evidence (02_recording-changes):** Doing so also puts the diff of your change in the editor so you can see exactly what changes you're committing.
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_rewriting-history):** The command above loads the previous commit message into an editor session, where you can make changes to the message, save those changes and exit. When you save and close the editor, the editor writes a new commit containing that updated …
-
-## recursive - q107: right document, wrong passage
-
-- **Question:** How should I think about what git add really does?
-- **Evidence (02_recording-changes):** git add is a multipurpose command -- you use it to begin tracking new files, to stage files, and to do other things like marking merge-conflicted files as resolved. It may be helpful to think of it more as "add precisely this content to the next commit" rather than "add this file to the project
-- **First relevant rank:** 9
-- **Top-1 retrieved (02_recording-changes):** You can tell that it's staged because it's under the "Changes to be committed" heading. If you commit at this point, the version of the file at the time you ran git add is what will be in the subsequent historical snapshot. You may recall …
-
-## recursive - q112: wrong document
+## sentence 100 - q112: wrong document
 
 - **Question:** How do I jump back to the branch I was on before?
 - **Evidence (03_nutshell):** Return to your previously checked out branch: git switch -.
 - **First relevant rank:** >10
-- **Top-1 retrieved (07_subtree-merges):** We just switched back to your master branch, and we pull the rack_branch branch into the rack subdirectory of our master branch of our main project:
+- **Top-1 retrieved (05_maintaining):** When you have work in a topic branch and have determined that you want to integrate it, you move to that branch and run the rebase command to rebuild the changes on top of your current master (or develop, and so on) branch. If that works w…
 
-## recursive - q116: wrong document
-
-- **Question:** What are the two effects of switching back to the master branch?
-- **Evidence (03_nutshell):** That command did two things. It moved the HEAD pointer back to point to the master branch, and it reverted the files in your working directory back to the snapshot that master points to.
-- **First relevant rank:** 9
-- **Top-1 retrieved (03_basic-branching-and-merging):** For now, let's assume you've committed all your changes, so you can switch back to your master branch:
-
-## recursive - q119: right document, wrong passage
+## sentence 100 - q119: right document, wrong passage
 
 - **Question:** Why does the book use the terminal instead of graphical clients?
 - **Evidence (01_command-line):** the command line is the only place you can run all Git commands
-- **First relevant rank:** >10
+- **First relevant rank:** 9
 - **Top-1 retrieved (01_command-line):** If you know how to run the command-line version, you can probably also figure out how to run the GUI version, while the opposite is not necessarily true. Also, while your choice of graphical client is a matter of personal taste, all users …
 
-## recursive - q125: wrong document
+## sentence 100 - q125: wrong document
 
 - **Question:** What are the three steps of the basic Git workflow?
 - **Evidence (01_what-is-git):** 1. You modify files in your working tree. 2. You selectively stage just those changes you want to be part of your next commit, which adds only those changes to the staging area. 3. You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_reset):** $ tree . ├── README ├── Rakefile └── lib └── simplegit.rb 1 directory, 3 files The Workflow Git's typical workflow is to record snapshots of your project in successively better states, by manipulating these three trees. Git's typical workf…
+- **First relevant rank:** 7
+- **Top-1 retrieved (07_reset):** Think of the working directory as a sandbox, where you can try changes out before committing them to your staging area (index) and then to history. $ tree . ├── README ├── Rakefile └── lib └── simplegit.rb 1 directory, 3 files The Workflow…
 
-## fixed_overlap - q022: wrong document
+## recursive 200 - q011: wrong document
+
+- **Question:** What is the formal name for the area that holds what will go into the next commit?
+- **Evidence (01_what-is-git):** Its technical name in Git parlance is the "index", but the phrase "staging area" works just as well.
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_nutshell):** Your Git repository now contains five objects: three blobs (each representing the contents of one of the three files), one tree that lists the contents of the directory and specifies which file names are stored as which blobs, and one comm…
+
+## recursive 200 - q013: wrong document
+
+- **Question:** Which part of a Git project holds the metadata and the object database?
+- **Evidence (01_what-is-git):** The Git directory is where Git stores the metadata and object database for your project.
+- **First relevant rank:** 7
+- **Top-1 retrieved (10_plumbing-porcelain):** This leaves four important entries: the HEAD and (yet to be created) index files, and the objects and refs directories. These are the core parts of Git. The objects directory stores all the content for your database, the refs directory sto…
+
+## recursive 200 - q022: wrong document
 
 - **Question:** Which URL styles can be used to clone, besides https?
 - **Evidence (02_getting-a-repository):** you may also see git:// or user@server:path/to/repo.git, which uses the SSH transfer protocol.
 - **First relevant rank:** >10
-- **Top-1 retrieved (04_protocols):** Git by default runs the appropriate command (git update-server-info) to make HTTP fetching and cloning work properly. This command is run when you push to this repository (over SSH perhaps); then, other people can clone via something like:…
+- **Top-1 retrieved (04_protocols):** In fact, for services like GitHub, the URL you use to view the repository online (for example, ^ (https://github.com/schacon/simplegit)) is the same URL you can use to clone and, if you have access, push over. Dumb HTTP
 
-## fixed_overlap - q048: wrong document
+## recursive 200 - q029: right document, wrong passage
+
+- **Question:** What flag is needed to delete a file from Git when it has staged or modified content?
+- **Evidence (02_recording-changes):** If you modified the file or had already added it to the staging area, you must force the removal with the -f option.
+- **First relevant rank:** 10
+- **Top-1 retrieved (02_recording-changes):** If you simply remove the file from your working directory, it shows up under the "Changes not staged for commit" (that is, unstaged) area of your git status output: $ rm PROJECTS.md $ git status On branch master Your branch is up-to-date w…
+
+## recursive 200 - q048: wrong document
 
 - **Question:** After committing three files, how many objects are stored and of which kinds?
 - **Evidence (03_nutshell):** Your Git repository now contains five objects: three blobs
-- **First relevant rank:** 8
-- **Top-1 retrieved (10_objects):** are initially stored as separate files in your .git/objects directory. Here are all the objects in the example directory now, commented with what they store: $ find .git/objects -type f git/objects/01/55eb4229851634a0f03eb265b69f5a2d56f341…
-
-## fixed_overlap - q052: wrong document
-
-- **Question:** What makes a merge commit different from an ordinary commit?
-- **Evidence (03_basic-branching-and-merging):** This is referred to as a merge commit, and is special in that it has more than one parent.
 - **First relevant rank:** >10
-- **Top-1 retrieved (07_revision-selection):** of a merge commit is from the branch you were on when you merged (frequently master), while the second parent of a merge commit is from the branch that was merged (say, topic): $ git show d921970^ commit 1c002dd4b536e7479fe34593e72e6c6c181…
+- **Top-1 retrieved (10_packfiles):** The objects that remain are the blobs that aren't pointed to by any commit -- in this case, the "what is up, doc?" example and the "test content" example blobs you created earlier. Because you never added them to any commits, they're consi…
 
-## fixed_overlap - q060: right document, wrong passage
+## recursive 200 - q060: right document, wrong passage
 
 - **Question:** What happens to a commit I make while sitting on a checked-out tag?
 - **Evidence (02_tagging):** your new commit won't belong to any branch and will be unreachable, except by the exact commit hash
-- **First relevant rank:** 10
-- **Top-1 retrieved (02_tagging):** commit checksum stored in a file -- no other information is kept. To create a lightweight tag, don't supply any of the -a, -s, or -m options, just provide a tag name: $ git tag v1.4-lw $ git tag v0.1 v1.3 v1.4 v1.4-lw v1.5 This time, if yo…
+- **First relevant rank:** 6
+- **Top-1 retrieved (02_tagging):** The second (and more intuitive) way to delete a remote tag is with: $ git push origin --delete <tagname> Checking out Tags If you want to view the versions of files a tag is pointing to, you can do a git checkout of that tag, although this…
 
-## fixed_overlap - q071: wrong document
+## recursive 200 - q075: wrong document
 
-- **Question:** Which branches are safe to remove with the lowercase delete flag?
-- **Evidence (03_branch-management):** Branches on this list without the * in front of them are generally fine to delete with git branch -d; you've already incorporated their work into another branch, so you're not going to lose anything.
-- **First relevant rank:** 7
-- **Top-1 retrieved (08_config):** the user to delete the branch and then push it back up with the new reference. To avoid this, set receive.denyDeletes to true: $ git config --system receive.denyDeletes true This denies any deletion of branches or tags -- no user can do it…
+- **Question:** What goes into the proposed-updates branch of large projects?
+- **Evidence (03_workflows):** that has integrated branches that may not be ready to go into the next or master branch
+- **First relevant rank:** 6
+- **Top-1 retrieved (05_maintaining):** If you have a more important project, you might want to use a two-phase merge cycle. In this scenario, you have two long-running branches, master and develop, in which you determine that master is updated only when a very stable release is…
 
-## fixed_overlap - q077: right document, wrong passage
+## recursive 200 - q077: right document, wrong passage
 
 - **Question:** What does rebasing do, in one sentence?
 - **Evidence (03_rebasing):** you can take all the changes that were committed on one branch and replay them on a different branch.
 - **First relevant rank:** >10
-- **Top-1 retrieved (03_rebasing):** the integration, but rebasing makes for a cleaner history. If you examine the log of a rebased branch, it looks like a linear history: it appears that all the work happened in series, even when it originally happened in parallel. Often, yo…
+- **Top-1 retrieved (03_rebasing):** The Perils of Rebasing Ahh, but the bliss of rebasing isn't without its drawbacks, which can be summed up in a single line: Do not rebase commits that exist outside your repository and that people may have based work on. If you follow that…
 
-## fixed_overlap - q079: right document, wrong passage
-
-- **Question:** What is the main rule to follow when rebasing?
-- **Evidence (03_rebasing):** Do not rebase commits that exist outside your repository and that people may have based work on.
-- **First relevant rank:** 10
-- **Top-1 retrieved (03_rebasing):** on a project, you may need a record of all your missteps and dead-end paths, but when it's time to show your work to the world, you may want to tell a more coherent story of how to get from A to B. People in this camp use tools like rebase…
-
-## fixed_overlap - q080: wrong document
+## recursive 200 - q080: wrong document
 
 - **Question:** What is a patch-id?
 - **Evidence (03_rebasing):** Git also calculates a checksum that is based just on the patch introduced with the commit.
-- **First relevant rank:** >10
-- **Top-1 retrieved (05_maintaining):** If the contributor is a Git user and was good enough to use the format-patch command to generate their patch, then your job is easier because the patch contains author information and a commit message for you. If you can, encourage your co…
-
-## fixed_overlap - q081: right document, wrong passage
-
-- **Question:** How can I make pulling replay my commits rather than merge by default?
-- **Evidence (03_rebasing):** you can set the pull.rebase config value
-- **First relevant rank:** 8
-- **Top-1 retrieved (03_rebasing):** that the snapshot pointed to by the final commit you end up with, whether it's the last of the rebased commits for a rebase or the final merge commit after a merge, is the same snapshot -- it's only the history that is different. Rebasing …
-
-## fixed_overlap - q084: right document, wrong passage
-
-- **Question:** Step by step, how does a rebase work internally?
-- **Evidence (03_rebasing):** This operation works by going to the common ancestor of the two branches (the one you're on and the one you're rebasing onto), getting the diff introduced by each commit of the branch you're on, saving those diffs to temporary files, resetting the current branch to the same commit as the branch you are rebasing onto, …
-- **First relevant rank:** 9
-- **Top-1 retrieved (03_rebasing):** the integration, but rebasing makes for a cleaner history. If you examine the log of a rebased branch, it looks like a linear history: it appears that all the work happened in series, even when it originally happened in parallel. Often, yo…
-
-## fixed_overlap - q089: wrong document
-
-- **Question:** Why can't I move origin/master by hand?
-- **Evidence (03_remote-branches):** They're local references that you can't move; Git moves them for you whenever you do any network communication
-- **First relevant rank:** >10
-- **Top-1 retrieved (06_2-contributing):** master, pull from progit, then push to origin -- all of those operations are valid with this setup. So you'll have to take care never to commit directly to master, since that branch effectively belongs to the upstream repository.
-
-## fixed_overlap - q091: wrong document
-
-- **Question:** Are my local branches pushed to the server automatically?
-- **Evidence (03_remote-branches):** Your local branches aren't automatically synchronized to the remotes you write to
-- **First relevant rank:** 7
-- **Top-1 retrieved (03_workflows):** remember when you're doing all this that these branches are completely local. When you're branching and merging, everything is being done only in your Git repository -- there is no communication with the server.
-
-## fixed_overlap - q101: wrong document
-
-- **Question:** Why do newer repositories often start on main instead of master?
-- **Evidence (02_recording-changes):** GitHub changed the default branch name from master to main in mid-2020, and other Git hosts followed suit.
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_branch-management):** one will need to update their code and/or configuration. - Update any test-runner configuration files. - Adjust build and release scripts. - Redirect settings on your repo host for things like the repo's default branch, merge rules, and ot…
-
-## fixed_overlap - q107: wrong document
-
-- **Question:** How should I think about what git add really does?
-- **Evidence (02_recording-changes):** git add is a multipurpose command -- you use it to begin tracking new files, to stage files, and to do other things like marking merge-conflicted files as resolved. It may be helpful to think of it more as "add precisely this content to the next commit" rather than "add this file to the project
-- **First relevant rank:** >10
-- **Top-1 retrieved (01_help):** knowledgeable about Git and are often willing to help. In addition, if you don't need the full-blown manpage help, but just need a quick refresher on the available options for a Git command, you can ask for the more concise "help" output w…
-
-## fixed_overlap - q110: wrong document
-
-- **Question:** Why must I commit before switching branches?
-- **Evidence (03_basic-branching-and-merging):** if your working directory or staging area has uncommitted changes that conflict with the branch you're checking out, Git won't let you switch branches.
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_nutshell):** size of the project, whereas in Git the process is always instantaneous. Also, because we're recording the parents when we commit, finding a proper merge base for merging is automatically done for us and is generally very easy to do. These…
-
-## fixed_overlap - q112: wrong document
-
-- **Question:** How do I jump back to the branch I was on before?
-- **Evidence (03_nutshell):** Return to your previously checked out branch: git switch -.
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_rewriting-history):** will be returned to the state it was in before you started the rebase. If you finish a rebase and decide it's not what you want, you can use git reflog to recover an earlier version of your branch. See ch10-git-internals#_data_recovery for…
-
-## fixed_overlap - q116: wrong document
-
-- **Question:** What are the two effects of switching back to the master branch?
-- **Evidence (03_nutshell):** That command did two things. It moved the HEAD pointer back to point to the master branch, and it reverted the files in your working directory back to the snapshot that master points to.
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_basic-branching-and-merging):** won't let you switch branches. It's best to have a clean working state when you switch branches. There are ways to get around this (namely, stashing and commit amending) that we'll cover later on, in ch07-git-tools#_git_stashing. For now, …
-
-## fixed_overlap - q124: wrong document
-
-- **Question:** How hard is it to lose committed work, and what makes it safer still?
-- **Evidence (01_what-is-git):** It is hard to get the system to do anything that is not undoable or to make it erase data in any way. As with any VCS, you can lose or mess up changes you haven't committed yet, but after you commit a snapshot into Git, it is very difficult to lose, especially if you regularly push your database to another repository.
-- **First relevant rank:** >10
-- **Top-1 retrieved (01_about-version-control):** is the single point of failure that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save versioned changes to anything they're working on. If the hard disk the…
-
-## fixed_overlap - q125: wrong document
-
-- **Question:** What are the three steps of the basic Git workflow?
-- **Evidence (01_what-is-git):** 1. You modify files in your working tree. 2. You selectively stage just those changes you want to be part of your next commit, which adds only those changes to the staging area. 3. You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
-- **First relevant rank:** 9
-- **Top-1 retrieved (05_contributing):** and what workflows are preferred or available to you. We'll cover aspects of each of these in a series of use cases, moving from simple to more complex; you should be able to construct the specific workflows you need in practice from these…
-
-## fixed_overlap - q128: right document, wrong passage
-
-- **Question:** What does the stat option add underneath each log entry?
-- **Evidence (02_viewing-history):** As you can see, the --stat option prints below each commit entry a list of modified files, how many files were changed, and how many lines in those files were added and removed. It also puts a summary of the information at the end.
 - **First relevant rank:** 6
-- **Top-1 retrieved (02_viewing-history):** we've covered so far, as well as some other common formatting options that may be useful, along with how they change the output of the log command. Common options to git log |================================ | Option | Description | -p | S…
+- **Top-1 retrieved (05_maintaining):** To apply a patch generated by format-patch, you use git am (the command is named am as it is used to "apply a series of patches from a mailbox"). Technically, git am is built to read an mbox file, which is a simple, plain-text format for s…
 
-## semantic - q003: wrong document
-
-- **Question:** From which Git release can the name of the initial branch be customised?
-- **Evidence (01_first-time-setup):** From Git version 2.28 onwards, you can set a different name for the initial branch.
-- **First relevant rank:** >10
-- **Top-1 retrieved (03_branch-management):** Now we'll take a brief look at where we are now: $ git branch --all - corrected-branch-name main remotes/origin/bad-branch-name remotes/origin/corrected-branch-name remotes/origin/main Notice that you're on the branch corrected-branch-name…
-
-## semantic - q013: wrong document
-
-- **Question:** Which part of a Git project holds the metadata and the object database?
-- **Evidence (01_what-is-git):** The Git directory is where Git stores the metadata and object database for your project.
-- **First relevant rank:** >10
-- **Top-1 retrieved (10_objects):** $ cd test $ find .git/objects git/objects git/objects/info git/objects/pack $ find .git/objects -type f Git has initialized the objects directory and created pack and info subdirectories in it, but there are no regular files. Now, let's us…
-
-## semantic - q014: right document, wrong passage
-
-- **Question:** What goes wrong with the habit of duplicating project folders by hand as a backup scheme?
-- **Evidence (01_about-version-control):** It is easy to forget which directory you're in and accidentally write to the wrong file or copy over files you don't mean to.
-- **First relevant rank:** >10
-- **Top-1 retrieved (01_about-version-control):** The most obvious is the single point of failure that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save versioned changes to anything they're working on. If …
-
-## semantic - q022: wrong document
-
-- **Question:** Which URL styles can be used to clone, besides https?
-- **Evidence (02_getting-a-repository):** you may also see git:// or user@server:path/to/repo.git, which uses the SSH transfer protocol.
-- **First relevant rank:** 7
-- **Top-1 retrieved (04_protocols):** The Cons Due to the lack of TLS or other cryptography, cloning over git:// might lead to an arbitrary code execution vulnerability, and should therefore be avoided unless you know what you are doing. - If you run git clone git://example.co…
-
-## semantic - q028: right document, wrong passage
-
-- **Question:** How can a commit skip the explicit add step for files Git already follows?
-- **Evidence (02_recording-changes):** Adding the -a option to the git commit command makes Git automatically stage every file that is already tracked before doing the commit
-- **First relevant rank:** 7
-- **Top-1 retrieved (02_recording-changes):** You can tell that it's staged because it's under the "Changes to be committed" heading. If you commit at this point, the version of the file at the time you ran git add is what will be in the subsequent historical snapshot. You may recall …
-
-## semantic - q033: wrong document
-
-- **Question:** In what order does the history command list commits when run without options?
-- **Evidence (02_viewing-history):** lists the commits made in that repository in reverse chronological order
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_rewriting-history):** There is another history-rewriting option that you can use if you need to rewrite a larger number of commits in some scriptable way -- for instance, changing your email address globally or removing a file from every commit. The command is …
-
-## semantic - q041: wrong document
-
-- **Question:** What is the standard nickname for the server a repository was cloned from?
-- **Evidence (02_remotes):** origin -- that is the default name Git gives to the server you cloned from
-- **First relevant rank:** >10
-- **Top-1 retrieved (04_git-on-a-server):** This is generally straightforward to do. In order to clone your repository to create a new bare repository, you run the clone command with the --bare option. By convention, bare repository directory names end with the suffix .git, like so:…
-
-## semantic - q047: wrong document
-
-- **Question:** Is the default branch special compared with other branches?
-- **Evidence (03_nutshell):** The only reason nearly every repository has one is that the git init command creates it by default
-- **First relevant rank:** 6
-- **Top-1 retrieved (02_recording-changes):** Finally, the command tells you which branch you're on and informs you that it has not diverged from the same branch on the server. For now, that branch is always master, which is the default; you won't worry about it here. ch03-git-branchi…
-
-## semantic - q048: wrong document
-
-- **Question:** After committing three files, how many objects are stored and of which kinds?
-- **Evidence (03_nutshell):** Your Git repository now contains five objects: three blobs
-- **First relevant rank:** >10
-- **Top-1 retrieved (10_packfiles):** Counting objects: 18, done. Delta compression using up to 8 threads. Compressing objects: 100% (14/14), done. Writing objects: 100% (18/18), done. Total 18 (delta 3), reused 0 (delta 0) If you look in your objects directory, you'll find th…
-
-## semantic - q052: wrong document
-
-- **Question:** What makes a merge commit different from an ordinary commit?
-- **Evidence (03_basic-branching-and-merging):** This is referred to as a merge commit, and is special in that it has more than one parent.
-- **First relevant rank:** >10
-- **Top-1 retrieved (07_advanced-merging):** You can see that there is no difference between the branch we were on and the result of the merge. This can often be useful to basically trick Git into thinking that a branch is already merged when doing a merge later on. For example, say …
-
-## semantic - q057: right document, wrong passage
-
-- **Question:** Does a plain push send my tags to the server?
-- **Evidence (02_tagging):** By default, the git push command doesn't transfer tags to remote servers.
-- **First relevant rank:** >10
-- **Top-1 retrieved (02_tagging):** You will have to explicitly push tags to a shared server after you have created them. This process is just like sharing remote branches -- you can run git push origin <tagname>. $ git push origin v1.5
-
-## semantic - q066: wrong document
-
-- **Question:** What does the star next to a branch name in the listing mean?
-- **Evidence (03_branch-management):** it indicates the branch that you currently have checked out
-- **First relevant rank:** 7
-- **Top-1 retrieved (02_recording-changes):** Finally, the command tells you which branch you're on and informs you that it has not diverged from the same branch on the server. For now, that branch is always master, which is the default; you won't worry about it here. ch03-git-branchi…
-
-## semantic - q080: wrong document
-
-- **Question:** What is a patch-id?
-- **Evidence (03_rebasing):** Git also calculates a checksum that is based just on the patch introduced with the commit.
-- **First relevant rank:** >10
-- **Top-1 retrieved (05_maintaining):** You can see that it applied cleanly and automatically created the new commit for you. The author information is taken from the email's From and Date headers, and the message of the commit is taken from the Subject and body (before the patc…
-
-## semantic - q081: right document, wrong passage
+## recursive 200 - q081: right document, wrong passage
 
 - **Question:** How can I make pulling replay my commits rather than merge by default?
 - **Evidence (03_rebasing):** you can set the pull.rebase config value
 - **First relevant rank:** >10
 - **Top-1 retrieved (03_rebasing):** Note that the snapshot pointed to by the final commit you end up with, whether it's the last of the rebased commits for a rebase or the final merge commit after a merge, is the same snapshot -- it's only the history that is different. Reba…
 
-## semantic - q084: right document, wrong passage
+## recursive 200 - q084: right document, wrong passage
 
 - **Question:** Step by step, how does a rebase work internally?
 - **Evidence (03_rebasing):** This operation works by going to the common ancestor of the two branches (the one you're on and the one you're rebasing onto), getting the diff introduced by each commit of the branch you're on, saving those diffs to temporary files, resetting the current branch to the same commit as the branch you are rebasing onto, …
-- **First relevant rank:** 7
-- **Top-1 retrieved (03_rebasing):** When you rebase stuff, you're abandoning existing commits and creating new ones that are similar but different. If you push commits somewhere and others pull them down and base work on them, and then you rewrite those commits with git reba…
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_rebasing):** - Determine what work is unique to our branch (C2, C3, C4, C6, C7) - Determine which are not merge commits (C2, C3, C4) - Determine which have not been rewritten into the target branch (just C2 and C3, since C4 is the same patch as C4') - …
 
-## semantic - q089: wrong document
+## recursive 200 - q087: right document, wrong passage
+
+- **Question:** What is the argument for tidying up commits before merging them?
+- **Evidence (03_rebasing):** The opposing point of view is that the commit history is the story of how your project was made. You wouldn't publish the first draft of a book, so why show your messy work?
+- **First relevant rank:** 6
+- **Top-1 retrieved (03_rebasing):** Now, to the question of whether merging or rebasing is better: hopefully you'll see that it's not that simple. Git is a powerful tool, and allows you to do many things to and with your history, but every team and every project is different…
+
+## recursive 200 - q089: right document, wrong passage
 
 - **Question:** Why can't I move origin/master by hand?
 - **Evidence (03_remote-branches):** They're local references that you can't move; Git moves them for you whenever you do any network communication
 - **First relevant rank:** >10
-- **Top-1 retrieved (05_contributing):** The issue54..origin/master syntax is a log filter that asks Git to display only those commits that are on the latter branch (in this case origin/master) and that are not on the first branch (in this case issue54). We'll go over this syntax…
+- **Top-1 retrieved (03_remote-branches):** ."origin" is not special Just like the branch name "master" does not have any special meaning in Git, neither does "origin". While "master" is the default name for a starting branch when you run git init which is the only reason it's widel…
 
-## semantic - q092: wrong document
+## recursive 200 - q091: wrong document
+
+- **Question:** Are my local branches pushed to the server automatically?
+- **Evidence (03_remote-branches):** Your local branches aren't automatically synchronized to the remotes you write to
+- **First relevant rank:** 9
+- **Top-1 retrieved (10_refspec):** If they want Git to do that automatically each time they run git push origin, they can add a push value to their config file: url = https://github.com/schacon/simplegit-progit fetch = +refs/heads/:refs/remotes/origin/ push = refs/heads/mas…
+
+## recursive 200 - q092: right document, wrong passage
 
 - **Question:** How can a local branch be pushed under a different name on the remote?
 - **Evidence (03_remote-branches):** You can use this format to push a local branch into a remote branch that is named differently.
-- **First relevant rank:** >10
-- **Top-1 retrieved (02_remotes):** refs/remotes/origin/issue-11 stale (use 'git remote prune' to remove) Local branches configured for 'git pull': dev-branch merges with remote dev-branch master merges with remote master Local refs configured for 'git push': dev-branch push…
+- **First relevant rank:** 6
+- **Top-1 retrieved (03_remote-branches):** Remote-tracking branch names take the form <remote>/<branch>. For instance, if you wanted to see what the master branch on your origin remote looked like as of the last time you communicated with it, you would check the origin/master branc…
 
-## semantic - q093: wrong document
+## recursive 200 - q093: wrong document
 
 - **Question:** After fetching a new remote branch do I get an editable local copy of it?
 - **Evidence (03_remote-branches):** you don't automatically have local, editable copies of them
-- **First relevant rank:** 7
-- **Top-1 retrieved (06_3-maintaining):** Now all of the remote pull requests are represented locally with refs that act much like tracking branches; they're read-only, and they update when you do a fetch. This makes it super easy to try the code from a pull request locally: $ git…
+- **First relevant rank:** 10
+- **Top-1 retrieved (05_maintaining):** If your contribution came from a Git user who set up their own repository, pushed a number of changes into it, and then sent you the URL to the repository and the name of the remote branch the changes are in, you can add them as a remote a…
 
-## semantic - q098: wrong document
-
-- **Question:** Does fetching change the files in my working directory?
-- **Evidence (03_remote-branches):** it will not modify your working directory at all.
-- **First relevant rank:** 9
-- **Top-1 retrieved (02_recording-changes):** ?? LICENSE.txt New files that aren't tracked have a ?? next to them, new files that have been added to the staging area have an A, modified files have an M and so on. There are two columns to the output -- the left-hand column indicates th…
-
-## semantic - q099: wrong document
-
-- **Question:** What is an upstream branch and when does Git create a tracking branch?
-- **Evidence (03_remote-branches):** Checking out a local branch from a remote-tracking branch automatically creates what is called a "tracking branch" (and the branch it tracks is called an "upstream branch"). Tracking branches are local branches that have a direct relationship to a remote branch.
-- **First relevant rank:** 9
-- **Top-1 retrieved (03_nutshell):** Your Git repository now contains five objects: three blobs (each representing the contents of one of the three files), one tree that lists the contents of the directory and specifies which file names are stored as which blobs, and one comm…
-
-## semantic - q100: wrong document
+## recursive 200 - q100: right document, wrong passage
 
 - **Question:** What does the status command report right after a fresh clone?
 - **Evidence (02_recording-changes):** This means you have a clean working directory; in other words, none of your tracked files are modified.
 - **First relevant rank:** >10
-- **Top-1 retrieved (07_reset):** At this point, if we run git status, we will see the file in green under "Changes to be committed" because the index and HEAD differ -- that is, our proposed next commit is now different from our last commit. Finally, we run git commit to …
+- **Top-1 retrieved (02_recording-changes):** Let's change a file that was already tracked. If you change a previously tracked file called CONTRIBUTING.md and then run your git status command again, you get something that looks like this: $ git status On branch master Your branch is u…
 
-## semantic - q101: wrong document
+## recursive 200 - q104: wrong document
 
-- **Question:** Why do newer repositories often start on main instead of master?
-- **Evidence (02_recording-changes):** GitHub changed the default branch name from master to main in mid-2020, and other Git hosts followed suit.
-- **First relevant rank:** 9
-- **Top-1 retrieved (03_remote-branches):** While "master" is the default name for a starting branch when you run git init which is the only reason it's widely used, "origin" is the default name for a remote when you run git clone. If you run git clone -o booyah instead, then you wi…
+- **Question:** Do ignore files in subfolders affect the whole repository?
+- **Evidence (02_recording-changes):** The rules in these nested .gitignore files apply only to the files under the directory where they are located.
+- **First relevant rank:** 8
+- **Top-1 retrieved (08_attributes):** You can tell Git not to export certain files or directories when generating an archive. If there is a subdirectory or file that you don't want to include in your archive file but that you do want checked into your project, you can determin…
 
-## semantic - q112: wrong document
+## recursive 200 - q107: wrong document
+
+- **Question:** How should I think about what git add really does?
+- **Evidence (02_recording-changes):** git add is a multipurpose command -- you use it to begin tracking new files, to stage files, and to do other things like marking merge-conflicted files as resolved. It may be helpful to think of it more as "add precisely this content to the next commit" rather than "add this file to the project
+- **First relevant rank:** >10
+- **Top-1 retrieved (07_interactive-staging):** Interactive Staging In this section, you'll look at a few interactive Git commands that can help you craft your commits to include only certain combinations and parts of files. These tools are helpful if you modify a number of files extens…
+
+## recursive 200 - q109: right document, wrong passage
+
+- **Question:** What does git rm do beyond removing the file from disk?
+- **Evidence (02_recording-changes):** To remove a file from Git, you have to remove it from your tracked files (more accurately, remove it from your staging area) and then commit. The git rm command does that, and also removes the file from your working directory so you don't see it as an untracked file the next time around.
+- **First relevant rank:** >10
+- **Top-1 retrieved (02_recording-changes):** If you simply remove the file from your working directory, it shows up under the "Changes not staged for commit" (that is, unstaged) area of your git status output: $ rm PROJECTS.md $ git status On branch master Your branch is up-to-date w…
+
+## recursive 200 - q112: wrong document
 
 - **Question:** How do I jump back to the branch I was on before?
 - **Evidence (03_nutshell):** Return to your previously checked out branch: git switch -.
 - **First relevant rank:** >10
-- **Top-1 retrieved (07_reset):** You can run git reset --soft HEAD~2 to move the HEAD branch back to an older commit (the most recent commit you want to keep): Moving HEAD with soft reset And then simply run git commit again: Git repository with squashed commit Now you ca…
+- **Top-1 retrieved (03_branch-management):** Your local master branch is gone, as it's replaced with the main branch. The main branch is present on the remote. However, the old master branch is still present on the remote. Other collaborators will continue to use the master branch as…
 
-## semantic - q124: wrong document
+## recursive 200 - q124: wrong document
 
 - **Question:** How hard is it to lose committed work, and what makes it safer still?
 - **Evidence (01_what-is-git):** It is hard to get the system to do anything that is not undoable or to make it erase data in any way. As with any VCS, you can lose or mess up changes you haven't committed yet, but after you commit a snapshot into Git, it is very difficult to lose, especially if you regularly push your database to another repository.
 - **First relevant rank:** >10
-- **Top-1 retrieved (01_about-version-control):** The most obvious is the single point of failure that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save versioned changes to anything they're working on. If …
+- **Top-1 retrieved (07_rewriting-history):** Don't push your work until you're happy with it One of the cardinal rules of Git is that, since so much work is local within your clone, you have a great deal of freedom to rewrite your history locally. However, once you push your work, it…
 
-## semantic - q125: wrong document
+## recursive 200 - q125: wrong document
 
 - **Question:** What are the three steps of the basic Git workflow?
 - **Evidence (01_what-is-git):** 1. You modify files in your working tree. 2. You selectively stage just those changes you want to be part of your next commit, which adds only those changes to the staging area. 3. You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
+- **First relevant rank:** >10
+- **Top-1 retrieved (05_contributing):** All these questions can affect how you contribute effectively to a project and what workflows are preferred or available to you. We'll cover aspects of each of these in a series of use cases, moving from simple to more complex; you should …
+
+## fixed_overlap 200+80 - q022: wrong document
+
+- **Question:** Which URL styles can be used to clone, besides https?
+- **Evidence (02_getting-a-repository):** you may also see git:// or user@server:path/to/repo.git, which uses the SSH transfer protocol.
+- **First relevant rank:** >10
+- **Top-1 retrieved (04_protocols):** uses the same data-transfer mechanism as the SSH protocol but without the encryption and authentication overhead. The Cons Due to the lack of TLS or other cryptography, cloning over git:// might lead to an arbitrary code execution vulnerab…
+
+## fixed_overlap 200+80 - q041: wrong document
+
+- **Question:** What is the standard nickname for the server a repository was cloned from?
+- **Evidence (02_remotes):** origin -- that is the default name Git gives to the server you cloned from
+- **First relevant rank:** >10
+- **Top-1 retrieved (05_contributing):** shared repository. The first developer, John, clones the repository, makes a change, and commits locally. The protocol messages have been replaced with ... in these examples to shorten them somewhat. # John's Machine $ git clone john@githo…
+
+## fixed_overlap 200+80 - q048: wrong document
+
+- **Question:** After committing three files, how many objects are stored and of which kinds?
+- **Evidence (03_nutshell):** Your Git repository now contains five objects: three blobs
+- **First relevant rank:** >10
+- **Top-1 retrieved (10_packfiles):** Packfiles If you followed all of the instructions in the example from the previous section, you should now have a test Git repository with 11 objects -- four blobs, three trees, three commits, and one tag: $ find .git/objects -type f git/o…
+
+## fixed_overlap 200+80 - q052: wrong document
+
+- **Question:** What makes a merge commit different from an ordinary commit?
+- **Evidence (03_basic-branching-and-merging):** This is referred to as a merge commit, and is special in that it has more than one parent.
 - **First relevant rank:** 9
+- **Top-1 retrieved (07_rewriting-history):** no original merge commit was # . specified). Use -c <commit> to reword the commit message. # # These lines can be re-ordered; they are executed from top to bottom. # # If you remove a line here THAT COMMIT WILL BE LOST. # # However, if you…
+
+## fixed_overlap 200+80 - q066: wrong document
+
+- **Question:** What does the star next to a branch name in the listing mean?
+- **Evidence (03_branch-management):** it indicates the branch that you currently have checked out
+- **First relevant rank:** 8
+- **Top-1 retrieved (02_recording-changes):** 't see any untracked files, or they would be listed here. Finally, the command tells you which branch you're on and informs you that it has not diverged from the same branch on the server. For now, that branch is always master, which is th…
+
+## fixed_overlap 200+80 - q071: wrong document
+
+- **Question:** Which branches are safe to remove with the lowercase delete flag?
+- **Evidence (03_branch-management):** Branches on this list without the * in front of them are generally fine to delete with git branch -d; you've already incorporated their work into another branch, so you're not going to lose anything.
+- **First relevant rank:** 9
+- **Top-1 retrieved (07_stashing-cleaning):** the --dry-run (or -n) option, which means "do a dry run and tell me what you would have removed". $ git clean -d -n Would remove test.o Would remove tmp/ By default, the git clean command will only remove untracked files that are not ignor…
+
+## fixed_overlap 200+80 - q077: right document, wrong passage
+
+- **Question:** What does rebasing do, in one sentence?
+- **Evidence (03_rebasing):** you can take all the changes that were committed on one branch and replay them on a different branch.
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_rebasing):** , but rebasing makes for a cleaner history. If you examine the log of a rebased branch, it looks like a linear history: it appears that all the work happened in series, even when it originally happened in parallel. Often, you'll do this to…
+
+## fixed_overlap 200+80 - q080: wrong document
+
+- **Question:** What is a patch-id?
+- **Evidence (03_rebasing):** Git also calculates a checksum that is based just on the patch introduced with the commit.
+- **First relevant rank:** 8
+- **Top-1 retrieved (05_maintaining):** information indicates the person who applied the patch and the time it was applied. The Author information is the individual who originally created the patch and when it was originally created. But it's possible that the patch won't apply …
+
+## fixed_overlap 200+80 - q081: right document, wrong passage
+
+- **Question:** How can I make pulling replay my commits rather than merge by default?
+- **Evidence (03_rebasing):** you can set the pull.rebase config value
+- **First relevant rank:** 6
+- **Top-1 retrieved (03_rebasing):** to the main project. That way, the maintainer doesn't have to do any integration work -- just a fast-forward or a clean apply. Note that the snapshot pointed to by the final commit you end up with, whether it's the last of the rebased comm…
+
+## fixed_overlap 200+80 - q084: right document, wrong passage
+
+- **Question:** Step by step, how does a rebase work internally?
+- **Evidence (03_rebasing):** This operation works by going to the common ancestor of the two branches (the one you're on and the one you're rebasing onto), getting the diff introduced by each commit of the branch you're on, saving those diffs to temporary files, resetting the current branch to the same commit as the branch you are rebasing onto, …
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_rebasing):** , but rebasing makes for a cleaner history. If you examine the log of a rebased branch, it looks like a linear history: it appears that all the work happened in series, even when it originally happened in parallel. Often, you'll do this to…
+
+## fixed_overlap 200+80 - q089: wrong document
+
+- **Question:** Why can't I move origin/master by hand?
+- **Evidence (03_remote-branches):** They're local references that you can't move; Git moves them for you whenever you do any network communication
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_branch-management):** > origin/master remotes/origin/main remotes/origin/master Your local master branch is gone, as it's replaced with the main branch. The main branch is present on the remote. However, the old master branch is still present on the remote. Oth…
+
+## fixed_overlap 200+80 - q092: wrong document
+
+- **Question:** How can a local branch be pushed under a different name on the remote?
+- **Evidence (03_remote-branches):** You can use this format to push a local branch into a remote branch that is named differently.
+- **First relevant rank:** 7
+- **Top-1 retrieved (03_branch-management):** ame a branch like master/main/mainline without having read the section _changing_master. Suppose you have a branch that is called bad-branch-name and you want to change it to corrected-branch-name, while keeping all history. You also want …
+
+## fixed_overlap 200+80 - q101: wrong document
+
+- **Question:** Why do newer repositories often start on main instead of master?
+- **Evidence (02_recording-changes):** GitHub changed the default branch name from master to main in mid-2020, and other Git hosts followed suit.
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_branch-management):** > origin/master remotes/origin/main remotes/origin/master Your local master branch is gone, as it's replaced with the main branch. The main branch is present on the remote. However, the old master branch is still present on the remote. Oth…
+
+## fixed_overlap 200+80 - q104: right document, wrong passage
+
+- **Question:** Do ignore files in subfolders affect the whole repository?
+- **Evidence (02_recording-changes):** The rules in these nested .gitignore files apply only to the files under the directory where they are located.
+- **First relevant rank:** >10
+- **Top-1 retrieved (02_recording-changes):** .gitignore file: # ignore all .a files *.a # but do track lib.a, even though you're ignoring .a files above !lib.a # only ignore the TODO file in the current directory, not subdir/TODO /TODO # ignore all files in any directory named build …
+
+## fixed_overlap 200+80 - q107: wrong document
+
+- **Question:** How should I think about what git add really does?
+- **Evidence (02_recording-changes):** git add is a multipurpose command -- you use it to begin tracking new files, to stage files, and to do other things like marking merge-conflicted files as resolved. It may be helpful to think of it more as "add precisely this content to the next commit" rather than "add this file to the project
+- **First relevant rank:** >10
+- **Top-1 retrieved (01_help):** "help" output with the -h option, as in: $ git add -h usage: git add [<options>] [--] <pathspec>... -n, --dry-run dry run -v, --verbose be verbose -i, --interactive interactive picking -p, --patch select hunks interactively -e, --edit edit…
+
+## fixed_overlap 200+80 - q110: wrong document
+
+- **Question:** Why must I commit before switching branches?
+- **Evidence (03_basic-branching-and-merging):** if your working directory or staging area has uncommitted changes that conflict with the branch you're checking out, Git won't let you switch branches.
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_nutshell):** which involves copying all of the project's files into a second directory. This can take several seconds or even minutes, depending on the size of the project, whereas in Git the process is always instantaneous. Also, because we're recordi…
+
+## fixed_overlap 200+80 - q112: wrong document
+
+- **Question:** How do I jump back to the branch I was on before?
+- **Evidence (03_nutshell):** Return to your previously checked out branch: git switch -.
+- **First relevant rank:** >10
+- **Top-1 retrieved (07_rewriting-history):** the sequence that depend on the one you just deleted. If you get partway through a rebase like this and decide it's not a good idea, you can always stop. Type git rebase --abort, and your repo will be returned to the state it was in before…
+
+## fixed_overlap 200+80 - q116: right document, wrong passage
+
+- **Question:** What are the two effects of switching back to the master branch?
+- **Evidence (03_nutshell):** That command did two things. It moved the HEAD pointer back to point to the master branch, and it reverted the files in your working directory back to the snapshot that master points to.
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_nutshell):** it reverted the files in your working directory back to the snapshot that master points to. This also means the changes you make from this point forward will diverge from an older version of the project. It essentially rewinds the work you…
+
+## fixed_overlap 200+80 - q124: wrong document
+
+- **Question:** How hard is it to lose committed work, and what makes it safer still?
+- **Evidence (01_what-is-git):** It is hard to get the system to do anything that is not undoable or to make it erase data in any way. As with any VCS, you can lose or mess up changes you haven't committed yet, but after you commit a snapshot into Git, it is very difficult to lose, especially if you regularly push your database to another repository.
+- **First relevant rank:** >10
+- **Top-1 retrieved (01_about-version-control):** that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save versioned changes to anything they're working on. If the hard disk the central database is on becomes…
+
+## fixed_overlap 200+80 - q125: wrong document
+
+- **Question:** What are the three steps of the basic Git workflow?
+- **Evidence (01_what-is-git):** 1. You modify files in your working tree. 2. You selectively stage just those changes you want to be part of your next commit, which adds only those changes to the staging area. 3. You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
+- **First relevant rank:** >10
+- **Top-1 retrieved (07_reset):** le └── lib └── simplegit.rb 1 directory, 3 files The Workflow Git's typical workflow is to record snapshots of your project in successively better states, by manipulating these three trees. Git's typical workflow Let's visualize this proce…
+
+## fixed_overlap 200+80 - q129: wrong document
+
+- **Question:** Why use a custom log format when a script will parse the output?
+- **Evidence (02_viewing-history):** The most interesting option value is format, which allows you to specify your own log output format. This is especially useful when you're generating output for machine parsing -- because you specify the format explicitly, you know it won't change with updates to Git
+- **First relevant rank:** 10
+- **Top-1 retrieved (08_attributes):** wrapping: $ echo '$Format:Last commit: %h by %aN at %cd%n%+w(76,6,9)%B$' > LAST_COMMIT $ git commit -am 'export-subst uses git log'\''s custom formatter git archive uses git log'\''s pretty=format: processor directly, and strips the surrou…
+
+## semantic p85 - q014: right document, wrong passage
+
+- **Question:** What goes wrong with the habit of duplicating project folders by hand as a backup scheme?
+- **Evidence (01_about-version-control):** It is easy to forget which directory you're in and accidentally write to the wrong file or copy over files you don't mean to.
+- **First relevant rank:** >10
+- **Top-1 retrieved (01_about-version-control):** However, this setup also has some serious downsides. The most obvious is the single point of failure that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save …
+
+## semantic p85 - q022: wrong document
+
+- **Question:** Which URL styles can be used to clone, besides https?
+- **Evidence (02_getting-a-repository):** you may also see git:// or user@server:path/to/repo.git, which uses the SSH transfer protocol.
+- **First relevant rank:** >10
+- **Top-1 retrieved (07_submodules):** ===== Since the URL in the .gitmodules file is what other people will first try to clone/fetch from, make sure to use a URL that they can access if possible. For example, if you use a different URL to push to than others would to pull from…
+
+## semantic p85 - q041: wrong document
+
+- **Question:** What is the standard nickname for the server a repository was cloned from?
+- **Evidence (02_remotes):** origin -- that is the default name Git gives to the server you cloned from
+- **First relevant rank:** 7
+- **Top-1 retrieved (04_git-on-a-server):** This is generally straightforward to do. In order to clone your repository to create a new bare repository, you run the clone command with the --bare option. By convention, bare repository directory names end with the suffix .git, like so:…
+
+## semantic p85 - q048: wrong document
+
+- **Question:** After committing three files, how many objects are stored and of which kinds?
+- **Evidence (03_nutshell):** Your Git repository now contains five objects: three blobs
+- **First relevant rank:** >10
+- **Top-1 retrieved (10_transfer-protocols):** Next, you have two more objects to retrieve – cfda3b, which is the tree of content that the commit we just retrieved points to; and 085bb3, which is the parent commit: => GET objects/08/5bb3bcb608e1e8451d4b2432f8ecbe6306e7e7 (179 bytes of …
+
+## semantic p85 - q052: wrong document
+
+- **Question:** What makes a merge commit different from an ordinary commit?
+- **Evidence (03_basic-branching-and-merging):** This is referred to as a merge commit, and is special in that it has more than one parent.
+- **First relevant rank:** >10
+- **Top-1 retrieved (05_contributing):** The --squash option takes all the work on the merged branch and squashes it into one changeset producing the repository state as if a real merge happened, without actually making a merge commit. This means your future commit will have one …
+
+## semantic p85 - q056: wrong document
+
+- **Question:** What does a lightweight tag amount to?
+- **Evidence (02_tagging):** A lightweight tag is very much like a branch that doesn't change -- it's just a pointer to a specific commit.
+- **First relevant rank:** 6
+- **Top-1 retrieved (10_refs):** That is all a lightweight tag is -- a reference that never moves. An annotated tag is more complex, however. If you create an annotated tag, Git creates a tag object and then writes a reference to point to it rather than directly to the co…
+
+## semantic p85 - q073: wrong document
+
+- **Question:** Why do some teams keep a develop or next branch next to master?
+- **Evidence (03_workflows):** whenever it gets to a stable state, it can be merged into master
+- **First relevant rank:** 6
+- **Top-1 retrieved (05_maintaining):** This means master almost always moves forward, next is rebased occasionally, and seen is rebased even more often: Merging contributed topic branches into long-term integration branches When a topic branch has finally been merged into maste…
+
+## semantic p85 - q077: right document, wrong passage
+
+- **Question:** What does rebasing do, in one sentence?
+- **Evidence (03_rebasing):** you can take all the changes that were committed on one branch and replay them on a different branch.
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_rebasing):** There is no difference in the end product of the integration, but rebasing makes for a cleaner history. If you examine the log of a rebased branch, it looks like a linear history: it appears that all the work happened in series, even when …
+
+## semantic p85 - q079: right document, wrong passage
+
+- **Question:** What is the main rule to follow when rebasing?
+- **Evidence (03_rebasing):** Do not rebase commits that exist outside your repository and that people may have based work on.
+- **First relevant rank:** 7
+- **Top-1 retrieved (03_rebasing):** Rebasing In Git, there are two main ways to integrate changes from one branch into another: the merge and the rebase. In this section you'll learn what rebasing is, how to do it, why it's a pretty amazing tool, and in what cases you won't …
+
+## semantic p85 - q080: wrong document
+
+- **Question:** What is a patch-id?
+- **Evidence (03_rebasing):** Git also calculates a checksum that is based just on the patch introduced with the commit.
+- **First relevant rank:** >10
+- **Top-1 retrieved (05_maintaining):** Applying a Patch with `am` If the contributor is a Git user and was good enough to use the format-patch command to generate their patch, then your job is easier because the patch contains author information and a commit message for you. If…
+
+## semantic p85 - q084: right document, wrong passage
+
+- **Question:** Step by step, how does a rebase work internally?
+- **Evidence (03_rebasing):** This operation works by going to the common ancestor of the two branches (the one you're on and the one you're rebasing onto), getting the diff introduced by each commit of the branch you're on, saving those diffs to temporary files, resetting the current branch to the same commit as the branch you are rebasing onto, …
+- **First relevant rank:** >10
+- **Top-1 retrieved (03_rebasing):** That way, the maintainer doesn't have to do any integration work -- just a fast-forward or a clean apply. Note that the snapshot pointed to by the final commit you end up with, whether it's the last of the rebased commits for a rebase or t…
+
+## semantic p85 - q089: wrong document
+
+- **Question:** Why can't I move origin/master by hand?
+- **Evidence (03_remote-branches):** They're local references that you can't move; Git moves them for you whenever you do any network communication
+- **First relevant rank:** >10
+- **Top-1 retrieved (05_contributing):** $ git push origin master To john@githost:simplegit.git ! [rejected] master -> master (non-fast forward) error: failed to push some refs to 'john@githost:simplegit.git' In this case, John's push fails because of Jessica's earlier push of he…
+
+## semantic p85 - q099: right document, wrong passage
+
+- **Question:** What is an upstream branch and when does Git create a tracking branch?
+- **Evidence (03_remote-branches):** Checking out a local branch from a remote-tracking branch automatically creates what is called a "tracking branch" (and the branch it tracks is called an "upstream branch"). Tracking branches are local branches that have a direct relationship to a remote branch.
+- **First relevant rank:** 6
+- **Top-1 retrieved (03_remote-branches):** $ git checkout -b sf origin/serverfix Branch sf set up to track remote branch serverfix from origin. Switched to a new branch 'sf' Now, your local branch sf will automatically pull from origin/serverfix. If you already have a local branch …
+
+## semantic p85 - q100: wrong document
+
+- **Question:** What does the status command report right after a fresh clone?
+- **Evidence (02_recording-changes):** This means you have a clean working directory; in other words, none of your tracked files are modified.
+- **First relevant rank:** >10
+- **Top-1 retrieved (02_undoing):** The git status command reminds you: $ git add * $ git status On branch master Changes to be committed: (use "git restore --staged <file>..." to unstage) modified: CONTRIBUTING.md renamed: README.md -> README Right below the "Changes to be …
+
+## semantic p85 - q104: right document, wrong passage
+
+- **Question:** Do ignore files in subfolders affect the whole repository?
+- **Evidence (02_recording-changes):** The rules in these nested .gitignore files apply only to the files under the directory where they are located.
+- **First relevant rank:** 6
+- **Top-1 retrieved (02_recording-changes):** The first line tells Git to ignore any files ending in ".o" or ".a" -- object and archive files that may be the product of building your code. The second line tells Git to ignore all files whose names end with a tilde (~), which is used by…
+
+## semantic p85 - q115: right document, wrong passage
+
+- **Question:** Why is creating a branch in Git instant while older tools take minutes?
+- **Evidence (03_nutshell):** Because a branch in Git is actually a simple file that contains the 40 character SHA-1 checksum of the commit it points to, branches are cheap to create and destroy. Creating a new branch is as quick and simple as writing 41 bytes to a file (40 characters and a newline). This is in sharp contrast to the way most older…
+- **First relevant rank:** 6
+- **Top-1 retrieved (03_nutshell):** As you start making commits, you're given a master branch that points to the last commit you made. Every time you commit, the master branch pointer moves forward automatically. The "master" branch in Git is not a special branch. It is exac…
+
+## semantic p85 - q124: wrong document
+
+- **Question:** How hard is it to lose committed work, and what makes it safer still?
+- **Evidence (01_what-is-git):** It is hard to get the system to do anything that is not undoable or to make it erase data in any way. As with any VCS, you can lose or mess up changes you haven't committed yet, but after you commit a snapshot into Git, it is very difficult to lose, especially if you regularly push your database to another repository.
+- **First relevant rank:** >10
+- **Top-1 retrieved (07_rewriting-history):** Don't push your work until you're happy with it One of the cardinal rules of Git is that, since so much work is local within your clone, you have a great deal of freedom to rewrite your history locally. However, once you push your work, it…
+
+## semantic p85 - q125: wrong document
+
+- **Question:** What are the three steps of the basic Git workflow?
+- **Evidence (01_what-is-git):** 1. You modify files in your working tree. 2. You selectively stage just those changes you want to be part of your next commit, which adds only those changes to the staging area. 3. You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
+- **First relevant rank:** >10
 - **Top-1 retrieved (07_reset):** $ tree . ├── README ├── Rakefile └── lib └── simplegit.rb 1 directory, 3 files The Workflow Git's typical workflow is to record snapshots of your project in successively better states, by manipulating these three trees. Git's typical workf…
 
-## semantic - q126: wrong document
+## semantic p85 - q126: wrong document
 
 - **Question:** Could a corrupted server be restored from a client's clone?
 - **Evidence (02_getting-a-repository):** Every version of every file for the history of the project is pulled down by default when you run git clone. In fact, if your server disk gets corrupted, you can often use nearly any of the clones on any client to set the server back to the state it was in when it was cloned
 - **First relevant rank:** >10
-- **Top-1 retrieved (01_about-version-control):** The most obvious is the single point of failure that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save versioned changes to anything they're working on. If …
-
-## semantic - q128: right document, wrong passage
-
-- **Question:** What does the stat option add underneath each log entry?
-- **Evidence (02_viewing-history):** As you can see, the --stat option prints below each commit entry a list of modified files, how many files were changed, and how many lines in those files were added and removed. It also puts a summary of the information at the end.
-- **First relevant rank:** >10
-- **Top-1 retrieved (02_viewing-history):** This option changes the log output to formats other than the default. A few prebuilt option values are available for you to use. The oneline value for this option prints each commit on a single line, which is useful if you're looking at a …
+- **Top-1 retrieved (01_about-version-control):** However, this setup also has some serious downsides. The most obvious is the single point of failure that the centralized server represents. If that server goes down for an hour, then during that hour nobody can collaborate at all or save …

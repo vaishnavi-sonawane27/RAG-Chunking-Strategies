@@ -17,7 +17,18 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install numpy matplotlib pytest
+        # tokenizers is required: chunk sizes are measured in model tokens
+        run: pip install numpy matplotlib pytest tokenizers
+
+      - name: Cache the embedding model files
+        uses: actions/cache@v4
+        with:
+          path: data/_models
+          key: models-bge-small-v1
+
+      - name: Fetch the tokenizer
+        # the canonical tokenizer defines every chunk size in the experiment
+        run: python scripts/fetch_models.py bge-small
 
       - name: Build the corpus from upstream Pro Git
         run: python scripts/fetch_corpus.py
@@ -29,5 +40,5 @@ jobs:
       - name: Unit tests
         run: python -m pytest -q
 
-      - name: Pipeline smoke test (BM25 only, no model download)
+      - name: Pipeline smoke test (BM25 only, no embedding model needed)
         run: python run_experiment.py --embedder none --tag ci-smoke --smoke

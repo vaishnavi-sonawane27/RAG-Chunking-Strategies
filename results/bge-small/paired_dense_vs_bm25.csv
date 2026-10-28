@@ -1,16 +1,31 @@
-strategy,param,metric,dense_minus_bm25,diff_lo,diff_hi
-fixed,150,recall@3,0.102,-0.023,0.227
-fixed,150,mrr@10,0.121,0.014,0.228
-fixed,150,recall@450w,0.102,-0.023,0.227
-sentence,150,recall@3,0.227,0.125,0.33
-sentence,150,mrr@10,0.142,0.05,0.239
-sentence,150,recall@450w,0.227,0.125,0.33
-recursive,75,recall@3,0.239,0.136,0.341
-recursive,75,mrr@10,0.271,0.184,0.361
-recursive,75,recall@450w,0.205,0.091,0.318
-fixed_overlap,150,recall@3,0.227,0.114,0.341
-fixed_overlap,150,mrr@10,0.135,0.028,0.239
-fixed_overlap,150,recall@450w,0.227,0.114,0.341
-semantic,95,recall@3,0.125,-0.011,0.261
-semantic,95,mrr@10,0.056,-0.058,0.176
-semantic,95,recall@450w,0.148,0.011,0.295
+strategy,label,metric,dense_minus_bm25,diff_lo,diff_hi
+fixed,fixed 200,recall@3,0.125,0.0,0.2386
+fixed,fixed 200,mrr@10,0.0521,-0.0493,0.1507
+fixed,fixed 200,recall@1000tok,0.1477,0.0114,0.2841
+fixed,fixed 200,token_precision@5,0.003,-0.001,0.0069
+fixed,fixed 200,token_iou@5,0.003,-0.001,0.0069
+fixed,fixed 200,token_precision_union@5,0.003,-0.001,0.0069
+sentence,sentence 100,recall@3,0.2955,0.1818,0.4091
+sentence,sentence 100,mrr@10,0.2719,0.1846,0.362
+sentence,sentence 100,recall@1000tok,0.2273,0.1364,0.3182
+sentence,sentence 100,token_precision@5,0.0173,0.0097,0.0256
+sentence,sentence 100,token_iou@5,0.0172,0.0097,0.0256
+sentence,sentence 100,token_precision_union@5,0.0173,0.0097,0.0256
+recursive,recursive 200,recall@3,0.1591,0.0341,0.2841
+recursive,recursive 200,mrr@10,0.1605,0.0567,0.2618
+recursive,recursive 200,recall@1000tok,0.2159,0.1023,0.3295
+recursive,recursive 200,token_precision@5,0.0084,0.0028,0.0139
+recursive,recursive 200,token_iou@5,0.0084,0.0028,0.0139
+recursive,recursive 200,token_precision_union@5,0.0084,0.0028,0.0139
+fixed_overlap,fixed_overlap 200+80,recall@3,0.25,0.125,0.375
+fixed_overlap,fixed_overlap 200+80,mrr@10,0.1499,0.0413,0.2608
+fixed_overlap,fixed_overlap 200+80,recall@1000tok,0.1705,0.0455,0.2955
+fixed_overlap,fixed_overlap 200+80,token_precision@5,0.0029,-0.0008,0.0067
+fixed_overlap,fixed_overlap 200+80,token_iou@5,0.0029,-0.0008,0.0066
+fixed_overlap,fixed_overlap 200+80,token_precision_union@5,0.0035,-0.0008,0.0077
+semantic,semantic p85,recall@3,0.1477,0.0114,0.2841
+semantic,semantic p85,mrr@10,0.143,0.0466,0.2406
+semantic,semantic p85,recall@1000tok,0.2045,0.0795,0.3295
+semantic,semantic p85,token_precision@5,0.0057,0.0001,0.0109
+semantic,semantic p85,token_iou@5,0.0057,0.0001,0.0109
+semantic,semantic p85,token_precision_union@5,0.0057,0.0001,0.0109

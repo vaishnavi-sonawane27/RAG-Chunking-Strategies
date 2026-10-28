@@ -6,10 +6,10 @@ that differences can be assessed for significance instead of ranked on point est
 
 | Strategy | What it does |
 |---|---|
-| Fixed-size | cut every N words, ignoring structure |
-| Fixed + overlap | the same, with an overlapping window |
-| Sentence-based | pack whole sentences up to N words |
-| Recursive | split on paragraph → line → sentence → word, then merge back up to N words |
+| Fixed-size | cut every N tokens, ignoring structure |
+| Fixed + overlap | the same, with an overlapping window (swept at 10% / 20% / 40%) |
+| Sentence-based | pack whole sentences up to N tokens |
+| Recursive | split on paragraph → line → sentence → word, then merge back up to N tokens |
 | Semantic | start a new chunk where embedding distance between neighbouring sentences jumps |
 
 ## This is a replication, not a discovery
@@ -38,8 +38,19 @@ cost reported next to quality. These are gaps several of those authors name them
 * **Comparisons are paired.** All configurations are scored on the same questions using one shared
   set of bootstrap resamples, so `paired_vs_reference.csv` gives the difference against the baseline
   with an interval, which is the right way to ask "is this actually better?"
-* **Equal context budgets.** Comparing at the same `k` favours small chunks. `recall@450w` fills a
-  fixed word budget instead and asks who got the answer in.
+* **Sizes are in model tokens, not words.** Every published chunking evaluation reports token
+  sizes, so word-based sizes cannot be compared with them. One canonical tokenizer is used for
+  sizing regardless of which model is being evaluated, so chunk boundaries stay identical across
+  models and a model difference is a model difference.
+* **Equal context budgets.** Comparing at the same `k` favours small chunks. `recall@1000tok` fills
+  a fixed token budget instead and asks who got the answer in.
+* **Context efficiency is measured.** Recall cannot tell a tight chunk from a long one with the
+  answer buried in padding. Token-level precision and IoU measure how much of what you retrieved
+  was actually the answer. Both are reported two ways: counting text that appears in two
+  overlapping chunks twice (which is what Chroma's published implementation does) and counting it
+  once. The choice changes the verdict on overlap.
+* **Two embedding models.** Published work shows the strategy ranking can change between models,
+  so a single-model result cannot support a general claim.
 * **Cost is reported.** `index_embed_words` counts the embedding work to build each index, including
   the extra sentence pass semantic chunking needs.
 * **Distractors.** Questions cover 20 of 64 documents; the other 44 exist to be wrongly retrieved.
@@ -56,8 +67,9 @@ python -m pytest -q                       # unit tests + an end-to-end sanity ch
 
 python scripts/fetch_models.py            # ONNX weights, pinned by SHA-512
 python run_experiment.py --embedder onnx:bge-small --tag bge-small
-python scripts/make_report.py   --tag bge-small
-python scripts/build_article.py --tag bge-small
+python run_experiment.py --embedder onnx:minilm    --tag minilm
+python scripts/make_report.py   --tag bge-small --compare minilm
+python scripts/build_article.py --tag bge-small --compare minilm
 ```
 
 `results/bge-small/` then contains `summary.csv`, `paired_vs_reference.csv`, `per_question.csv`,
