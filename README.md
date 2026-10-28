@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/vaishnavi-sonawane27/RAG-Chunking-Strategies/actions/workflows/ci.yml/badge.svg)](https://github.com/vaishnavi-sonawane27/RAG-Chunking-Strategies/actions)
 
+**Write-up:** [Do RAG chunking strategies actually differ?](https://vaishnavisonawane.hashnode.dev/do-rag-chunking-strategies-actually-differ-error-bars-2-embedding-models-and-an-overlap-sweep)
+
 A small, fully reproducible comparison of five document chunking strategies for retrieval in a RAG
 pipeline, run with a **held-out dev/test split** and **paired bootstrap confidence intervals**, so
 that differences can be assessed for significance instead of ranked on point estimates.
